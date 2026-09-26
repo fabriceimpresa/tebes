@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Cornice 10 X 15 · TEBE · OPHILYA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Castoro&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f6f1;
+      padding: 20px;
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    .sidebar {
+      width: 360px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      position: relative;
+      z-index: 1;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+
+    .controls {
+      background: #fffdfa;
+      color: #282522;
+      padding: 1rem;
+      border-radius: 8px;
+      border: 1px solid #e3dacb;
+    }
+
+    .controls h2 {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 1.1rem;
+      color: #b49a62;
+      border-bottom: 1px solid #e3dacb;
+      padding-bottom: 0.6rem;
+      margin-bottom: 1.2rem;
+      letter-spacing: 1.5px;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .section-label {
+      color: #8a6a35;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+
+    .mode-switch,
+    .row-selector {
+      display: flex;
+      gap: 4px;
+      padding: 4px;
+      background: #f3ede0;
+      border: 1px solid #e3dacb;
+      border-radius: 6px;
+      margin-bottom: 1.2rem;
+    }
+
+    .mode-switch button,
+    .row-selector button {
+      flex: 1;
+      border: 0;
+      background: transparent;
+      padding: 9px 8px;
+      font-size: 0.68rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #8a7f6e;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      line-height: 1.2;
+      text-align: center;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+
+    .mode-switch button.active,
+    .row-selector button.active {
+      background: #fffdfa;
+      color: #282522;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+
+    /* PULSANTE "+ AGGIUNGI UN ARTICOLO" (dorato -> verde inglese quando attivo) */
+    .btn-add-brand {
+      width: 100%;
+      background-color: #cc9e25;
+      color: #fffdfa;
+      border: 1px solid #b8891a;
+      padding: 10px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-bottom: 1.2rem;
+      transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+    }
+
+    .btn-add-brand:hover { background-color: #b8891a; }
+
+    .btn-add-brand.active {
+      background-color: #4b685c;
+      color: #fffdfa;
+      border-color: #4b685c;
+    }
+
+    .btn-add-brand.active:hover { background-color: #425d52; }
+
+    .form-group { margin-bottom: 0.8rem; }
+
+    .form-group label {
+      display: block;
+      font-size: 0.72rem;
+      margin-bottom: 0.3rem;
+      color: #665e54;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+
+    .form-group textarea,
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 0.45rem;
+      border: 1px solid #e3dacb;
+      border-radius: 4px;
+      font-size: 0.82rem;
+      background-color: #f8f6f1;
+      color: #282522;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      height: 60px;
+    }
+
+    .form-group textarea:focus,
+    .form-group input:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: #b49a62;
+      box-shadow: 0 0 4px rgba(180, 154, 98, 0.35);
+    }
+
+    .preset-select {
+      position: relative;
+      margin-bottom: 0.5rem;
+      border: 1px solid #e3dacb;
+      border-radius: 4px;
+      background-color: #f8f6f1;
+      overflow: hidden;
+    }
+
+    .preset-select select {
+      appearance: none;
+      padding-right: 2rem;
+      border: none;
+      background: transparent;
+      width: 100%;
+      padding: 0.45rem;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+
+    .preset-select::after {
+      content: '▼';
+      position: absolute;
+      top: 0; right: 0; bottom: 0;
+      width: 1.6rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-left: 1px solid #e3dacb;
+      background: #f3ede0;
+      color: #b49a62;
+      font-size: 0.6rem;
+      pointer-events: none;
+    }
+
+    .percent-input-wrapper {
+      display: flex;
+      align-items: stretch;
+      border: 1px solid #e3dacb;
+      border-radius: 4px;
+      background-color: #f8f6f1;
+      overflow: hidden;
+    }
+
+    .percent-input-wrapper input {
+      flex: 1;
+      border: none;
+      background: transparent;
+      padding: 0.45rem;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+
+    .percent-input-wrapper input:focus { outline: none; }
+
+    .percent-stepper {
+      flex: 0 0 1.6rem;
+      display: flex;
+      flex-direction: column;
+      border-left: 1px solid #e3dacb;
+    }
+
+    .percent-stepper button {
+      flex: 1;
+      border: none;
+      border-bottom: 1px solid #e3dacb;
+      background: #f3ede0;
+      color: #b49a62;
+      cursor: pointer;
+      font-size: 0.6rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .percent-stepper button:last-child { border-bottom: none; }
+    .percent-stepper button:hover { background: #e3dacb; color: #8a6a35; }
+
+    .btn-print {
+      width: 100%;
+      background-color: #96382b;
+      color: #fffdfa;
+      border: 1px solid #96382b;
+      padding: 10px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background-color 0.2s;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+    .btn-print:hover { background-color: #7a2d22; }
+
+    /* FOGLIO STAMPA A4 STANDARD */
+    .print-sheet {
+      position: relative;
+      z-index: 1;
+      width: 210mm;
+      height: 297mm;
+      background: white;
+      box-shadow: 0 20px 60px rgba(40,34,28,.18);
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    /* CORNICI A4 */
+    .frame-box {
+      position: absolute;
+      width: 95mm;
+      height: 144mm;
+      top: 37mm;
+      border: 0.34mm solid #000000;
+      background: #ffffff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6mm;
+      padding: 10mm 6mm;
+    }
+
+    .frame-inner-scale {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6mm;
+      transform: scale(1.18);
+      transform-origin: center;
+    }
+
+    /* SPECIFICO PER LAYOUT 2 ARTICOLI */
+    .frame-box.layout-2-articles {
+      padding: 6mm 6mm;
+      gap: 2mm;
+      justify-content: space-between;
+    }
+    
+    .frame-box.layout-2-articles .frame-content:first-of-type {
+      transform-origin: top center;
+      transform: scale(1.05);
+    }
+
+    .frame-box.layout-2-articles .frame-content:last-of-type {
+      transform-origin: bottom center;
+      transform: scale(1.05);
+    }
+
+    #frameLeft { left: 7.5mm; }
+    #frameRight { right: 7.5mm; }
+
+    .deco-img {
+      width: 56.25mm;
+      height: auto;
+      object-fit: contain;
+    }
+
+    .frame-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 2.5mm;
+      width: 100%;
+    }
+
+    .golden-divider {
+      width: 44mm;
+      height: 1px;
+      background-color: #c49f3f;
+      margin: 4mm 0; /* Spazio verticale leggero aggiunto sopra e sotto */
+      flex-shrink: 0;
+    }
+
+    .desc-title {
+      font-family: 'Castoro', serif;
+      font-size: 18pt;
+      color: #c49f3f;
+      letter-spacing: -0.05em;
+      line-height: 1.025; 
+      -webkit-text-stroke: 0.35px #c49f3f;
+      text-align: center;
+      white-space: pre-line;
+    }
+
+    .frame-box.layout-2-articles .desc-title {
+      font-size: 19pt;
+    }
+
+    .price-row-frame {
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .price-old-frame {
+      font-family: Arial, sans-serif;
+      font-size: 14pt;
+      color: #000000;
+      letter-spacing: -0.05em;
+      text-decoration-line: line-through;
+      text-decoration-color: #c49f3f;
+      text-decoration-thickness: 2px;
+    }
+
+    .price-percent-frame {
+      font-family: Arial, sans-serif;
+      font-size: 14pt;
+      color: #c49f3f;
+      letter-spacing: -0.05em;
+      font-weight: 700;
+    }
+
+    .price-final-frame {
+      font-family: Arial, sans-serif;
+      font-size: 34pt;
+      color: #000000;
+      letter-spacing: -0.05em;
+      line-height: 1;
+    }
+
+    .frame-box.layout-2-articles .price-final-frame {
+      font-size: 35pt;
+    }
+
+    .app-close-btn {
+      position: fixed;
+      top: 1.5rem;
+      right: 1.5rem;
+      width: 36px;
+      height: 36px;
+      background-color: #b49a62;
+      color: #fffdfa;
+      border: none;
+      border-radius: 50%;
+      font-size: 1.2rem;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+      z-index: 1000;
+      text-decoration: none;
+    }
+
+    .floating-nav-box {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      background: #fffdfa;
+      border: 1px solid #b49a62;
+      border-radius: 8px;
+      padding: 0.8rem 1rem;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      z-index: 1000;
+    }
+
+    .floating-nav-title {
+      font-size: 0.65rem;
+      color: #8a6a35;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      font-weight: 700;
+      border-bottom: 1px solid rgba(212, 163, 115, 0.3);
+      padding-bottom: 3px;
+    }
+
+    .floating-nav-btn {
+      color: #282522;
+      text-decoration: none;
+      font-size: 0.82rem;
+      font-weight: 600;
+    }
+
+    @page {
+      size: A4 portrait;
+      margin: 0mm !important;
+    }
+
+    @media print {
+      html, body {
+        width: 210mm;
+        height: 297mm !important;
+        max-height: 297mm !important;
+        background: white !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        overflow: hidden !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      .sidebar, .app-close-btn, .floating-nav-box { display: none !important; }
+      .print-sheet {
+        box-shadow: none;
+        margin: 0 auto !important;
+        width: 210mm !important;
+        height: 297mm !important;
+        max-height: 297mm !important;
+      }
+      .frame-box {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="assets/css/tema-italia.css">
+</head>
+<body>
+
+  <a href="index.html?store=tebe" class="app-close-btn" title="Chiudi e torna all'index">✕</a>
+
+  <div class="floating-nav-box">
+    <div class="floating-nav-title">TEBE · OPHILYA</div>
+    <a href="index.html?store=tebe" class="floating-nav-btn">← Torna al Menu Principale</a>
+  </div>
+
+  <div class="sidebar">
+    <div class="controls">
+      <h2>Cornice 10 X 15</h2>
+
+      <!-- SELETTORE CORNICE ATTIVA -->
+      <div class="section-label">Cornice in Modifica</div>
+      <div class="mode-switch">
+        <button type="button" class="active" id="btnLeft" onclick="switchActiveFrame('left')">CORNICE<br>SINISTRA</button>
+        <button type="button" id="btnRight" onclick="switchActiveFrame('right')">CORNICE<br>DESTRA</button>
+      </div>
+
+      <!-- PULSANTE AGGIUNGI ARTICOLO -->
+      <button type="button" class="btn-add-brand" id="articleToggleBtn" onclick="toggleArticleSection()">+ AGGIUNGI UN ARTICOLO</button>
+
+      <!-- SELETTORE RIGA ATTIVA (attivo solo se 2 articoli sono attivi) -->
+      <div id="rowSelectorWrapper" style="display: none;">
+        <div class="section-label">Seleziona Articolo</div>
+        <div class="row-selector" id="rowSelectorContainer">
+          <button type="button" class="active" id="btnRow0" onclick="selectActiveRow(0)">Articolo 1</button>
+          <button type="button" id="btnRow1" onclick="selectActiveRow(1)">Articolo 2</button>
+        </div>
+      </div>
+
+      <!-- CAMPI INPUT -->
+      <div class="form-group">
+        <label id="descLabel">Descrizione Articolo</label>
+        <div class="preset-select">
+          <select id="descPreset" onchange="applyDescPreset()">
+            <option value="PURO COTONE">PURO COTONE</option>
+            <option value="LANA & CACHEMIRE">LANA & CACHEMIRE</option>
+            <option value="PURA SETA">PURA SETA</option>
+            <option value="LINO PURO">LINO PURO</option>
+            <option value="ECO PELLICCIA">ECO PELLICCIA</option>
+            <option value="LANA MERINOS">LANA MERINOS</option>
+          </select>
+        </div>
+        <textarea id="descFree" placeholder="Testo descrittivo..." oninput="updateData()"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Prezzo Originario</label>
+        <input type="text" id="oldPrice" placeholder="es. 34,90" oninput="updateData()">
+      </div>
+
+      <div class="form-group">
+        <label>Percentuale Sconto</label>
+        <div class="percent-input-wrapper">
+          <input type="number" id="discountValue" min="1" max="99" oninput="updateData()">
+          <div class="percent-stepper">
+            <button type="button" onclick="stepDiscount(1)">▲</button>
+            <button type="button" onclick="stepDiscount(-1)">▼</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Prezzo Finale</label>
+        <input type="text" id="newPrice" placeholder="es. 17,90" oninput="updateData()">
+      </div>
+
+      <button class="btn-print" onclick="window.print()">Stampa Cartello (A4)</button>
+    </div>
+  </div>
+
+  <!-- AREA STAMPA A4 -->
+  <div class="print-sheet" id="printSheet">
+    <!-- CORNICE SINISTRA -->
+    <div class="frame-box" id="frameLeft">
+      <div class="frame-inner-scale" id="innerLeft"></div>
+    </div>
+
+    <!-- CORNICE DESTRA -->
+    <div class="frame-box" id="frameRight">
+      <div class="frame-inner-scale" id="innerRight"></div>
+    </div>
+  </div>
+
+  <script>
+    // Stato indipendente per ciascuna cornice (Lana Merinos impostata su due righe)
+    const framesState = {
+      left: {
+        twoArticlesActive: false,
+        activeRow: 0,
+        articles: [
+          { desc: "PURO\nCOTONE", oldPrice: "34,90", discount: "50", newPrice: "17,90" },
+          { desc: "LANA\nMERINOS", oldPrice: "39,90", discount: "50", newPrice: "19,90" }
+        ]
+      },
+      right: {
+        twoArticlesActive: false,
+        activeRow: 0,
+        articles: [
+          { desc: "LANA &\nCACHEMIRE", oldPrice: "34,90", discount: "50", newPrice: "17,90" },
+          { desc: "LANA\nMERINOS", oldPrice: "39,90", discount: "50", newPrice: "19,90" }
+        ]
+      }
+    };
+
+    let currentActiveFrame = 'left';
+
+    function switchActiveFrame(side) {
+      currentActiveFrame = side;
+      document.getElementById('btnLeft').classList.toggle('active', side === 'left');
+      document.getElementById('btnRight').classList.toggle('active', side === 'right');
+      syncSidebarWithState();
+    }
+
+    function toggleArticleSection() {
+      const state = framesState[currentActiveFrame];
+      state.twoArticlesActive = !state.twoArticlesActive;
+      if (!state.twoArticlesActive) {
+        state.activeRow = 0;
+      }
+      syncSidebarWithState();
+      updateAll();
+    }
+
+    function selectActiveRow(rowIndex) {
+      framesState[currentActiveFrame].activeRow = rowIndex;
+      syncSidebarWithState();
+    }
+
+    function syncSidebarWithState() {
+      const state = framesState[currentActiveFrame];
+      const btn = document.getElementById('articleToggleBtn');
+      const rowWrapper = document.getElementById('rowSelectorWrapper');
+
+      if (state.twoArticlesActive) {
+        btn.classList.add('active');
+        btn.textContent = '✓ SECONDO ARTICOLO ATTIVATO';
+        rowWrapper.style.display = 'block';
+        document.getElementById('btnRow0').classList.toggle('active', state.activeRow === 0);
+        document.getElementById('btnRow1').classList.toggle('active', state.activeRow === 1);
+        document.getElementById('descLabel').textContent = `Descrizione Articolo ${state.activeRow + 1}`;
+      } else {
+        btn.classList.remove('active');
+        btn.textContent = '+ AGGIUNGI UN ARTICOLO';
+        rowWrapper.style.display = 'none';
+        document.getElementById('descLabel').textContent = 'Descrizione Articolo';
+      }
+
+      const art = state.articles[state.activeRow];
+      document.getElementById('descFree').value = art.desc;
+      document.getElementById('oldPrice').value = art.oldPrice;
+      document.getElementById('discountValue').value = art.discount;
+      document.getElementById('newPrice').value = art.newPrice;
+    }
+
+    function applyDescPreset() {
+      const preset = document.getElementById('descPreset').value;
+      let formatted = preset.replace(' & ', ' &\n').replace(' COTONE', '\nCOTONE').replace(' CACHEMIRE', '\nCACHEMIRE').replace(' SETA', '\nSETA').replace(' PURO', '\nPURO').replace(' PELLICCIA', '\nPELLICCIA').replace(' MERINOS', '\nMERINOS');
+      document.getElementById('descFree').value = formatted;
+      updateData();
+    }
+
+    function stepDiscount(delta) {
+      const input = document.getElementById('discountValue');
+      let val = parseInt(input.value, 10) || 50;
+      val = Math.min(99, Math.max(1, val + delta));
+      input.value = val;
+      updateData();
+    }
+
+    function updateData() {
+      const state = framesState[currentActiveFrame];
+      const art = state.articles[state.activeRow];
+      art.desc = document.getElementById('descFree').value;
+      art.oldPrice = document.getElementById('oldPrice').value;
+      art.discount = document.getElementById('discountValue').value;
+      art.newPrice = document.getElementById('newPrice').value;
+      updateAll();
+    }
+
+    function renderFrameContent(side) {
+      const state = framesState[side];
+      const box = document.getElementById(`frame${side.charAt(0).toUpperCase() + side.slice(1)}`);
+      const container = document.getElementById(`inner${side.charAt(0).toUpperCase() + side.slice(1)}`);
+
+      if (!state.twoArticlesActive) {
+        box.classList.remove('layout-2-articles');
+        const art = state.articles[0];
+        container.innerHTML = `
+          <img src="assets/img/decoup.png" alt="Decoro Superiore" class="deco-img">
+          <div class="frame-content">
+            <div class="desc-title">${art.desc || ''}</div>
+            <div class="price-row-frame">
+              <span class="price-old-frame">€ ${art.oldPrice}</span>
+              <span class="price-percent-frame">-${art.discount}%</span>
+            </div>
+            <div class="price-final-frame">€ ${art.newPrice}</div>
+          </div>
+          <img src="assets/img/decodown.png" alt="Decoro Inferiore" class="deco-img">
+        `;
+      } else {
+        box.classList.add('layout-2-articles');
+        const art1 = state.articles[0];
+        const art2 = state.articles[1];
+        container.innerHTML = `
+          <div class="frame-content">
+            <div class="desc-title">${art1.desc || ''}</div>
+            <div class="price-row-frame">
+              <span class="price-old-frame">€ ${art1.oldPrice}</span>
+              <span class="price-percent-frame">-${art1.discount}%</span>
+            </div>
+            <div class="price-final-frame">€ ${art1.newPrice}</div>
+          </div>
+          <div class="golden-divider"></div>
+          <div class="frame-content">
+            <div class="desc-title">${art2.desc || ''}</div>
+            <div class="price-row-frame">
+              <span class="price-old-frame">€ ${art2.oldPrice}</span>
+              <span class="price-percent-frame">-${art2.discount}%</span>
+            </div>
+            <div class="price-final-frame">€ ${art2.newPrice}</div>
+          </div>
+        `;
+      }
+    }
+
+    function updateAll() {
+      renderFrameContent('left');
+      renderFrameContent('right');
+    }
+
+    // Inizializzazione
+    syncSidebarWithState();
+    updateAll();
+  </script>
+</body>
+</html>
