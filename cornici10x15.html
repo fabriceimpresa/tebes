@@ -97,67 +97,11 @@
       box-shadow: 0 1px 3px rgba(0,0,0,0.08);
     }
 
-    /* PULSANTE "+ AGGIUNGI UN ARTICOLO" (dorato -> verde inglese quando attivo) */
-    .btn-add-brand {
-      width: 100%;
-      background-color: #cc9e25;
-      color: #fffdfa;
-      border: 1px solid #b8891a;
-      padding: 10px;
-      font-size: 0.78rem;
-      font-weight: 700;
-      letter-spacing: 0.6px;
-      text-transform: uppercase;
-      border-radius: 4px;
-      cursor: pointer;
-      margin-bottom: 1.2rem;
-      transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+    .cartello-mode-switch button {
+      padding: 9px 3px;
+      font-size: 0.58rem;
+      letter-spacing: 0.04em;
     }
-
-    .btn-add-brand:hover { background-color: #b8891a; }
-
-    .btn-add-brand.active {
-      background-color: #4b685c;
-      color: #fffdfa;
-      border-color: #4b685c;
-    }
-
-    .btn-add-brand.active:hover { background-color: #425d52; }
-
-    #articleToggleBtn {
-      display: block;
-      margin-bottom: 0;
-    }
-
-    .btn-add-brand-mode {
-      width: 100%;
-      background-color: #cc9e25;
-      color: #fffdfa;
-      border: 1px solid #b8891a;
-      padding: 10px;
-      font-size: 0.78rem;
-      font-weight: 700;
-      letter-spacing: 0.6px;
-      text-transform: uppercase;
-      border-radius: 4px;
-      cursor: pointer;
-      margin-bottom: 1.2rem;
-      transition: background-color 0.25s ease, border-color 0.25s ease;
-    }
-
-    #brandToggleBtn {
-      display: block;
-      margin-top: 6px;
-    }
-
-    .btn-add-brand-mode:hover { background-color: #b8891a; }
-
-    .btn-add-brand-mode.active {
-      background-color: #4b685c;
-      border-color: #4b685c;
-    }
-
-    .btn-add-brand-mode.active:hover { background-color: #425d52; }
 
     .form-group { margin-bottom: 0.8rem; }
 
@@ -350,24 +294,19 @@
       transform: scale(1.03);
     }
 
-    .frame-box.brand-mode .frame-content {
-      transform: scale(1.03) translateY(-3.5mm);
-    }
-
     .frame-brand-logo-box {
       display: flex;
       align-items: center;
       justify-content: center;
       width: 33mm;
-      height: 13mm;
-      max-height: 13mm;
-      overflow: hidden;
+      height: 3.075em;
+      font-size: var(--standard-desc-font-size, 18pt);
       flex-shrink: 0;
     }
 
     .frame-brand-logo {
       max-width: 100%;
-      max-height: 100%;
+      max-height: 13mm;
       width: auto;
       height: auto;
       object-fit: contain;
@@ -589,10 +528,13 @@
         <button type="button" id="btnRight" onclick="switchActiveFrame('right')">CORNICE<br>DESTRA</button>
       </div>
 
-      <!-- PULSANTE AGGIUNGI ARTICOLO -->
-      <button type="button" class="btn-add-brand" id="articleToggleBtn" onclick="toggleArticleSection()">+ AGGIUNGI UN ARTICOLO</button>
-
-      <button type="button" class="btn-add-brand-mode" id="brandToggleBtn" onclick="toggleBrandSection()">+AGGIUNGI UN BRAND</button>
+      <!-- SELETTORE MODALITÀ CARTELLO -->
+      <div class="section-label">Modalità cartello</div>
+      <div class="mode-switch cartello-mode-switch">
+        <button type="button" class="active" id="standardModeBtn" onclick="setFrameMode('standard')">STANDARD</button>
+        <button type="button" id="extraArticleModeBtn" onclick="setFrameMode('extra')">DOPPIO<br>ARTICOLO</button>
+        <button type="button" id="brandModeBtn" onclick="setFrameMode('brand')">BRAND</button>
+      </div>
 
       <div id="brandFieldsGroup" style="display: none;">
         <div class="form-group">
@@ -711,27 +653,19 @@
       syncSidebarWithState();
     }
 
-    function toggleArticleSection() {
+    function setFrameMode(mode) {
       const state = framesState[currentActiveFrame];
-      state.brandActive = false;
-      state.twoArticlesActive = !state.twoArticlesActive;
+
+      state.brandActive = mode === 'brand';
+      state.twoArticlesActive = mode === 'extra';
+      state.activeRow = 0;
+
       if (state.twoArticlesActive) {
         state.articles.forEach(article => {
           article.desc = limitDescriptionLines(article.desc);
         });
-      } else {
-        state.activeRow = 0;
       }
-      syncSidebarWithState();
-      updateAll();
-    }
-
-    function toggleBrandSection() {
-      const state = framesState[currentActiveFrame];
-      state.brandActive = !state.brandActive;
       if (state.brandActive) {
-        state.twoArticlesActive = false;
-        state.activeRow = 0;
         if (!state.brand.officialFile && !state.brand.customLogoId) {
           state.brand.officialFile = getDefaultBrandFile();
         }
@@ -751,16 +685,16 @@
 
     function syncSidebarWithState() {
       const state = framesState[currentActiveFrame];
-      const btn = document.getElementById('articleToggleBtn');
-      const brandBtn = document.getElementById('brandToggleBtn');
+      const standardModeBtn = document.getElementById('standardModeBtn');
+      const extraArticleModeBtn = document.getElementById('extraArticleModeBtn');
+      const brandModeBtn = document.getElementById('brandModeBtn');
       const rowWrapper = document.getElementById('rowSelectorWrapper');
       const descriptionFields = document.getElementById('descriptionFieldsGroup');
       const brandFields = document.getElementById('brandFieldsGroup');
 
-      btn.classList.toggle('active', state.twoArticlesActive);
-      btn.textContent = state.twoArticlesActive ? '✓ SECONDO ARTICOLO ATTIVATO' : '+ AGGIUNGI UN ARTICOLO';
-      brandBtn.classList.toggle('active', state.brandActive);
-      brandBtn.textContent = state.brandActive ? '✓ BRAND ATTIVO' : '+AGGIUNGI UN BRAND';
+      standardModeBtn.classList.toggle('active', !state.brandActive && !state.twoArticlesActive);
+      extraArticleModeBtn.classList.toggle('active', state.twoArticlesActive);
+      brandModeBtn.classList.toggle('active', state.brandActive);
       rowWrapper.style.display = state.twoArticlesActive ? 'block' : 'none';
       descriptionFields.style.display = state.brandActive ? 'none' : 'block';
       brandFields.style.display = state.brandActive ? 'block' : 'none';
@@ -921,18 +855,13 @@
         box.classList.remove('layout-2-articles');
         const art = state.articles[0];
         box.classList.toggle('brand-mode', state.brandActive);
-        if (state.brandActive) {
-          box.classList.remove('standard-max-lines', 'standard-two-line-desc');
-          box.style.removeProperty('--standard-desc-font-size');
+        const lineCount = art.desc.split(/\r?\n/).length;
+        box.classList.toggle('standard-max-lines', lineCount > 3);
+        box.classList.toggle('standard-two-line-desc', lineCount === 2);
+        if (lineCount > 3) {
+          box.style.setProperty('--standard-desc-font-size', `${54 / lineCount}pt`);
         } else {
-          const lineCount = art.desc.split(/\r?\n/).length;
-          box.classList.toggle('standard-max-lines', lineCount > 3);
-          box.classList.toggle('standard-two-line-desc', lineCount === 2);
-          if (lineCount > 3) {
-            box.style.setProperty('--standard-desc-font-size', `${54 / lineCount}pt`);
-          } else {
-            box.style.removeProperty('--standard-desc-font-size');
-          }
+          box.style.removeProperty('--standard-desc-font-size');
         }
         const titleContent = state.brandActive
           ? '<div class="frame-brand-logo-box"><img class="frame-brand-logo" alt="Logo brand"></div>'
