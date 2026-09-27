@@ -960,10 +960,21 @@ body.ophilya .lower{
 body.ophilya .cash-tools-coming-soon{
   display:none;
 }
+@media(max-width:1300px){
+  .cartelli-carousel{grid-auto-columns:calc((100% - 12px) / 2)}
+}
 @media(max-width:1000px){
-  .cards{grid-auto-columns:calc((100% - 12px) / 2)}
   .dymo-carousel{grid-auto-columns:320px}
   .cash-tools-grid{grid-template-columns:repeat(2, minmax(0, 1fr))}
+}
+@media(max-width:850px){
+  .cartelli-carousel{
+    grid-auto-columns:100%;
+    padding-left:0;
+    padding-right:0;
+  }
+  .cartelli-carousel .card,
+  .cartelli-carousel .coming-soon-card{scroll-snap-align:center}
 }
 @media(max-width:720px){
   .app{grid-template-columns:1fr}
@@ -975,7 +986,6 @@ body.ophilya .cash-tools-coming-soon{
   .content{padding:32px 20px}
   .hero{display:block}
   .identity{text-align:left;margin-top:24px}
-  .cards{grid-auto-columns:85%}
   .lower{grid-template-columns:1fr}
   .dymo-carousel{grid-auto-columns:85%}
   .carousel-control.previous{left:-10px}
