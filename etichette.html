@@ -186,6 +186,10 @@
     .tpl-outlet .price-box { width: 290px; display: flex; flex-direction: row; align-items: flex-end; justify-content: space-between; }
     .tpl-outlet .price-label { font: 300 30px/1 'Bodoni Std', serif; letter-spacing: -0.5px; }
     .tpl-outlet .price-val { position: relative; top: 10px; left: -20px; transform-origin: right bottom; font: 300 60px/1 'Bodoni Std', serif; letter-spacing: -1.5px; -webkit-text-stroke: 0.35px #fff; paint-order: fill stroke; white-space: nowrap; }
+    .tpl-outlet.tpl-outlet-promo .label-bottom { justify-content: space-between; align-items: baseline; margin-top: 30px; padding: 0 8px 0 10px; }
+    .tpl-outlet.tpl-outlet-promo .promo-description { min-width: 0; max-width: 58%; overflow: hidden; font: 300 var(--promo-description-size-screen, 42px)/1 'Bodoni Std', serif; letter-spacing: -0.02em; text-align: left; text-overflow: ellipsis; white-space: nowrap; }
+    .tpl-outlet.tpl-outlet-promo .price-box { flex: 0 0 auto; width: auto; align-items: baseline; justify-content: flex-end; gap: 8px; text-align: right; }
+    .tpl-outlet.tpl-outlet-promo .price-val { top: 0; left: 0; font-size: 46px; }
 
     /* LAYOUT 2: DOPPIO PREZZO */
     .tpl-final { height: 100%; width: 100%; display: flex; flex-direction: column; justify-content: flex-start; }
@@ -473,9 +477,9 @@
         </div>
 
         <div class="template-card" id="card-tpl-promo" onclick="setTemplate('promo')">
-          <span class="tpl-name">3. Promo</span>
+          <span class="tpl-name">3. Articolo</span>
           <div class="tpl-preview-box">
-            <img src="assets/thumbnail/label3thumb.png" alt="Miniatura Promo">
+            <img src="assets/thumbnail/label3thumb.png" alt="Miniatura Articolo">
           </div>
         </div>
 
@@ -483,6 +487,13 @@
           <span class="tpl-name">4. Taglie</span>
           <div class="tpl-preview-box">
             <img src="assets/thumbnail/label4thumbnail.png" alt="Miniatura Taglie">
+          </div>
+        </div>
+
+        <div class="template-card" id="card-tpl-promo5" onclick="setTemplate('promo5')">
+          <span class="tpl-name">5. Promo</span>
+          <div class="tpl-preview-box">
+            <img src="assets/thumbnail/label3thumb.png" alt="Miniatura Promo">
           </div>
         </div>
 
@@ -601,29 +612,34 @@
     let selectedCustomLogo = '';
     let currentTemplateKey = 'outlet';
 
+    function renderSimpleTemplate(showPromo) {
+      return `
+        <div class="tpl-outlet${showPromo ? '' : ' tpl-outlet-promo'}">
+          <div class="label-top">
+            <div class="brand-logo-container">
+              <img id="labelLogo" src="" alt="Logo Brand" onerror="onLogoError()">
+              <span id="labelFallbackText" class="brand-text-fallback" style="display:none;">SELEZIONA<br>IL BRAND</span>
+            </div>
+            <div class="qr-promo-box">
+              <div class="qr-container" id="labelQR"></div>
+            </div>
+          </div>
+          <div class="label-bottom">
+            ${showPromo ? '' : '<span class="promo-description" id="lblCustomText">Occhiali</span>'}
+            <div class="price-box">
+              ${showPromo ? '<span class="price-label">Euro</span>' : ''}
+              <span class="price-val" id="lblOutlet">${showPromo ? '29,50' : '€ 29,50'}</span>
+            </div>
+            ${showPromo ? '<span class="promo-label" id="lblPromo">SALE</span>' : ''}
+          </div>
+        </div>`;
+    }
+
     const TEMPLATES = {
       'outlet': {
         name: '1. Semplice',
         fields: ['groupBrand', 'groupCustomBrand', 'groupPromo', 'groupOutlet'],
-        render: () => `
-          <div class="tpl-outlet">
-            <div class="label-top">
-              <div class="brand-logo-container">
-                <img id="labelLogo" src="" alt="Logo Brand" onerror="onLogoError()">
-                <span id="labelFallbackText" class="brand-text-fallback" style="display:none;">SELEZIONA<br>IL BRAND</span>
-              </div>
-              <div class="qr-promo-box">
-                <div class="qr-container" id="labelQR"></div>
-              </div>
-            </div>
-            <div class="label-bottom">
-              <div class="price-box">
-                <span class="price-label">Euro</span>
-                <span class="price-val" id="lblOutlet">29,50</span>
-              </div>
-              <span class="promo-label" id="lblPromo">SALE</span>
-            </div>
-          </div>`
+        render: () => renderSimpleTemplate(true)
       },
       'final': {
         name: '2. Doppio Prezzo',
@@ -651,7 +667,12 @@
           </div>`
       },
       'promo': {
-        name: '3. Last Chance',
+        name: '3. Articolo',
+        fields: ['groupBrand', 'groupCustomBrand', 'groupCustomText', 'groupOutlet'],
+        render: () => renderSimpleTemplate(false)
+      },
+      'promo5': {
+        name: '5. Promo',
         fields: ['groupOutlet'],
         render: () => `
           <div class="tpl-promo">
@@ -756,6 +777,12 @@
     function setTemplate(key) {
       if (!TEMPLATES[key]) return;
       currentTemplateKey = key;
+      const customTextInput = document.getElementById('inputCustomText');
+      if (key === 'promo') {
+        customTextInput.maxLength = 16;
+      } else {
+        customTextInput.removeAttribute('maxlength');
+      }
 
       document.querySelectorAll('.template-card').forEach(card => card.classList.remove('active'));
       const activeCard = document.getElementById(`card-tpl-${key}`);
@@ -789,9 +816,13 @@
         document.getElementById('inputDiscount').value = "-70%";
         document.getElementById('inputOutlet').value = "99,00";
         document.getElementById('inputCustomText').value = "OUTLET PRICE • FW26";
-      } else if (key === 'outlet') {
+      } else if (key === 'outlet' || key === 'promo') {
         if (lblPriceTitle) lblPriceTitle.innerText = "Prezzo (€)";
         document.getElementById('promoSelect').value = "SALE";
+        if (key === 'promo') {
+          if (lblCustomTextTitle) lblCustomTextTitle.innerText = "Descrizione";
+          document.getElementById('inputCustomText').value = "Occhiali";
+        }
       } else if (key === 'final') {
         if (lblOrigTitle) lblOrigTitle.innerText = "Prezzo Pieno (€)";
         if (lblPriceTitle) lblPriceTitle.innerText = "Prezzo Finale (€)";
@@ -957,6 +988,29 @@
       elemOutlet.style.setProperty('--final-price-size-print', printSize);
     }
 
+    function adjustPromoDescriptionFontSize(root, isPrint = false) {
+      const description = root?.querySelector('.promo-description');
+      if (!description) return;
+
+      const length = Array.from(description.textContent).length;
+      const sizeProperty = isPrint ? '--promo-description-size-print' : '--promo-description-size-screen';
+      const baseSize = isPrint ? (17.5 * 4 / 3) : 42;
+
+      if (length <= 13) {
+        description.style.removeProperty(sizeProperty);
+        return;
+      }
+
+      const minimumSize = baseSize * 0.35;
+      let size = Math.max(minimumSize, baseSize * 13 / length);
+      description.style.setProperty(sizeProperty, `${size}px`);
+
+      while (description.clientWidth > 0 && description.scrollWidth > description.clientWidth && size > minimumSize) {
+        size = Math.max(minimumSize, size - 0.5);
+        description.style.setProperty(sizeProperty, `${size}px`);
+      }
+    }
+
     function updateLabel() {
       const imgElement = document.getElementById('labelLogo');
       const textElement = document.getElementById('labelFallbackText');
@@ -1004,13 +1058,23 @@
         const outletValue = document.getElementById('inputOutlet').value;
         if (currentTemplateKey === 'tagliedoppiacifra') {
           elemOutlet.innerText = outletValue.includes('€') ? outletValue : `€ ${outletValue}`;
+        } else if (currentTemplateKey === 'promo') {
+          const price = outletValue.trim();
+          elemOutlet.innerText = price.startsWith('€') ? price : `€ ${price}`;
         } else {
-          const noSymbol = (currentTemplateKey === 'outlet' || currentTemplateKey === 'final' || currentTemplateKey === 'promo' || currentTemplateKey === 'luxury' || currentTemplateKey === 'promo50');
+          const noSymbol = (currentTemplateKey === 'outlet' || currentTemplateKey === 'final' || currentTemplateKey === 'promo' || currentTemplateKey === 'promo5' || currentTemplateKey === 'luxury' || currentTemplateKey === 'promo50');
           elemOutlet.innerText = outletValue + (noSymbol ? '' : ' €');
         }
       }
       
-      if (elemCustomText) elemCustomText.innerText = document.getElementById('inputCustomText').value;
+      const customTextInput = document.getElementById('inputCustomText');
+      if (currentTemplateKey === 'promo' && Array.from(customTextInput.value).length > 16) {
+        customTextInput.value = Array.from(customTextInput.value).slice(0, 16).join('');
+      }
+      if (elemCustomText) elemCustomText.innerText = customTextInput.value;
+      if (currentTemplateKey === 'promo') {
+        adjustPromoDescriptionFontSize(document.querySelector('#labelPreview .tpl-outlet-promo'));
+      }
       if (elemProd) elemProd.innerText = document.getElementById('inputProdName').value;
       if (elemCode) elemCode.innerText = document.getElementById('inputCode').value;
       if (elemPromo) elemPromo.innerText = document.getElementById('promoSelect').value;
@@ -1068,7 +1132,7 @@
     }
 
     function handleOutletPriceInput(input) {
-      if (currentTemplateKey !== 'outlet') {
+      if (currentTemplateKey !== 'outlet' && currentTemplateKey !== 'promo') {
         updateLabel();
         return;
       }
@@ -1085,7 +1149,7 @@
     }
 
     function formatOutletPrice(input) {
-      if (currentTemplateKey !== 'outlet') return;
+      if (currentTemplateKey !== 'outlet' && currentTemplateKey !== 'promo') return;
       const normalized = input.value.replace(',', '.');
       if (!normalized || !/^\d{1,4}(?:\.\d{0,2})?$/.test(normalized)) {
         input.value = '0,00';
@@ -1156,8 +1220,11 @@
       doc.open();
       doc.write(buildPrintDocument(labelHTML, autoPrint));
       doc.close();
-      if (currentTemplateKey === 'outlet' && /^\d{4}(?:,\d{0,2})?$/.test(document.getElementById('inputOutlet').value.trim())) {
+      if ((currentTemplateKey === 'outlet' || currentTemplateKey === 'promo') && /^\d{4}(?:,\d{0,2})?$/.test(document.getElementById('inputOutlet').value.trim())) {
         doc.querySelector('.tpl-outlet')?.classList.add('price-four-digits');
+      }
+      if (currentTemplateKey === 'promo') {
+        adjustPromoDescriptionFontSize(doc.querySelector('.tpl-outlet-promo'), true);
       }
       return iframe;
     }
@@ -1268,6 +1335,10 @@
             .tpl-outlet .price-label { font: 300 11pt/1 'Bodoni Std', serif; letter-spacing: -0.5px; }
             .tpl-outlet .price-val { position: relative; top: 1.6mm; left: -5mm; transform-origin: right bottom; font: 300 24pt/1 'Bodoni Std', serif; letter-spacing: -1.5px; -webkit-text-stroke: 0.25px #fff; paint-order: fill stroke; white-space: nowrap; }
             .tpl-outlet.price-four-digits .price-val { left: -2mm; }
+            .tpl-outlet.tpl-outlet-promo .label-bottom { justify-content: space-between; align-items: baseline; margin-top: 2.5mm; padding: 0 1mm 0 1.25mm; }
+            .tpl-outlet.tpl-outlet-promo .promo-description { min-width: 0; max-width: 58%; overflow: hidden; font: 300 var(--promo-description-size-print, 17.5pt)/1 'Bodoni Std', serif; letter-spacing: -0.02em; text-align: left; text-overflow: ellipsis; white-space: nowrap; }
+            .tpl-outlet.tpl-outlet-promo .price-box { flex: 0 0 auto; width: auto; align-items: baseline; justify-content: flex-end; gap: 1mm; text-align: right; }
+            .tpl-outlet.tpl-outlet-promo .price-val { top: 0; left: 0; font-size: 19.5pt; }
 
             /* TEMPLATE 2 PRINT */
             .tpl-final { display: flex; flex-direction: column; justify-content: flex-start; height: 29mm; transform: translate(1mm, -1mm) scale(1.08); transform-origin: center center; }
