@@ -13,6 +13,12 @@
   <script src="assets/js/dymo-direct.js"></script>
 
   <style>
+    @font-face {
+      font-family: 'Bodoni Std';
+      src: url('assets/fonts/BodoniStd.otf') format('opentype');
+      font-display: swap;
+    }
+
     :root {
       --bg: #f8f6f1;
       --sidebar: #eee8dd;
@@ -147,7 +153,7 @@
       font-weight: bold;
     }
 
-    .btn-print { width: 100%; padding: 0.9rem; background: var(--accent); color: #000; font-weight: 700; border: none; border-radius: 4px; cursor: pointer; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; transition: background 0.2s; margin-top: 0.5rem; }
+    .btn-print { width: 100%; padding: 0.9rem; background: var(--accent); color: #fff; font-weight: 700; border: none; border-radius: 4px; cursor: pointer; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; transition: background 0.2s; margin-top: 0.5rem; }
     .btn-print:hover { background: var(--accent-hover); }
 
     /* CONTENITORE ANTEPRIMA SCHERMO (456x256px) */
@@ -168,24 +174,23 @@
     .brand-text-fallback { font-family: Arial, sans-serif; font-weight: 800; color: #000; line-height: 1.1; letter-spacing: -0.5px; }
 
     /* LAYOUT 1: OUTLET DOPPIO PREZZO */
-    .tpl-outlet { height: 100%; width: 100%; display: flex; flex-direction: column; justify-content: space-between; }
-    .tpl-outlet .label-top { display: flex; justify-content: space-between; align-items: center; height: 112px; width: 100%; }
-    .tpl-outlet .brand-logo-container { width: 256px; height: 112px; margin-left: 10px; }
+    .tpl-outlet { height: 100%; width: 100%; display: flex; flex-direction: column; justify-content: flex-start; }
+    .tpl-outlet .label-top { display: flex; justify-content: space-between; align-items: center; height: 132px; width: 100%; }
+    .tpl-outlet .brand-logo-container { width: 285px; height: 112px; margin: 4px 0 0 10px; }
     .tpl-outlet .brand-text-fallback { font-size: 26px; }
+    .tpl-outlet .qr-promo-box { width: 96px; display: flex; flex-direction: column; align-items: center; margin-right: 8px; }
     .tpl-outlet .qr-container { width: 96px; height: 96px; display: flex; align-items: center; justify-content: center; }
     .tpl-outlet .qr-container img, .tpl-outlet .qr-container canvas { width: 96px !important; height: 96px !important; }
-    .tpl-outlet .label-bottom { display: flex; justify-content: space-between; align-items: flex-end; padding-bottom: 18px; width: 100%; }
-    .tpl-outlet .price-box { display: flex; flex-direction: column; align-items: flex-start; }
-    .tpl-outlet .price-label { font-size: 21px; line-height: 1; margin-bottom: 2px; }
-    .tpl-outlet .price-val { font-size: 37px; line-height: 1; letter-spacing: -0.5px; }
-    .tpl-outlet .discount-val { font-size: 37px; font-weight: bold; line-height: 1; }
-    .tpl-outlet .price-outlet { align-items: flex-end; }
-    .tpl-outlet .price-outlet .price-val { font-size: 48px; font-weight: bold; }
+    .tpl-outlet .promo-label { position: relative; left: -4px; width: 96px; font: 38px Arial, Helvetica, sans-serif; letter-spacing: -1.4px; text-transform: uppercase; line-height: 1; text-align: center; }
+    .tpl-outlet .label-bottom { box-sizing: border-box; display: flex; justify-content: space-between; align-items: flex-end; height: 52px; margin-top: 26px; padding: 0 8px 0 10px; width: 100%; }
+    .tpl-outlet .price-box { width: 290px; display: flex; flex-direction: row; align-items: flex-end; justify-content: space-between; }
+    .tpl-outlet .price-label { font: 300 30px/1 'Bodoni Std', serif; letter-spacing: -0.5px; }
+    .tpl-outlet .price-val { position: relative; top: 10px; left: -20px; transform-origin: right bottom; font: 300 60px/1 'Bodoni Std', serif; letter-spacing: -1.5px; -webkit-text-stroke: 0.35px #fff; paint-order: fill stroke; white-space: nowrap; }
 
     /* LAYOUT 2: FINAL PRICE */
     .tpl-final { height: 100%; width: 100%; display: flex; flex-direction: column; justify-content: space-between; }
     .tpl-final .label-top { display: flex; justify-content: space-between; align-items: center; height: 112px; width: 100%; }
-    .tpl-final .brand-logo-container { width: 256px; height: 112px; margin-left: 10px; }
+    .tpl-final .brand-logo-container { width: 310px; height: 120px; margin: 4px 0 0 10px; }
     .tpl-final .brand-text-fallback { font-size: 26px; }
     .tpl-final .qr-container { width: 96px; height: 96px; display: flex; align-items: center; justify-content: center; }
     .tpl-final .qr-container img, .tpl-final .qr-container canvas { width: 96px !important; height: 96px !important; }
@@ -198,7 +203,8 @@
 
     /* LAYOUT 3 E 4: LAST CHANCE E LUXURY LABEL */
     .tpl-promo, .tpl-luxury { display: flex; align-items: center; justify-content: space-between; height: 100%; width: 100%; padding: 0 5px; }
-    .tpl-promo .left-logo-box, .tpl-luxury .left-logo-box { width: 225px; height: 195px; display: flex; align-items: center; justify-content: flex-start; }
+    .tpl-promo .left-logo-box { width: 225px; height: 195px; display: flex; align-items: center; justify-content: flex-start; }
+    .tpl-luxury .left-logo-box { width: 310px; height: 120px; margin-left: 5px; display: flex; align-items: center; justify-content: flex-start; }
     .tpl-promo .left-logo-box img, .tpl-luxury .left-logo-box img { max-width: 100%; max-height: 100%; object-fit: contain; }
     .tpl-promo .price-box, .tpl-luxury .price-box { display: flex; flex-direction: column; align-items: flex-end; justify-content: center; }
     .tpl-promo .price-label, .tpl-luxury .price-label { font-size: 21px; line-height: 1; margin-bottom: 2px; text-align: right; font-weight: normal; }
@@ -452,31 +458,31 @@
       <div class="gallery-title">Galleria Modelli (57x32)</div>
       <div class="template-gallery">
         
-        <div class="template-card" id="card-tpl-outlet" onclick="setTemplate('outlet')">
+        <div class="template-card active" id="card-tpl-outlet" onclick="setTemplate('outlet')">
           <span class="tpl-name">1. Semplice</span>
           <div class="tpl-preview-box">
-            <img src="assets/img/thumbnail/label1thumb.png" alt="Miniatura Semplice">
+            <img src="assets/thumbnail/label1thumb.png" alt="Miniatura Semplice">
           </div>
         </div>
 
         <div class="template-card" id="card-tpl-final" onclick="setTemplate('final')">
           <span class="tpl-name">2. Sale</span>
           <div class="tpl-preview-box">
-            <img src="assets/img/thumbnail/label2thumb.png" alt="Miniatura Sale">
+            <img src="assets/thumbnail/label2thumb.png" alt="Miniatura Sale">
           </div>
         </div>
 
         <div class="template-card" id="card-tpl-promo" onclick="setTemplate('promo')">
           <span class="tpl-name">3. Promo</span>
           <div class="tpl-preview-box">
-            <img src="assets/img/thumbnail/label3thumb.png" alt="Miniatura Promo">
+            <img src="assets/thumbnail/label3thumb.png" alt="Miniatura Promo">
           </div>
         </div>
 
-        <div class="template-card active" id="card-tpl-tagliedoppiacifra" onclick="setTemplate('tagliedoppiacifra')">
+        <div class="template-card" id="card-tpl-tagliedoppiacifra" onclick="setTemplate('tagliedoppiacifra')">
           <span class="tpl-name">4. Taglie</span>
           <div class="tpl-preview-box">
-            <img src="assets/img/thumbnail/label4thumbnail.png" alt="Miniatura Taglie">
+            <img src="assets/thumbnail/label4thumbnail.png" alt="Miniatura Taglie">
           </div>
         </div>
 
@@ -516,6 +522,13 @@
             <option value="">-- Nessun Logo Personalizzato --</option>
           </select>
         </div>
+      </div>
+
+      <div class="form-group" id="groupPromo" style="display:none;">
+        <label for="promoSelect">Promo</label>
+        <select id="promoSelect" class="form-control" onchange="updateLabel()">
+          <option value="SALE" selected>SALE</option>
+        </select>
       </div>
 
       <!-- SELEZIONE TAGLIE GRID (6 DROPDOWN) -->
@@ -563,10 +576,10 @@
 
       <div class="form-group" id="groupOutlet">
         <label id="lblPriceTitle">Prezzo Finito (€)</label>
-        <input type="text" id="inputOutlet" class="form-control" value="99,00" oninput="updateLabel()">
+        <input type="text" id="inputOutlet" class="form-control" value="29,90" inputmode="decimal" oninput="handleOutletPriceInput(this)" onblur="formatOutletPrice(this)">
       </div>
 
-      <button class="btn-print" id="btnPrint" onclick="printLabel()">🖨️ STAMPA ETICHETTA (11354)</button>
+      <button class="btn-print" id="btnPrint" onclick="printLabel()">STAMPA ETICHETTA</button>
     </div>
 
     <div class="preview-section">
@@ -579,19 +592,19 @@
   </main>
 
   <script>
-    const DEFAULT_LOGO_SRC = "assets/img/tebe269black.png";
+    const DEFAULT_LOGO_SRC = "assets/logos/Tebe.png";
     const PLACEHOLDER_TEXT = "-- Seleziona Brand --";
     const SIZE_OPTIONS = ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '54', '56', '58', '60'];
     const DEFAULT_SIZES = ['S', 'M', 'L', 'XL', '2XL', '3XL'];
 
     let selectedBrand = '';
     let selectedCustomLogo = '';
-    let currentTemplateKey = 'tagliedoppiacifra';
+    let currentTemplateKey = 'outlet';
 
     const TEMPLATES = {
       'outlet': {
-        name: '1. Outlet Doppio Prezzo',
-        fields: ['groupBrand', 'groupCustomBrand', 'groupOrig', 'groupDiscount', 'groupOutlet'],
+        name: '1. Semplice',
+        fields: ['groupBrand', 'groupCustomBrand', 'groupPromo', 'groupOutlet'],
         render: () => `
           <div class="tpl-outlet">
             <div class="label-top">
@@ -599,18 +612,16 @@
                 <img id="labelLogo" src="" alt="Logo Brand" onerror="onLogoError()">
                 <span id="labelFallbackText" class="brand-text-fallback" style="display:none;">SELEZIONA<br>IL BRAND</span>
               </div>
-              <div class="qr-container" id="labelQR"></div>
+              <div class="qr-promo-box">
+                <div class="qr-container" id="labelQR"></div>
+              </div>
             </div>
             <div class="label-bottom">
               <div class="price-box">
                 <span class="price-label">Euro</span>
-                <span class="price-val" id="lblOrig">89,90</span>
-              </div>
-              <div class="discount-val" id="lblDiscount">-67%</div>
-              <div class="price-box price-outlet">
-                <span class="price-label">Euro</span>
                 <span class="price-val" id="lblOutlet">29,50</span>
               </div>
+              <span class="promo-label" id="lblPromo">SALE</span>
             </div>
           </div>`
       },
@@ -750,7 +761,7 @@
 
       document.getElementById('labelPreview').innerHTML = TEMPLATES[key].render();
 
-      const allFields = ['groupBrand', 'groupCustomBrand', 'groupCustomText', 'groupProdName', 'groupCode', 'groupOrig', 'groupDiscounted', 'groupDiscount', 'groupOutlet', 'groupSizes'];
+      const allFields = ['groupBrand', 'groupCustomBrand', 'groupPromo', 'groupCustomText', 'groupProdName', 'groupCode', 'groupOrig', 'groupDiscounted', 'groupDiscount', 'groupOutlet', 'groupSizes'];
       allFields.forEach(fId => {
         const elem = document.getElementById(fId);
         if (elem) elem.style.display = TEMPLATES[key].fields.includes(fId) ? 'block' : 'none';
@@ -776,6 +787,9 @@
         document.getElementById('inputDiscount').value = "-70%";
         document.getElementById('inputOutlet').value = "99,00";
         document.getElementById('inputCustomText').value = "OUTLET PRICE • FW26";
+      } else if (key === 'outlet') {
+        if (lblPriceTitle) lblPriceTitle.innerText = "Prezzo (€)";
+        document.getElementById('promoSelect').value = "SALE";
       } else if (key === 'final') {
         if (lblOrigTitle) lblOrigTitle.innerText = "Prezzo Pieno (€)";
         if (lblPriceTitle) lblPriceTitle.innerText = "Prezzo (€)";
@@ -823,7 +837,7 @@
       if (labelParam && paramMap[labelParam.toLowerCase()]) {
         setTemplate(paramMap[labelParam.toLowerCase()]);
       } else {
-        setTemplate('tagliedoppiacifra');
+        setTemplate('outlet');
       }
 
     }
@@ -967,6 +981,7 @@
       const elemCustomText = document.getElementById('lblCustomText');
       const elemProd = document.getElementById('lblProdName');
       const elemCode = document.getElementById('lblCode');
+      const elemPromo = document.getElementById('lblPromo');
 
       if (elemOrig) {
         const origValue = document.getElementById('inputOrig').value.trim();
@@ -995,6 +1010,7 @@
       if (elemCustomText) elemCustomText.innerText = document.getElementById('inputCustomText').value;
       if (elemProd) elemProd.innerText = document.getElementById('inputProdName').value;
       if (elemCode) elemCode.innerText = document.getElementById('inputCode').value;
+      if (elemPromo) elemPromo.innerText = document.getElementById('promoSelect').value;
 
       if (currentTemplateKey === 'tagliedoppiacifra') {
         for (let i = 1; i <= 6; i++) {
@@ -1045,6 +1061,35 @@
         let disc = Math.round(((orig - outlet) / orig) * 100);
         document.getElementById('inputDiscount').value = `-${disc}%`;
       }
+      updateLabel();
+    }
+
+    function handleOutletPriceInput(input) {
+      if (currentTemplateKey !== 'outlet') {
+        updateLabel();
+        return;
+      }
+
+      let value = input.value.replace(/\./g, ',').replace(/[^\d,]/g, '');
+      const commaIndex = value.indexOf(',');
+      if (commaIndex !== -1) {
+        value = `${value.slice(0, commaIndex + 1)}${value.slice(commaIndex + 1).replace(/,/g, '').slice(0, 2)}`;
+      }
+      const [integerPart, decimalPart] = value.split(',');
+      value = `${integerPart.slice(0, 4)}${commaIndex !== -1 ? `,${decimalPart ?? ''}` : ''}`;
+      input.value = value;
+      updateLabel();
+    }
+
+    function formatOutletPrice(input) {
+      if (currentTemplateKey !== 'outlet') return;
+      const normalized = input.value.replace(',', '.');
+      if (!normalized || !/^\d{1,4}(?:\.\d{0,2})?$/.test(normalized)) {
+        input.value = '0,00';
+        updateLabel();
+        return;
+      }
+      input.value = Number(normalized).toFixed(2).replace('.', ',');
       updateLabel();
     }
 
@@ -1156,6 +1201,11 @@
         <head>
           <title>Stampa DYMO 11354</title>
           <style>
+            @font-face {
+              font-family: 'Bodoni Std';
+              src: url('assets/fonts/BodoniStd.otf') format('opentype');
+              font-display: swap;
+            }
             @page {
               size: 57mm 32mm;
               margin: 0 !important;
@@ -1199,23 +1249,23 @@
             .brand-text-fallback { font-family: Arial, sans-serif; font-weight: 800; color: #000; line-height: 1.1; letter-spacing: -0.5px; }
 
             /* TEMPLATE 1 PRINT */
-            .tpl-outlet { display: flex; flex-direction: column; justify-content: space-between; height: 29mm; }
-            .tpl-outlet .label-top { display: flex; justify-content: space-between; align-items: center; height: 14mm; width: 100%; }
-            .tpl-outlet .brand-logo-container { width: 32mm; height: 14mm; margin-left: 1.25mm; }
+            .tpl-outlet { display: flex; flex-direction: column; justify-content: flex-start; height: 29mm; }
+            .tpl-outlet .label-top { display: flex; justify-content: space-between; align-items: center; height: 16mm; width: 100%; }
+            .tpl-outlet .brand-logo-container { width: 35.625mm; height: 14mm; margin: 1mm 0 0 1.25mm; }
             .tpl-outlet .brand-text-fallback { font-size: 10pt; }
+            .tpl-outlet .qr-promo-box { width: 12mm; display: flex; flex-direction: column; align-items: center; margin-right: 1mm; }
             .tpl-outlet .qr-container { width: 12mm; height: 12mm; display: flex; align-items: center; justify-content: center; }
             .tpl-outlet .qr-container img, .tpl-outlet .qr-container canvas { width: 12mm !important; height: 12mm !important; }
-            .tpl-outlet .label-bottom { display: flex; justify-content: space-between; align-items: flex-end; height: 13mm; padding-bottom: 2.5mm; width: 100%; }
-            .tpl-outlet .price-box { display: flex; flex-direction: column; }
-            .tpl-outlet .price-label { font-size: 7.5pt; line-height: 1; }
-            .tpl-outlet .price-val { font-size: 13pt; line-height: 1; }
-            .tpl-outlet .discount-val { font-size: 13pt; font-weight: bold; line-height: 1; }
-            .tpl-outlet .price-outlet .price-val { font-size: 17pt; font-weight: bold; }
+            .tpl-outlet .promo-label { position: relative; left: -0.83mm; width: 12mm; font: 13.7pt Arial, Helvetica, sans-serif; letter-spacing: -0.4px; text-transform: uppercase; line-height: 1; text-align: center; }
+            .tpl-outlet .label-bottom { box-sizing: border-box; display: flex; justify-content: space-between; align-items: flex-end; height: 9mm; margin-top: 3mm; padding: 0 1mm 0 1.25mm; width: 100%; }
+            .tpl-outlet .price-box { width: 36.25mm; display: flex; flex-direction: row; align-items: flex-end; justify-content: space-between; }
+            .tpl-outlet .price-label { font: 300 11pt/1 'Bodoni Std', serif; letter-spacing: -0.5px; }
+            .tpl-outlet .price-val { position: relative; top: 1.6mm; left: -5mm; transform-origin: right bottom; font: 300 24pt/1 'Bodoni Std', serif; letter-spacing: -1.5px; -webkit-text-stroke: 0.25px #fff; paint-order: fill stroke; white-space: nowrap; }
 
             /* TEMPLATE 2 PRINT */
             .tpl-final { display: flex; flex-direction: column; justify-content: space-between; height: 29mm; }
             .tpl-final .label-top { display: flex; justify-content: space-between; align-items: center; height: 14mm; width: 100%; }
-            .tpl-final .brand-logo-container { width: 32mm; height: 14mm; margin-left: 1.25mm; }
+            .tpl-final .brand-logo-container { width: 38.75mm; height: 15mm; margin: 1mm 0 0 1.25mm; }
             .tpl-final .brand-text-fallback { font-size: 10pt; }
             .tpl-final .qr-container { width: 12mm; height: 12mm; display: flex; align-items: center; justify-content: center; }
             .tpl-final .qr-container img, .tpl-final .qr-container canvas { width: 12mm !important; height: 12mm !important; }
@@ -1228,7 +1278,8 @@
 
             /* TEMPLATE 3 & 4 PRINT */
             .tpl-promo, .tpl-luxury { display: flex; align-items: center; justify-content: space-between; height: 29mm; width: 100%; padding: 0 0.5mm; }
-            .tpl-promo .left-logo-box, .tpl-luxury .left-logo-box { width: 28mm; height: 23.5mm; display: flex; align-items: center; justify-content: flex-start; }
+            .tpl-promo .left-logo-box { width: 28mm; height: 23.5mm; display: flex; align-items: center; justify-content: flex-start; }
+            .tpl-luxury .left-logo-box { width: 38.75mm; height: 15mm; margin-left: 0.75mm; display: flex; align-items: center; justify-content: flex-start; }
             .tpl-promo .left-logo-box img, .tpl-luxury .left-logo-box img { max-width: 100%; max-height: 100%; object-fit: contain; }
             .tpl-promo .price-box, .tpl-luxury .price-box { display: flex; flex-direction: column; align-items: flex-end; justify-content: center; }
             .tpl-promo .price-label, .tpl-luxury .price-label { font-size: 7.5pt; line-height: 1; margin-bottom: 0.5mm; font-weight: normal; }

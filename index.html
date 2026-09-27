@@ -490,45 +490,58 @@ h1{
   display:none;
 }
 .dymo-card{
-  height:250px;
-  padding:18px;
+  height:auto;
+  min-height:0;
+  padding:0;
   scroll-snap-align:start;
+  border-radius:8px;
+  overflow:hidden;
+  color:var(--ink);
+  text-decoration:none;
+}
+.dymo-card-preview{
+  position:relative;
+  height:140px;
+  flex:0 0 140px;
+  padding:10px 14px;
+  background:var(--cream);
+}
+.dymo-card-preview .number{
+  position:absolute;
+  top:10px;
+  left:14px;
+  z-index:1;
 }
 .dymo-card .card-thumb{
-  height:112px;
+  height:120px;
   aspect-ratio:auto;
-  margin:12px 0 16px;
-  background:var(--cream);
+  margin:0;
+  background:transparent;
+  border:0;
 }
 .dymo-card .card-thumb img{
   object-fit:contain;
 }
+.dymo-card-body{
+  min-height:0;
+  flex:0 0 auto;
+  padding:11px 16px;
+  background:var(--white);
+}
 .dymo-card h2{
-  font-size:16px;
-}
-.dymo-card > div:last-child{
-  align-self:stretch;
-  margin-top:auto;
-  text-align:left;
-}
-.dymo-card > div:last-child h2{
   margin:0;
   padding-right:20px;
   text-align:left;
+  font-family:'Fraunces',serif;
+  font-size:17px;
+  font-weight:400;
 }
 .dymo-card .arrow{
   display:none;
 }
-.dymo-card p{
-  margin:7px 0 0;
-  padding-right:20px;
-  color:#8a8074;
-  font-size:11px;
-  line-height:1.45;
-}
 .labels-coming-soon-card{
   position:relative;
-  background:var(--cream);
+  background:var(--white);
   border-color:rgba(102,94,84,.25);
   pointer-events:none;
   overflow:hidden;
@@ -906,7 +919,7 @@ body.ophilya .cash-tool > *{
 }
 body.ophilya .cash-tool,
 body.ophilya .cards .card,
-body.ophilya .dymo-carousel .dymo-card,
+body.ophilya .dymo-carousel .dymo-card:not([data-link]),
 body.ophilya .lower .wide-card{
   pointer-events:none;
   border-color:rgba(102,94,84,.25);
@@ -914,14 +927,14 @@ body.ophilya .lower .wide-card{
   background:var(--cream);
 }
 body.ophilya .cards .card > *,
-body.ophilya .dymo-carousel .dymo-card > *,
+body.ophilya .dymo-carousel .dymo-card:not([data-link]) > *,
 body.ophilya .lower .wide-card > *,
 body.ophilya .cash-tool > *,
 body.ophilya .coming-soon-card h2{
   visibility:hidden;
 }
 body.ophilya .cards .card::before,
-body.ophilya .dymo-carousel .dymo-card::before,
+body.ophilya .dymo-carousel .dymo-card:not([data-link])::before,
 body.ophilya .lower .wide-card::before,
 body.ophilya .cash-tool::before{
   content:"";
@@ -931,7 +944,7 @@ body.ophilya .cash-tool::before{
   background:var(--cream);
 }
 body.ophilya .cards .card::after,
-body.ophilya .dymo-carousel .dymo-card::after,
+body.ophilya .dymo-carousel .dymo-card:not([data-link])::after,
 body.ophilya .lower .wide-card::after,
 body.ophilya .cash-tool::after{
   content:"Coming Soon";
@@ -953,7 +966,6 @@ body.ophilya .cash-tool::after{
   text-transform:uppercase;
   transform:translate(-50%, -50%);
 }
-body.ophilya .dymo-carousel-shell,
 body.ophilya .lower{
   pointer-events:none;
 }
@@ -1328,31 +1340,34 @@ body.ophilya .cash-tools-coming-soon{
       <div class="dymo-carousel-shell">
         <button class="carousel-control previous" id="dymo-previous" type="button" aria-label="Etichette precedenti" onclick="scrollDymoCarousel(-1)">‹</button>
         <div class="dymo-carousel" id="dymo-carousel">
-          <article class="card dymo-card labels-coming-soon-card" aria-label="Semplice, Coming Soon">
-            <div>
+          <a class="card dymo-card" data-link="etichette.html" aria-label="Apri etichette DYMO Semplice">
+            <div class="dymo-card-preview">
               <div class="number">01</div>
-              <div class="card-thumb"><img src="assets/img/thumbnail/label1thumb.png" alt="Anteprima etichetta Semplice"></div>
+              <div class="card-thumb"><img src="assets/thumbnail/label1thumb.png" alt="Anteprima etichetta Semplice"></div>
             </div>
-            <div>
+            <div class="dymo-card-body">
               <h2>Semplice</h2>
             </div>
-          </article>
+            <div class="arrow">↗</div>
+          </a>
 
           <article class="card dymo-card labels-coming-soon-card" aria-label="Sale, Coming Soon">
-            <div>
+            <div class="dymo-card-preview">
               <div class="number">02</div>
-              <div class="card-thumb"><img src="assets/img/thumbnail/label2thumb.png" alt="Anteprima etichetta Sale"></div>
+              <div class="card-thumb"><img src="assets/thumbnail/label2thumb.png" alt="Anteprima etichetta Sale"></div>
             </div>
-            <div>
+            <div class="dymo-card-body">
               <h2>Sale</h2>
             </div>
           </article>
           <article class="card dymo-card labels-coming-soon-card" aria-label="Promo, Coming Soon">
-            <div>
+            <div class="dymo-card-preview">
               <div class="number">03</div>
-              <div class="card-thumb"><img src="assets/img/thumbnail/label3thumb.png" alt="Anteprima etichetta Promo"></div>
+              <div class="card-thumb"><img src="assets/thumbnail/label3thumb.png" alt="Anteprima etichetta Promo"></div>
             </div>
-            <h2>Promo</h2>
+            <div class="dymo-card-body">
+              <h2>Promo</h2>
+            </div>
           </article>
 
         </div>
