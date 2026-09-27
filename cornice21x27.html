@@ -29,7 +29,6 @@
       gap: 15px;
       position: relative;
       z-index: 1;
-      flex-shrink: 0;
       font-family: system-ui, -apple-system, sans-serif;
     }
 
@@ -53,6 +52,15 @@
       text-transform: uppercase;
     }
 
+    .section-label {
+      color: #8a6a35;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+
     .form-group { margin-bottom: 0.8rem; }
 
     .mode-switch {
@@ -67,11 +75,12 @@
 
     .mode-switch button {
       flex: 1;
+      min-width: 0;
       border: 0;
       background: transparent;
-      padding: 9px 8px;
-      font-size: 0.68rem;
-      letter-spacing: 0.08em;
+      padding: 9px 3px;
+      font-size: 0.58rem;
+      letter-spacing: 0.04em;
       text-transform: uppercase;
       color: #8a7f6e;
       border-radius: 4px;
@@ -446,9 +455,10 @@
     <div class="controls">
       <h2>Cornice 21 X 27</h2>
 
+      <div class="section-label">Modalità cartello</div>
       <div class="mode-switch" role="group" aria-label="Modalità cartello">
         <button type="button" class="active" id="modeDescription" aria-pressed="true" onclick="switchContentMode('description')">Descrizione Articolo</button>
-        <button type="button" id="modeBrand" aria-pressed="false" onclick="switchContentMode('brand')">Modalità Brand</button>
+        <button type="button" id="modeBrand" aria-pressed="false" onclick="switchContentMode('brand')">Modalità<br>Brand</button>
       </div>
 
       <div class="form-group" id="descriptionFieldsGroup">
