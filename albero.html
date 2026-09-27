@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Albero Accessori · TEBE · OPHILYA</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      gap: 20px;
+      padding: 20px;
+      background: #f8f6f1;
+      color: #282522;
+      font-family: Arial, sans-serif;
+    }
+
+    .sidebar {
+      flex: 0 0 340px;
+      position: relative;
+      z-index: 1;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+
+    .controls {
+      padding: 1rem;
+      border: 1px solid #e3dacb;
+      border-radius: 8px;
+      background: #fffdfa;
+    }
+
+    .controls h1 {
+      margin-bottom: 1.2rem;
+      padding-bottom: 0.6rem;
+      border-bottom: 1px solid #e3dacb;
+      color: #b49a62;
+      font-size: 1.1rem;
+      letter-spacing: 1.5px;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .section-label {
+      margin-bottom: 0.4rem;
+      color: #8a6a35;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .card-selector {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 1.2rem;
+      padding: 4px;
+      border: 1px solid #e3dacb;
+      border-radius: 6px;
+      background: #f3ede0;
+    }
+
+    .card-selector button {
+      flex: 1;
+      padding: 9px 8px;
+      border: 0;
+      border-radius: 4px;
+      background: transparent;
+      color: #8a7f6e;
+      font: 600 0.78rem system-ui, -apple-system, sans-serif;
+      cursor: pointer;
+    }
+
+    .card-selector button.active {
+      background: #fffdfa;
+      color: #282522;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
+
+    .form-group { margin-bottom: 1rem; }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.35rem;
+      color: #665e54;
+      font-size: 0.72rem;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 0.55rem;
+      border: 1px solid #e3dacb;
+      border-radius: 4px;
+      background: #f8f6f1;
+      color: #282522;
+      font: 0.9rem system-ui, -apple-system, sans-serif;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #b49a62;
+      box-shadow: 0 0 4px rgba(180, 154, 98, 0.35);
+    }
+
+    .btn-print {
+      width: 100%;
+      margin-top: 0.3rem;
+      padding: 10px;
+      border: 1px solid #96382b;
+      border-radius: 4px;
+      background: #96382b;
+      color: #fffdfa;
+      font: 700 0.78rem system-ui, -apple-system, sans-serif;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
+    .btn-print:hover { background: #7a2d22; }
+
+    .preview-area {
+      min-width: 0;
+      flex: 1;
+      overflow: auto;
+    }
+
+    .print-sheet {
+      position: relative;
+      width: 210mm;
+      height: 297mm;
+      flex: 0 0 auto;
+      overflow: hidden;
+      background: #fff;
+      box-shadow: 0 20px 60px rgba(40, 34, 28, 0.18);
+    }
+
+    .tree-sign {
+      position: absolute;
+      left: 24.98mm;
+      width: 160.02mm;
+      height: 74.98mm;
+      overflow: hidden;
+      border: 0.25mm solid #8f8983;
+      background: #fff;
+      text-align: center;
+    }
+
+    .tree-sign:nth-child(1) { top: 14.67mm; }
+    .tree-sign:nth-child(2) { top: 97.67mm; }
+    .tree-sign:nth-child(3) { top: 180.67mm; }
+
+    .sign-description {
+      position: absolute;
+      top: 10.5mm;
+      right: 3mm;
+      left: 3mm;
+      overflow: hidden;
+      color: #000;
+      font: 400 24.48pt/1.1 Arial, Helvetica, sans-serif;
+      letter-spacing: -0.05em;
+      text-overflow: clip;
+      white-space: nowrap;
+    }
+
+    .sign-price {
+      position: absolute;
+      top: 23.2mm;
+      right: 2mm;
+      left: 2mm;
+      overflow: hidden;
+      color: #000;
+      font: 400 76.7pt/1 Arial, Helvetica, sans-serif;
+      letter-spacing: -0.05em;
+      white-space: nowrap;
+    }
+
+    .sign-logo {
+      position: absolute;
+      bottom: 16.3mm;
+      left: 50%;
+      width: 34mm;
+      height: auto;
+      object-fit: contain;
+      transform: translateX(-50%);
+    }
+
+    .app-close-btn {
+      position: fixed;
+      top: 1.5rem;
+      right: 1.5rem;
+      z-index: 1000;
+      display: flex;
+      width: 36px;
+      height: 36px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: #b49a62;
+      color: #fffdfa;
+      font-size: 1.2rem;
+      font-weight: bold;
+      text-decoration: none;
+    }
+
+    .floating-nav-box {
+      position: fixed;
+      right: 1.5rem;
+      bottom: 1.5rem;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      padding: 0.8rem 1rem;
+      border: 1px solid #b49a62;
+      border-radius: 8px;
+      background: #fffdfa;
+    }
+
+    .floating-nav-title {
+      padding-bottom: 3px;
+      border-bottom: 1px solid rgba(212, 163, 115, 0.3);
+      color: #8a6a35;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+    }
+
+    .floating-nav-btn {
+      color: #282522;
+      font-size: 0.82rem;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    @page {
+      size: A4 portrait;
+      margin: 0;
+    }
+
+    @media print {
+      html, body {
+        width: 210mm;
+        height: 297mm !important;
+        max-height: 297mm !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+        background: #fff !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      body { display: block; }
+      .sidebar, .app-close-btn, .floating-nav-box { display: none !important; }
+
+      .preview-area {
+        display: block;
+        width: 210mm;
+        height: 297mm;
+        overflow: hidden;
+      }
+
+      .print-sheet {
+        width: 210mm;
+        height: 297mm !important;
+        margin: 0;
+        box-shadow: none;
+        page-break-after: avoid !important;
+        page-break-inside: avoid !important;
+      }
+    }
+
+    @media (max-width: 760px) {
+      body { padding: 12px; }
+      .sidebar { flex-basis: 300px; }
+      .preview-area { padding-bottom: 12px; }
+    }
+  </style>
+</head>
+<body>
+  <a href="index.html?store=tebe" class="app-close-btn" title="Chiudi e torna al menu principale">✕</a>
+
+  <div class="floating-nav-box">
+    <div class="floating-nav-title">TEBE · OPHILYA</div>
+    <a href="index.html?store=tebe" class="floating-nav-btn">← Torna al Menu Principale</a>
+  </div>
+
+  <aside class="sidebar">
+    <section class="controls" aria-labelledby="pageTitle">
+      <h1 id="pageTitle">Albero Accessori</h1>
+
+      <div class="section-label" id="selectorLabel">Cartello in modifica</div>
+      <div class="card-selector" role="group" aria-labelledby="selectorLabel">
+        <button type="button" class="active" aria-pressed="true" onclick="selectSign(0)">1</button>
+        <button type="button" aria-pressed="false" onclick="selectSign(1)">2</button>
+        <button type="button" aria-pressed="false" onclick="selectSign(2)">3</button>
+      </div>
+
+      <div class="form-group">
+        <label for="descriptionInput">Testo descrittivo</label>
+        <input id="descriptionInput" type="text" value="Foulard" maxlength="80" oninput="updateActiveSign()">
+      </div>
+
+      <div class="form-group">
+        <label for="priceInput">Prezzo</label>
+        <input id="priceInput" type="text" inputmode="decimal" value="10,00" maxlength="20" oninput="updateActiveSign()">
+      </div>
+
+      <button class="btn-print" type="button" onclick="window.print()">Stampa Foglio A4</button>
+    </section>
+  </aside>
+
+  <main class="preview-area">
+    <div class="print-sheet" aria-label="Anteprima del foglio A4 con tre cartelli">
+      <section class="tree-sign" aria-label="Cartello 1">
+        <div class="sign-description" id="descriptionPreview0">Foulard</div>
+        <div class="sign-price" id="pricePreview0">€ 10,00</div>
+        <img class="sign-logo" src="assets/img/tebeoro.png" alt="TEBE">
+      </section>
+      <section class="tree-sign" aria-label="Cartello 2">
+        <div class="sign-description" id="descriptionPreview1">Foulard</div>
+        <div class="sign-price" id="pricePreview1">€ 10,00</div>
+        <img class="sign-logo" src="assets/img/tebeoro.png" alt="TEBE">
+      </section>
+      <section class="tree-sign" aria-label="Cartello 3">
+        <div class="sign-description" id="descriptionPreview2">Foulard</div>
+        <div class="sign-price" id="pricePreview2">€ 10,00</div>
+        <img class="sign-logo" src="assets/img/tebeoro.png" alt="TEBE">
+      </section>
+    </div>
+  </main>
+
+  <script>
+    const signs = [
+      { description: 'Foulard', price: '10,00' },
+      { description: 'Foulard', price: '10,00' },
+      { description: 'Foulard', price: '10,00' }
+    ];
+    let activeSign = 0;
+
+    function updateActiveSign() {
+      const sign = signs[activeSign];
+      sign.description = document.getElementById('descriptionInput').value;
+      sign.price = document.getElementById('priceInput').value;
+      document.getElementById(`descriptionPreview${activeSign}`).textContent = sign.description;
+      document.getElementById(`pricePreview${activeSign}`).textContent = `€ ${sign.price}`;
+    }
+
+    function selectSign(index) {
+      updateActiveSign();
+      activeSign = index;
+      document.querySelectorAll('.card-selector button').forEach((button, buttonIndex) => {
+        const isActive = buttonIndex === index;
+        button.classList.toggle('active', isActive);
+        button.setAttribute('aria-pressed', String(isActive));
+      });
+      document.getElementById('descriptionInput').value = signs[index].description;
+      document.getElementById('priceInput').value = signs[index].price;
+    }
+  </script>
+</body>
+</html>
