@@ -1,5 +1,5 @@
 (function initTemaItalia() {
-  const cards = [...document.querySelectorAll('.card')];
+  const cards = [...document.querySelectorAll('.card, .frame-box')];
   if (!cards.length) return;
 
   const flagSource = 'assets/img/madeinitaly.png';
@@ -15,7 +15,7 @@
   button.appendChild(buttonImage);
   document.body.appendChild(button);
 
-  cards.forEach(card => {
+  document.querySelectorAll('.card, .frame-box.tema-italia-target:not(.tema-italia-no-side-flags)').forEach(card => {
     card.append(
       createFlag('left'),
       createFlag('right')
@@ -55,7 +55,12 @@
         className: control.className
       })),
       activeMode: [...document.querySelectorAll('[id^="mode"]')]
+        .concat([...document.querySelectorAll('button[id$="ModeBtn"]')])
         .find(control => control.classList.contains('active'))?.id || null,
+      activeFrame: typeof currentActiveFrame === 'string' ? currentActiveFrame : null,
+      appState: typeof window.captureTemaItaliaState === 'function'
+        ? window.captureTemaItaliaState()
+        : null,
       descriptionGroups: [...document.querySelectorAll('[id*="descGroup" i]')].map(group => ({
         element: group,
         style: group.getAttribute('style')
@@ -78,7 +83,23 @@
       }
     });
 
-    if (state.activeMode && typeof window.switchMode === 'function') {
+    if (state.appState && typeof window.restoreTemaItaliaState === 'function') {
+      window.restoreTemaItaliaState(state.appState);
+      return;
+    }
+
+    if (state.activeFrame && typeof window.switchActiveFrame === 'function') {
+      window.switchActiveFrame(state.activeFrame);
+    }
+
+    if (state.activeMode && state.activeMode.endsWith('ModeBtn') && typeof window.setFrameMode === 'function') {
+      const mode = state.activeMode === 'extraArticleModeBtn'
+        ? 'extra'
+        : state.activeMode === 'brandModeBtn'
+          ? 'brand'
+          : 'standard';
+      window.setFrameMode(mode);
+    } else if (state.activeMode && typeof window.switchMode === 'function') {
       const mode = state.activeMode === 'modeDoppia' || state.activeMode === 'modeStandard'
         ? state.activeMode === 'modeDoppia' ? 'doppia' : 'standard'
         : 'descrizione';
@@ -103,12 +124,20 @@
   }
 
   function applyMadeInItalyDescription() {
-    const descriptionModeButton = document.getElementById('modeDescrizione');
+    const descriptionModeButton = document.getElementById('modeDescrizione')
+      || document.getElementById('modeDescription');
     if (descriptionModeButton && !descriptionModeButton.classList.contains('active')) {
       descriptionModeButton.click();
     }
 
+    const standardModeButton = document.getElementById('standardModeBtn');
+    if (standardModeButton && !standardModeButton.classList.contains('active')) {
+      standardModeButton.click();
+    }
+
     const descriptionSelect = [...document.querySelectorAll('select')].find(select =>
+      select.id !== 'brandSelect' &&
+      select.id !== 'customBrandSelect' &&
       [...select.options].some(option => normalize(option.textContent) === 'made in italy')
     );
 

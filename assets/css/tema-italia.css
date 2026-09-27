@@ -50,6 +50,10 @@
   position: relative;
 }
 
+.frame-box {
+  position: absolute;
+}
+
 .tema-italia-flag.is-visible {
   display: block;
 }

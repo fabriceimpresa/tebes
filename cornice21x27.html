@@ -244,18 +244,18 @@
     .deco-img {
       position: absolute;
       left: 50%;
-      width: 160mm;
+      width: 156mm;
       height: auto;
       object-fit: contain;
       transform: translateX(-50%);
     }
 
-    #decoTop { top: 8mm; }
-    #decoBottom { bottom: 8mm; }
+    #decoTop { top: 11mm; }
+    #decoBottom { bottom: 11mm; }
 
     .frame-content {
       position: absolute;
-      top: 76mm;
+      top: 85mm;
       left: 8mm;
       right: 8mm;
       display: flex;
@@ -263,9 +263,12 @@
       align-items: center;
       text-align: center;
       gap: 9mm;
+      transform: scale(1.02);
+      transform-origin: center;
     }
 
     .desc-title {
+      position: relative;
       width: 100%;
       min-height: 28mm;
       color: #c49f3f;
@@ -276,6 +279,15 @@
       text-align: center;
       white-space: pre-line;
       overflow-wrap: anywhere;
+    }
+
+    .made-in-italy-flag {
+      position: absolute;
+      left: 50%;
+      bottom: calc(100% + 5mm);
+      width: 9mm;
+      height: auto;
+      transform: translate(-50%, -1mm);
     }
 
     .frame-brand-logo-box {
@@ -442,7 +454,7 @@
       <div class="form-group" id="descriptionFieldsGroup">
         <label for="descFree">Descrizione Articolo (massimo 2 righe)</label>
         <textarea id="descFree" maxlength="120" oninput="updateDescription()" placeholder="Inserisci la descrizione su una o due righe">LANA &amp;
-CACHEMERE</textarea>
+CACHEMIRE</textarea>
       </div>
 
       <div id="brandFieldsGroup" style="display: none;">
@@ -491,7 +503,7 @@ CACHEMERE</textarea>
   </div>
 
   <div class="print-sheet" id="printSheet">
-    <div class="frame-box" id="frameBox">
+    <div class="frame-box tema-italia-target tema-italia-no-side-flags" id="frameBox">
       <img src="assets/img/decoup.png" alt="Decoro superiore" class="deco-img" id="decoTop">
       <div class="frame-content" id="frameContent"></div>
       <img src="assets/img/decodown.png" alt="Decoro inferiore" class="deco-img" id="decoBottom">
@@ -502,7 +514,7 @@ CACHEMERE</textarea>
     const CUSTOM_LOGOS_STORAGE_KEY = 'custom_brand_logos';
     const cardState = {
       mode: 'description',
-      description: 'LANA &\nCACHEMERE',
+      description: 'LANA &\nCACHEMIRE',
       brand: { officialFile: '', customLogoId: '' },
       oldPrice: '99,90',
       discount: '30',
@@ -530,14 +542,17 @@ CACHEMERE</textarea>
 
     function updateDescription() {
       const input = document.getElementById('descFree');
-      const limited = limitDescriptionLines(input.value);
+      const description = input.value.trim().replace(/\s+/g, ' ').toUpperCase() === 'MADE IN ITALY'
+        ? 'MADE\nIN ITALY'
+        : input.value;
+      const limited = limitDescriptionLines(description);
       if (limited !== input.value) {
         const start = input.selectionStart;
         const end = input.selectionEnd;
         input.value = limited;
         input.setSelectionRange(Math.min(start, limited.length), Math.min(end, limited.length));
       }
-      cardState.description = input.value;
+      cardState.description = limited;
       renderCard();
     }
 
@@ -644,7 +659,9 @@ CACHEMERE</textarea>
     function renderCard() {
       const content = document.getElementById('frameContent');
       const title = cardState.mode === 'description'
-        ? `<div class="desc-title">${escapeHtml(cardState.description)}</div>`
+        ? cardState.description === 'MADE\nIN ITALY'
+          ? '<div class="desc-title made-in-italy-title"><img class="made-in-italy-flag" src="assets/img/madeinitaly.png" alt="Bandiera italiana">MADE<br>IN ITALY</div>'
+          : `<div class="desc-title">${escapeHtml(cardState.description)}</div>`
         : '<div class="frame-brand-logo-box"><img class="frame-brand-logo" alt="Logo brand"></div>';
       content.innerHTML = `
         ${title}
@@ -666,6 +683,31 @@ CACHEMERE</textarea>
         });
       }
     }
+
+    window.captureTemaItaliaState = () => JSON.parse(JSON.stringify(cardState));
+
+    window.restoreTemaItaliaState = savedState => {
+      cardState.mode = savedState.mode;
+      cardState.description = savedState.description;
+      cardState.brand = { ...savedState.brand };
+      cardState.oldPrice = savedState.oldPrice;
+      cardState.discount = savedState.discount;
+      cardState.newPrice = savedState.newPrice;
+
+      document.getElementById('descFree').value = cardState.description;
+      document.getElementById('oldPrice').value = cardState.oldPrice;
+      document.getElementById('discountValue').value = cardState.discount;
+      document.getElementById('newPrice').value = cardState.newPrice;
+      document.getElementById('brandSelect').value = cardState.brand.officialFile;
+      document.getElementById('customBrandSelect').value = cardState.brand.customLogoId;
+      document.getElementById('modeDescription').classList.toggle('active', cardState.mode === 'description');
+      document.getElementById('modeDescription').setAttribute('aria-pressed', String(cardState.mode === 'description'));
+      document.getElementById('modeBrand').classList.toggle('active', cardState.mode === 'brand');
+      document.getElementById('modeBrand').setAttribute('aria-pressed', String(cardState.mode === 'brand'));
+      document.getElementById('descriptionFieldsGroup').style.display = cardState.mode === 'description' ? 'block' : 'none';
+      document.getElementById('brandFieldsGroup').style.display = cardState.mode === 'brand' ? 'block' : 'none';
+      renderCard();
+    };
 
     function escapeHtml(value) {
       return String(value).replace(/[&<>"']/g, character => ({
@@ -699,5 +741,6 @@ CACHEMERE</textarea>
     loadCustomBrandSelect();
     renderCard();
   </script>
+  <script src="assets/js/tema-italia.js"></script>
 </body>
 </html>

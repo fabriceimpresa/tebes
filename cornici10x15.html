@@ -322,6 +322,10 @@
       place-items: center;
     }
 
+    .desc-title.made-in-italy-title {
+      position: relative;
+    }
+
     .frame-box.standard-two-line-desc .price-row-frame,
     .frame-box.standard-two-line-desc .price-final-frame {
       transform: translateY(-3px);
@@ -416,6 +420,15 @@
       color: #000000;
       letter-spacing: -0.05em;
       line-height: 1;
+    }
+
+    .made-in-italy-flag {
+      position: absolute;
+      left: 50%;
+      bottom: calc(100% + 1mm);
+      width: 4mm;
+      height: auto;
+      transform: translate(-50%, -1mm);
     }
 
     .frame-box.layout-2-articles .price-final-frame {
@@ -576,6 +589,7 @@
             <option value="LINO PURO">LINO PURO</option>
             <option value="ECO PELLICCIA">ECO PELLICCIA</option>
             <option value="LANA MERINOS">LANA MERINOS</option>
+            <option value="MADE IN ITALY">MADE IN ITALY</option>
           </select>
         </div>
         <textarea id="descFree" placeholder="Testo descrittivo..." oninput="updateData()"></textarea>
@@ -619,6 +633,7 @@
     </div>
   </div>
 
+  <script src="assets/js/tema-italia.js"></script>
   <script>
     // Stato indipendente per ciascuna cornice (Lana Merinos impostata su due righe)
     const framesState = {
@@ -810,7 +825,9 @@
 
     function applyDescPreset() {
       const preset = document.getElementById('descPreset').value;
-      let formatted = preset.replace(' & ', ' &\n').replace(' COTONE', '\nCOTONE').replace(' CACHEMIRE', '\nCACHEMIRE').replace(' SETA', '\nSETA').replace(' PURO', '\nPURO').replace(' PELLICCIA', '\nPELLICCIA').replace(' MERINOS', '\nMERINOS');
+      const formatted = preset === 'MADE IN ITALY'
+        ? 'MADE\nIN ITALY'
+        : preset.replace(' & ', ' &\n').replace(' COTONE', '\nCOTONE').replace(' CACHEMIRE', '\nCACHEMIRE').replace(' SETA', '\nSETA').replace(' PURO', '\nPURO').replace(' PELLICCIA', '\nPELLICCIA').replace(' MERINOS', '\nMERINOS');
       document.getElementById('descFree').value = formatted;
       updateData();
     }
@@ -839,7 +856,13 @@
           );
         }
       }
-      art.desc = descInput.value;
+      art.desc = descInput.value.trim().replace(/\s+/g, ' ').toUpperCase() === 'MADE IN ITALY'
+        ? 'MADE\nIN ITALY'
+        : descInput.value;
+      if (art.desc === 'MADE\nIN ITALY') {
+        descInput.value = art.desc;
+        document.getElementById('descPreset').value = 'MADE IN ITALY';
+      }
       art.oldPrice = document.getElementById('oldPrice').value;
       art.discount = document.getElementById('discountValue').value;
       art.newPrice = document.getElementById('newPrice').value;
@@ -850,6 +873,9 @@
       const state = framesState[side];
       const box = document.getElementById(`frame${side.charAt(0).toUpperCase() + side.slice(1)}`);
       const container = document.getElementById(`inner${side.charAt(0).toUpperCase() + side.slice(1)}`);
+      const renderDescription = article => article.desc === 'MADE\nIN ITALY'
+        ? '<div class="desc-title made-in-italy-title"><img class="made-in-italy-flag" src="assets/img/madeinitaly.png" alt="Bandiera italiana">MADE<br>IN ITALY</div>'
+        : `<div class="desc-title">${article.desc || ''}</div>`;
 
       if (!state.twoArticlesActive) {
         box.classList.remove('layout-2-articles');
@@ -865,7 +891,7 @@
         }
         const titleContent = state.brandActive
           ? '<div class="frame-brand-logo-box"><img class="frame-brand-logo" alt="Logo brand"></div>'
-          : `<div class="desc-title">${art.desc || ''}</div>`;
+          : renderDescription(art);
         container.innerHTML = `
           <img src="assets/img/decoup.png" alt="Decoro Superiore" class="deco-img">
           <div class="frame-content">
@@ -900,7 +926,7 @@
         const art2 = state.articles[1];
         container.innerHTML = `
           <div class="frame-content">
-            <div class="desc-title">${art1.desc || ''}</div>
+            ${renderDescription(art1)}
             <div class="price-row-frame">
               <span class="price-old-frame">€ ${art1.oldPrice}</span>
               <span class="price-percent-frame">-${art1.discount}%</span>
@@ -909,7 +935,7 @@
           </div>
           <div class="golden-divider"></div>
           <div class="frame-content">
-            <div class="desc-title">${art2.desc || ''}</div>
+            ${renderDescription(art2)}
             <div class="price-row-frame">
               <span class="price-old-frame">€ ${art2.oldPrice}</span>
               <span class="price-percent-frame">-${art2.discount}%</span>
@@ -924,6 +950,25 @@
       renderFrameContent('left');
       renderFrameContent('right');
     }
+
+    window.captureTemaItaliaState = () => ({
+      currentActiveFrame,
+      frames: JSON.parse(JSON.stringify(framesState))
+    });
+
+    window.restoreTemaItaliaState = savedState => {
+      for (const side of ['left', 'right']) {
+        const savedFrame = savedState.frames[side];
+        const frame = framesState[side];
+        frame.twoArticlesActive = savedFrame.twoArticlesActive;
+        frame.brandActive = savedFrame.brandActive;
+        frame.brand = { ...savedFrame.brand };
+        frame.activeRow = savedFrame.activeRow;
+        frame.articles = savedFrame.articles.map(article => ({ ...article }));
+      }
+      switchActiveFrame(savedState.currentActiveFrame);
+      updateAll();
+    };
 
     // Inizializzazione
     loadBrandSelect();
