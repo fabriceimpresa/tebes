@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <title>Cornice 10 X 15 · TEBE · OPHILYA</title>
+  <script src="assets/js/logos.js?v=20260924"></script>
+  <script src="assets/js/print-logo-colors.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Castoro&display=swap" rel="stylesheet">
@@ -121,6 +123,41 @@
     }
 
     .btn-add-brand.active:hover { background-color: #425d52; }
+
+    #articleToggleBtn {
+      display: block;
+      margin-bottom: 0;
+    }
+
+    .btn-add-brand-mode {
+      width: 100%;
+      background-color: #cc9e25;
+      color: #fffdfa;
+      border: 1px solid #b8891a;
+      padding: 10px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-bottom: 1.2rem;
+      transition: background-color 0.25s ease, border-color 0.25s ease;
+    }
+
+    #brandToggleBtn {
+      display: block;
+      margin-top: 6px;
+    }
+
+    .btn-add-brand-mode:hover { background-color: #b8891a; }
+
+    .btn-add-brand-mode.active {
+      background-color: #4b685c;
+      border-color: #4b685c;
+    }
+
+    .btn-add-brand-mode.active:hover { background-color: #425d52; }
 
     .form-group { margin-bottom: 0.8rem; }
 
@@ -311,6 +348,29 @@
 
     .frame-box:not(.layout-2-articles) .frame-content {
       transform: scale(1.03);
+    }
+
+    .frame-box.brand-mode .frame-content {
+      transform: scale(1.03) translateY(-3.5mm);
+    }
+
+    .frame-brand-logo-box {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 33mm;
+      height: 13mm;
+      max-height: 13mm;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .frame-brand-logo {
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+      object-fit: contain;
     }
 
     .frame-box.standard-max-lines .desc-title {
@@ -532,6 +592,28 @@
       <!-- PULSANTE AGGIUNGI ARTICOLO -->
       <button type="button" class="btn-add-brand" id="articleToggleBtn" onclick="toggleArticleSection()">+ AGGIUNGI UN ARTICOLO</button>
 
+      <button type="button" class="btn-add-brand-mode" id="brandToggleBtn" onclick="toggleBrandSection()">+AGGIUNGI UN BRAND</button>
+
+      <div id="brandFieldsGroup" style="display: none;">
+        <div class="form-group">
+          <label for="brandSelect">Brand</label>
+          <div class="preset-select">
+            <select id="brandSelect" onchange="updateBrandSelection()">
+              <option value="">-- Seleziona Brand --</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="customBrandSelect">Loghi personalizzati</label>
+          <div class="preset-select">
+            <select id="customBrandSelect" onchange="updateCustomBrandSelection()">
+              <option value="">-- Nessun logo personalizzato --</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
       <!-- SELETTORE RIGA ATTIVA (attivo solo se 2 articoli sono attivi) -->
       <div id="rowSelectorWrapper" style="display: none;">
         <div class="section-label">Seleziona Articolo</div>
@@ -542,7 +624,7 @@
       </div>
 
       <!-- CAMPI INPUT -->
-      <div class="form-group">
+      <div class="form-group" id="descriptionFieldsGroup">
         <label id="descLabel">Descrizione Articolo</label>
         <div class="preset-select">
           <select id="descPreset" onchange="applyDescPreset()">
@@ -578,7 +660,7 @@
         <input type="text" id="newPrice" placeholder="es. 17,90" oninput="updateData()">
       </div>
 
-      <button class="btn-print" onclick="window.print()">Stampa Cartello (A4)</button>
+      <button class="btn-print" onclick="printFrames()">Stampa Cartello (A4)</button>
     </div>
   </div>
 
@@ -600,6 +682,8 @@
     const framesState = {
       left: {
         twoArticlesActive: false,
+        brandActive: false,
+        brand: { officialFile: '', customLogoId: '' },
         activeRow: 0,
         articles: [
           { desc: "PURO\nCOTONE", oldPrice: "34,90", discount: "50", newPrice: "17,90" },
@@ -608,6 +692,8 @@
       },
       right: {
         twoArticlesActive: false,
+        brandActive: false,
+        brand: { officialFile: '', customLogoId: '' },
         activeRow: 0,
         articles: [
           { desc: "LANA &\nCACHEMIRE", oldPrice: "34,90", discount: "50", newPrice: "17,90" },
@@ -627,6 +713,7 @@
 
     function toggleArticleSection() {
       const state = framesState[currentActiveFrame];
+      state.brandActive = false;
       state.twoArticlesActive = !state.twoArticlesActive;
       if (state.twoArticlesActive) {
         state.articles.forEach(article => {
@@ -634,6 +721,20 @@
         });
       } else {
         state.activeRow = 0;
+      }
+      syncSidebarWithState();
+      updateAll();
+    }
+
+    function toggleBrandSection() {
+      const state = framesState[currentActiveFrame];
+      state.brandActive = !state.brandActive;
+      if (state.brandActive) {
+        state.twoArticlesActive = false;
+        state.activeRow = 0;
+        if (!state.brand.officialFile && !state.brand.customLogoId) {
+          state.brand.officialFile = getDefaultBrandFile();
+        }
       }
       syncSidebarWithState();
       updateAll();
@@ -651,27 +752,126 @@
     function syncSidebarWithState() {
       const state = framesState[currentActiveFrame];
       const btn = document.getElementById('articleToggleBtn');
+      const brandBtn = document.getElementById('brandToggleBtn');
       const rowWrapper = document.getElementById('rowSelectorWrapper');
+      const descriptionFields = document.getElementById('descriptionFieldsGroup');
+      const brandFields = document.getElementById('brandFieldsGroup');
+
+      btn.classList.toggle('active', state.twoArticlesActive);
+      btn.textContent = state.twoArticlesActive ? '✓ SECONDO ARTICOLO ATTIVATO' : '+ AGGIUNGI UN ARTICOLO';
+      brandBtn.classList.toggle('active', state.brandActive);
+      brandBtn.textContent = state.brandActive ? '✓ BRAND ATTIVO' : '+AGGIUNGI UN BRAND';
+      rowWrapper.style.display = state.twoArticlesActive ? 'block' : 'none';
+      descriptionFields.style.display = state.brandActive ? 'none' : 'block';
+      brandFields.style.display = state.brandActive ? 'block' : 'none';
 
       if (state.twoArticlesActive) {
-        btn.classList.add('active');
-        btn.textContent = '✓ SECONDO ARTICOLO ATTIVATO';
-        rowWrapper.style.display = 'block';
         document.getElementById('btnRow0').classList.toggle('active', state.activeRow === 0);
         document.getElementById('btnRow1').classList.toggle('active', state.activeRow === 1);
         document.getElementById('descLabel').textContent = `Descrizione Articolo ${state.activeRow + 1}`;
-      } else {
-        btn.classList.remove('active');
-        btn.textContent = '+ AGGIUNGI UN ARTICOLO';
-        rowWrapper.style.display = 'none';
+      } else if (!state.brandActive) {
         document.getElementById('descLabel').textContent = 'Descrizione Articolo';
       }
 
+      document.getElementById('brandSelect').value = state.brand.officialFile;
+      document.getElementById('customBrandSelect').value = state.brand.customLogoId;
       const art = state.articles[state.activeRow];
       document.getElementById('descFree').value = art.desc;
       document.getElementById('oldPrice').value = art.oldPrice;
       document.getElementById('discountValue').value = art.discount;
       document.getElementById('newPrice').value = art.newPrice;
+    }
+
+    const CUSTOM_LOGOS_STORAGE_KEY = 'custom_brand_logos';
+
+    function cleanBrandName(fileName) {
+      return fileName.replace(/\.[^.]+$/, '').replace(/([a-z])([A-Z])/g, '$1 $2');
+    }
+
+    function readCustomLogos() {
+      try {
+        const logos = JSON.parse(localStorage.getItem(CUSTOM_LOGOS_STORAGE_KEY) || '[]');
+        return Array.isArray(logos) ? logos.filter(logo => logo && logo.id && logo.name && logo.data) : [];
+      } catch (error) {
+        console.error('Lettura dei loghi personalizzati fallita.', error);
+        return [];
+      }
+    }
+
+    function loadBrandSelect() {
+      const select = document.getElementById('brandSelect');
+      const { priorityFiles, remainingFiles } = getSortedLogoFiles();
+      [...priorityFiles, ...remainingFiles].forEach(fileName => {
+        appendBrandOption(select, fileName, cleanBrandName(fileName), priorityFiles.includes(fileName));
+      });
+    }
+
+    function loadCustomBrandSelect() {
+      const select = document.getElementById('customBrandSelect');
+      readCustomLogos()
+        .slice()
+        .sort((first, second) => first.name.localeCompare(second.name, 'it', { sensitivity: 'base' }))
+        .forEach(logo => {
+          const option = document.createElement('option');
+          option.value = logo.id;
+          option.textContent = `★ ${logo.name}`;
+          select.appendChild(option);
+        });
+    }
+
+    function getDefaultBrandFile() {
+      const orderedFiles = getOrderedLogoFiles();
+      return orderedFiles.find(fileName => fileName.toLowerCase().startsWith('269')) || orderedFiles[0] || '';
+    }
+
+    function updateBrandSelection() {
+      const state = framesState[currentActiveFrame];
+      state.brand.officialFile = document.getElementById('brandSelect').value;
+      state.brand.customLogoId = '';
+      document.getElementById('customBrandSelect').value = '';
+      updateAll();
+    }
+
+    function updateCustomBrandSelection() {
+      const state = framesState[currentActiveFrame];
+      state.brand.customLogoId = document.getElementById('customBrandSelect').value;
+      state.brand.officialFile = '';
+      document.getElementById('brandSelect').value = '';
+      updateAll();
+    }
+
+    function getBrandLogoSource(brand) {
+      const customLogo = readCustomLogos().find(logo => logo.id === brand.customLogoId);
+      if (brand.customLogoId && !customLogo) {
+        return Promise.reject(new Error(`Logo personalizzato non trovato: ${brand.customLogoId}`));
+      }
+
+      return PrintLogoColors.getBrandLogoSrc(
+        customLogo?.data || '',
+        brand.customLogoId ? '' : brand.officialFile,
+        '',
+        'gold'
+      );
+    }
+
+    function printFrames() {
+      const logoPreparation = ['left', 'right']
+        .filter(side => framesState[side].brandActive)
+        .map(side => {
+          const box = document.getElementById(`frame${side.charAt(0).toUpperCase() + side.slice(1)}`);
+          const brandImage = box.querySelector('.frame-brand-logo');
+          if (!brandImage) {
+            return Promise.reject(new Error(`Logo brand non presente nella cornice ${side}.`));
+          }
+          return getBrandLogoSource(framesState[side].brand).then(source => {
+            if (source) brandImage.src = source;
+          });
+        });
+
+      Promise.all(logoPreparation)
+        .then(() => PrintLogoColors.prepareForPrint('.frame-brand-logo'))
+        .then(() => window.print())
+        .catch(error => console.error('Preparazione dei loghi per la stampa fallita.', error));
     }
 
     function applyDescPreset() {
@@ -720,18 +920,27 @@
       if (!state.twoArticlesActive) {
         box.classList.remove('layout-2-articles');
         const art = state.articles[0];
-        const lineCount = art.desc.split(/\r?\n/).length;
-        box.classList.toggle('standard-max-lines', lineCount > 3);
-        box.classList.toggle('standard-two-line-desc', lineCount === 2);
-        if (lineCount > 3) {
-          box.style.setProperty('--standard-desc-font-size', `${54 / lineCount}pt`);
-        } else {
+        box.classList.toggle('brand-mode', state.brandActive);
+        if (state.brandActive) {
+          box.classList.remove('standard-max-lines', 'standard-two-line-desc');
           box.style.removeProperty('--standard-desc-font-size');
+        } else {
+          const lineCount = art.desc.split(/\r?\n/).length;
+          box.classList.toggle('standard-max-lines', lineCount > 3);
+          box.classList.toggle('standard-two-line-desc', lineCount === 2);
+          if (lineCount > 3) {
+            box.style.setProperty('--standard-desc-font-size', `${54 / lineCount}pt`);
+          } else {
+            box.style.removeProperty('--standard-desc-font-size');
+          }
         }
+        const titleContent = state.brandActive
+          ? '<div class="frame-brand-logo-box"><img class="frame-brand-logo" alt="Logo brand"></div>'
+          : `<div class="desc-title">${art.desc || ''}</div>`;
         container.innerHTML = `
           <img src="assets/img/decoup.png" alt="Decoro Superiore" class="deco-img">
           <div class="frame-content">
-            <div class="desc-title">${art.desc || ''}</div>
+            ${titleContent}
             <div class="price-row-frame">
               <span class="price-old-frame">€ ${art.oldPrice}</span>
               <span class="price-percent-frame">-${art.discount}%</span>
@@ -740,8 +949,21 @@
           </div>
           <img src="assets/img/decodown.png" alt="Decoro Inferiore" class="deco-img">
         `;
+        if (state.brandActive) {
+          const brandImage = container.querySelector('.frame-brand-logo');
+          if (state.brand.customLogoId || state.brand.officialFile) {
+            getBrandLogoSource(state.brand).then(source => {
+              if (brandImage.isConnected) brandImage.src = source;
+            }).catch(error => {
+              console.error('Caricamento del logo brand fallito.', error);
+            });
+            const customLogo = readCustomLogos().find(logo => logo.id === state.brand.customLogoId);
+            brandImage.alt = customLogo?.name || cleanBrandName(state.brand.officialFile);
+          }
+        }
       } else {
         box.classList.add('layout-2-articles');
+        box.classList.remove('brand-mode');
         box.classList.remove('standard-max-lines');
         box.classList.remove('standard-two-line-desc');
         box.style.removeProperty('--standard-desc-font-size');
@@ -775,6 +997,8 @@
     }
 
     // Inizializzazione
+    loadBrandSelect();
+    loadCustomBrandSelect();
     syncSidebarWithState();
     updateAll();
   </script>
