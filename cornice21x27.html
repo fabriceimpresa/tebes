@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Cornice 21 X 27 · TEBE · OPHILYA</title>
+  <script src="assets/js/logos.js?v=20260924"></script>
+  <script src="assets/js/print-logo-colors.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Castoro&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f6f1;
+      padding: 20px;
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    .sidebar {
+      width: 360px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      position: relative;
+      z-index: 1;
+      flex-shrink: 0;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+
+    .controls {
+      background: #fffdfa;
+      color: #282522;
+      padding: 1rem;
+      border-radius: 8px;
+      border: 1px solid #e3dacb;
+    }
+
+    .controls h2 {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 1.1rem;
+      color: #b49a62;
+      border-bottom: 1px solid #e3dacb;
+      padding-bottom: 0.6rem;
+      margin-bottom: 1.2rem;
+      letter-spacing: 1.5px;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .form-group { margin-bottom: 0.8rem; }
+
+    .mode-switch {
+      display: flex;
+      gap: 4px;
+      padding: 4px;
+      background: #f3ede0;
+      border: 1px solid #e3dacb;
+      border-radius: 6px;
+      margin-bottom: 1.2rem;
+    }
+
+    .mode-switch button {
+      flex: 1;
+      border: 0;
+      background: transparent;
+      padding: 9px 8px;
+      font-size: 0.68rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #8a7f6e;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      line-height: 1.2;
+      text-align: center;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+
+    .mode-switch button.active {
+      background: #fffdfa;
+      color: #282522;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.72rem;
+      margin-bottom: 0.3rem;
+      color: #665e54;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+
+    .form-group textarea,
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 0.45rem;
+      border: 1px solid #e3dacb;
+      border-radius: 4px;
+      font-size: 0.82rem;
+      background-color: #f8f6f1;
+      color: #282522;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      height: 54px;
+    }
+
+    .form-group textarea:focus,
+    .form-group input:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: #b49a62;
+      box-shadow: 0 0 4px rgba(180, 154, 98, 0.35);
+    }
+
+    .preset-select {
+      position: relative;
+      margin-bottom: 0.5rem;
+      border: 1px solid #e3dacb;
+      border-radius: 4px;
+      background-color: #f8f6f1;
+      overflow: hidden;
+    }
+
+    .preset-select select {
+      appearance: none;
+      padding-right: 2rem;
+      border: none;
+      background: transparent;
+      width: 100%;
+      padding: 0.45rem;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+
+    .preset-select::after {
+      content: '▼';
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 1.6rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-left: 1px solid #e3dacb;
+      background: #f3ede0;
+      color: #b49a62;
+      font-size: 0.6rem;
+      pointer-events: none;
+    }
+
+    .percent-input-wrapper {
+      display: flex;
+      align-items: stretch;
+      border: 1px solid #e3dacb;
+      border-radius: 4px;
+      background-color: #f8f6f1;
+      overflow: hidden;
+    }
+
+    .percent-input-wrapper input {
+      flex: 1;
+      border: none;
+      background: transparent;
+      padding: 0.45rem;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+
+    .percent-input-wrapper input:focus { outline: none; }
+
+    .percent-stepper {
+      flex: 0 0 1.6rem;
+      display: flex;
+      flex-direction: column;
+      border-left: 1px solid #e3dacb;
+    }
+
+    .percent-stepper button {
+      flex: 1;
+      border: none;
+      border-bottom: 1px solid #e3dacb;
+      background: #f3ede0;
+      color: #b49a62;
+      cursor: pointer;
+      font-size: 0.6rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .percent-stepper button:last-child { border-bottom: none; }
+    .percent-stepper button:hover { background: #e3dacb; color: #8a6a35; }
+
+    .btn-print {
+      width: 100%;
+      background-color: #96382b;
+      color: #fffdfa;
+      border: 1px solid #96382b;
+      padding: 10px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background-color 0.2s;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+
+    .btn-print:hover { background-color: #7a2d22; }
+
+    .print-sheet {
+      position: relative;
+      z-index: 1;
+      width: 210mm;
+      height: 297mm;
+      background: white;
+      box-shadow: 0 20px 60px rgba(40, 34, 28, 0.18);
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .frame-box {
+      position: absolute;
+      left: 0;
+      top: 13.6mm;
+      width: 210mm;
+      height: 270mm;
+      border: 0.34mm solid #000;
+      background: #fff;
+      overflow: hidden;
+    }
+
+    .deco-img {
+      position: absolute;
+      left: 50%;
+      width: 160mm;
+      height: auto;
+      object-fit: contain;
+      transform: translateX(-50%);
+    }
+
+    #decoTop { top: 8mm; }
+    #decoBottom { bottom: 8mm; }
+
+    .frame-content {
+      position: absolute;
+      top: 76mm;
+      left: 8mm;
+      right: 8mm;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 9mm;
+    }
+
+    .desc-title {
+      width: 100%;
+      min-height: 28mm;
+      color: #c49f3f;
+      font-family: 'Castoro', Georgia, serif;
+      font-size: 44pt;
+      letter-spacing: -0.05em;
+      line-height: 1.05;
+      text-align: center;
+      white-space: pre-line;
+      overflow-wrap: anywhere;
+    }
+
+    .frame-brand-logo-box {
+      width: 140mm;
+      height: 36mm;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    .frame-brand-logo {
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+    }
+
+    .price-row-frame {
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: 12mm;
+    }
+
+    .price-old-frame,
+    .price-percent-frame {
+      font-family: Arial, sans-serif;
+      font-size: 34pt;
+      letter-spacing: -0.05em;
+      white-space: nowrap;
+    }
+
+    .price-old-frame {
+      color: #000;
+      text-decoration-line: line-through;
+      text-decoration-color: #c49f3f;
+      text-decoration-thickness: 2px;
+    }
+
+    .price-percent-frame {
+      color: #c49f3f;
+      font-weight: 700;
+    }
+
+    .price-final-frame {
+      color: #000;
+      font-family: Arial, sans-serif;
+      font-size: 100pt;
+      letter-spacing: -0.05em;
+      line-height: 1;
+      white-space: nowrap;
+      margin-top: -1mm;
+    }
+
+    .app-close-btn {
+      position: fixed;
+      top: 1.5rem;
+      right: 1.5rem;
+      width: 36px;
+      height: 36px;
+      background-color: #b49a62;
+      color: #fffdfa;
+      border: none;
+      border-radius: 50%;
+      font-size: 1.2rem;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      text-decoration: none;
+    }
+
+    .floating-nav-box {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      background: #fffdfa;
+      border: 1px solid #b49a62;
+      border-radius: 8px;
+      padding: 0.8rem 1rem;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      z-index: 1000;
+    }
+
+    .floating-nav-title {
+      font-size: 0.65rem;
+      color: #8a6a35;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      font-weight: 700;
+      border-bottom: 1px solid rgba(212, 163, 115, 0.3);
+      padding-bottom: 3px;
+    }
+
+    .floating-nav-btn {
+      color: #282522;
+      text-decoration: none;
+      font-size: 0.82rem;
+      font-weight: 600;
+    }
+
+    @page {
+      size: A4 portrait;
+      margin: 0mm !important;
+    }
+
+    @media print {
+      html, body {
+        width: 210mm;
+        height: 297mm !important;
+        max-height: 297mm !important;
+        background: white !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        overflow: hidden !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      .sidebar, .app-close-btn, .floating-nav-box { display: none !important; }
+
+      .print-sheet {
+        box-shadow: none;
+        margin: 0 auto !important;
+        width: 210mm !important;
+        height: 297mm !important;
+        max-height: 297mm !important;
+      }
+
+      .frame-box {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="assets/css/tema-italia.css">
+</head>
+<body>
+  <a href="index.html?store=tebe" class="app-close-btn" title="Chiudi e torna all'index">✕</a>
+
+  <div class="floating-nav-box">
+    <div class="floating-nav-title">TEBE · OPHILYA</div>
+    <a href="index.html?store=tebe" class="floating-nav-btn">← Torna al Menu Principale</a>
+  </div>
+
+  <div class="sidebar">
+    <div class="controls">
+      <h2>Cornice 21 X 27</h2>
+
+      <div class="mode-switch" role="group" aria-label="Modalità cartello">
+        <button type="button" class="active" id="modeDescription" aria-pressed="true" onclick="switchContentMode('description')">Descrizione Articolo</button>
+        <button type="button" id="modeBrand" aria-pressed="false" onclick="switchContentMode('brand')">Modalità Brand</button>
+      </div>
+
+      <div class="form-group" id="descriptionFieldsGroup">
+        <label for="descFree">Descrizione Articolo (massimo 2 righe)</label>
+        <textarea id="descFree" maxlength="120" oninput="updateDescription()" placeholder="Inserisci la descrizione su una o due righe">LANA &amp;
+CACHEMERE</textarea>
+      </div>
+
+      <div id="brandFieldsGroup" style="display: none;">
+        <div class="form-group">
+          <label for="brandSelect">Brand</label>
+          <div class="preset-select">
+            <select id="brandSelect" onchange="updateBrandSelection()">
+              <option value="">-- Seleziona Brand --</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="customBrandSelect">Loghi personalizzati</label>
+          <div class="preset-select">
+            <select id="customBrandSelect" onchange="updateCustomBrandSelection()">
+              <option value="">-- Nessun logo personalizzato --</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="oldPrice">Prezzo Originario</label>
+        <input type="text" id="oldPrice" value="99,90" placeholder="es. 99,90" oninput="updatePrices()">
+      </div>
+
+      <div class="form-group">
+        <label for="discountValue">Percentuale Sconto</label>
+        <div class="percent-input-wrapper">
+          <input type="number" id="discountValue" value="30" min="1" max="99" oninput="updatePrices()">
+          <div class="percent-stepper">
+            <button type="button" aria-label="Aumenta percentuale" onclick="stepDiscount(1)">▲</button>
+            <button type="button" aria-label="Diminuisci percentuale" onclick="stepDiscount(-1)">▼</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="newPrice">Prezzo Finale</label>
+        <input type="text" id="newPrice" value="69,90" placeholder="es. 69,90" oninput="updatePrices()">
+      </div>
+
+      <button class="btn-print" type="button" onclick="printCard()">Stampa Cartello (A4)</button>
+    </div>
+  </div>
+
+  <div class="print-sheet" id="printSheet">
+    <div class="frame-box" id="frameBox">
+      <img src="assets/img/decoup.png" alt="Decoro superiore" class="deco-img" id="decoTop">
+      <div class="frame-content" id="frameContent"></div>
+      <img src="assets/img/decodown.png" alt="Decoro inferiore" class="deco-img" id="decoBottom">
+    </div>
+  </div>
+
+  <script>
+    const CUSTOM_LOGOS_STORAGE_KEY = 'custom_brand_logos';
+    const cardState = {
+      mode: 'description',
+      description: 'LANA &\nCACHEMERE',
+      brand: { officialFile: '', customLogoId: '' },
+      oldPrice: '99,90',
+      discount: '30',
+      newPrice: '69,90'
+    };
+
+    function limitDescriptionLines(value) {
+      return value.split(/\r?\n/).slice(0, 2).join('\n');
+    }
+
+    function switchContentMode(mode) {
+      cardState.mode = mode;
+      document.getElementById('modeDescription').classList.toggle('active', mode === 'description');
+      document.getElementById('modeDescription').setAttribute('aria-pressed', String(mode === 'description'));
+      document.getElementById('modeBrand').classList.toggle('active', mode === 'brand');
+      document.getElementById('modeBrand').setAttribute('aria-pressed', String(mode === 'brand'));
+      document.getElementById('descriptionFieldsGroup').style.display = cardState.mode === 'description' ? 'block' : 'none';
+      document.getElementById('brandFieldsGroup').style.display = cardState.mode === 'brand' ? 'block' : 'none';
+      if (cardState.mode === 'brand' && !cardState.brand.officialFile && !cardState.brand.customLogoId) {
+        cardState.brand.officialFile = getDefaultBrandFile();
+        document.getElementById('brandSelect').value = cardState.brand.officialFile;
+      }
+      renderCard();
+    }
+
+    function updateDescription() {
+      const input = document.getElementById('descFree');
+      const limited = limitDescriptionLines(input.value);
+      if (limited !== input.value) {
+        const start = input.selectionStart;
+        const end = input.selectionEnd;
+        input.value = limited;
+        input.setSelectionRange(Math.min(start, limited.length), Math.min(end, limited.length));
+      }
+      cardState.description = input.value;
+      renderCard();
+    }
+
+    function cleanBrandName(fileName) {
+      return fileName.replace(/\.[^.]+$/, '').replace(/([a-z])([A-Z])/g, '$1 $2');
+    }
+
+    function readCustomLogos() {
+      try {
+        const logos = JSON.parse(localStorage.getItem(CUSTOM_LOGOS_STORAGE_KEY) || '[]');
+        return Array.isArray(logos) ? logos.filter(logo => logo && logo.id && logo.name && logo.data) : [];
+      } catch (error) {
+        console.error('Lettura dei loghi personalizzati fallita.', error);
+        return [];
+      }
+    }
+
+    function loadBrandSelect() {
+      const select = document.getElementById('brandSelect');
+      const { priorityFiles, remainingFiles } = getSortedLogoFiles();
+      [...priorityFiles, ...remainingFiles].forEach(fileName => {
+        appendBrandOption(select, fileName, cleanBrandName(fileName), priorityFiles.includes(fileName));
+      });
+    }
+
+    function loadCustomBrandSelect() {
+      const select = document.getElementById('customBrandSelect');
+      readCustomLogos()
+        .slice()
+        .sort((first, second) => first.name.localeCompare(second.name, 'it', { sensitivity: 'base' }))
+        .forEach(logo => {
+          const option = document.createElement('option');
+          option.value = logo.id;
+          option.textContent = `★ ${logo.name}`;
+          select.appendChild(option);
+        });
+    }
+
+    function getDefaultBrandFile() {
+      const orderedFiles = getOrderedLogoFiles();
+      return orderedFiles.find(fileName => fileName.toLowerCase().startsWith('269')) || orderedFiles[0] || '';
+    }
+
+    function updateBrandSelection() {
+      cardState.brand.officialFile = document.getElementById('brandSelect').value;
+      cardState.brand.customLogoId = '';
+      document.getElementById('customBrandSelect').value = '';
+      renderCard();
+    }
+
+    function updateCustomBrandSelection() {
+      cardState.brand.customLogoId = document.getElementById('customBrandSelect').value;
+      cardState.brand.officialFile = '';
+      document.getElementById('brandSelect').value = '';
+      renderCard();
+    }
+
+    function getBrandLogoSource() {
+      const customLogo = readCustomLogos().find(logo => logo.id === cardState.brand.customLogoId);
+      if (cardState.brand.customLogoId && !customLogo) {
+        return Promise.reject(new Error(`Logo personalizzato non trovato: ${cardState.brand.customLogoId}`));
+      }
+      return PrintLogoColors.getBrandLogoSrc(
+        customLogo?.data || '',
+        cardState.brand.customLogoId ? '' : cardState.brand.officialFile,
+        '',
+        'gold'
+      );
+    }
+
+    function updatePrices() {
+      cardState.oldPrice = document.getElementById('oldPrice').value;
+      cardState.discount = document.getElementById('discountValue').value;
+      cardState.newPrice = document.getElementById('newPrice').value;
+      renderCard();
+    }
+
+    function stepDiscount(delta) {
+      const input = document.getElementById('discountValue');
+      const minimum = Number(input.min);
+      const maximum = Number(input.max);
+      const current = Number.parseInt(input.value, 10) || minimum;
+      input.value = Math.min(maximum, Math.max(minimum, current + delta));
+      updatePrices();
+    }
+
+    function waitForCardImages() {
+      return Promise.all(Array.from(document.querySelectorAll('.frame-brand-logo'), image => {
+        if (image.complete) {
+          return image.naturalWidth > 0
+            ? Promise.resolve()
+            : Promise.reject(new Error(`Impossibile caricare il logo ${image.alt || ''}.`));
+        }
+
+        return new Promise((resolve, reject) => {
+          image.addEventListener('load', resolve, { once: true });
+          image.addEventListener('error', () => {
+            reject(new Error(`Impossibile caricare il logo ${image.alt || ''}.`));
+          }, { once: true });
+        });
+      }));
+    }
+
+    function renderCard() {
+      const content = document.getElementById('frameContent');
+      const title = cardState.mode === 'description'
+        ? `<div class="desc-title">${escapeHtml(cardState.description)}</div>`
+        : '<div class="frame-brand-logo-box"><img class="frame-brand-logo" alt="Logo brand"></div>';
+      content.innerHTML = `
+        ${title}
+        <div class="price-row-frame">
+          <span class="price-old-frame">€ ${escapeHtml(cardState.oldPrice)}</span>
+          <span class="price-percent-frame">-${escapeHtml(cardState.discount)}%</span>
+        </div>
+        <div class="price-final-frame">€ ${escapeHtml(cardState.newPrice)}</div>
+      `;
+
+      if (cardState.mode === 'brand' && (cardState.brand.customLogoId || cardState.brand.officialFile)) {
+        const image = content.querySelector('.frame-brand-logo');
+        const customLogo = readCustomLogos().find(logo => logo.id === cardState.brand.customLogoId);
+        image.alt = customLogo?.name || cleanBrandName(cardState.brand.officialFile);
+        getBrandLogoSource().then(source => {
+          if (image.isConnected) image.src = source;
+        }).catch(error => {
+          console.error('Caricamento del logo brand fallito.', error);
+        });
+      }
+    }
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, character => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+      })[character]);
+    }
+
+    function printCard() {
+      const prepareLogo = cardState.mode === 'brand'
+        ? getBrandLogoSource().then(source => {
+          const image = document.querySelector('.frame-brand-logo');
+          if (!image) throw new Error('Logo brand non presente nel cartello.');
+          image.src = source;
+        })
+        : Promise.resolve();
+
+      prepareLogo
+        .then(() => Promise.all([
+          document.fonts?.ready || Promise.resolve(),
+          waitForCardImages()
+        ]))
+        .then(() => window.print())
+        .catch(error => console.error('Preparazione del cartello per la stampa fallita.', error));
+    }
+
+    loadBrandSelect();
+    loadCustomBrandSelect();
+    renderCard();
+  </script>
+</body>
+</html>
