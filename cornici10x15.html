@@ -281,6 +281,7 @@
     }
 
     .frame-inner-scale {
+      position: relative;
       width: 100%;
       height: 100%;
       display: flex;
@@ -290,6 +291,41 @@
       gap: 6mm;
       transform: scale(1.18);
       transform-origin: center;
+    }
+
+    .frame-box:not(.layout-2-articles) .deco-img:first-child {
+      position: absolute;
+      top: 15.6mm;
+      transform: translateY(-3mm);
+    }
+
+    .frame-box:not(.layout-2-articles) .deco-img:last-child {
+      position: absolute;
+      bottom: 15.6mm;
+      transform: translateY(3mm);
+    }
+
+    .frame-box:not(.layout-2-articles) .frame-inner-scale {
+      transform: scale(1.2157);
+    }
+
+    .frame-box:not(.layout-2-articles) .frame-content {
+      transform: scale(1.03);
+    }
+
+    .frame-box.standard-max-lines .desc-title {
+      font-size: var(--standard-desc-font-size);
+    }
+
+    .frame-box:not(.layout-2-articles) .desc-title {
+      display: grid;
+      min-height: 3.075em;
+      place-items: center;
+    }
+
+    .frame-box.standard-two-line-desc .price-row-frame,
+    .frame-box.standard-two-line-desc .price-final-frame {
+      transform: translateY(-3px);
     }
 
     /* SPECIFICO PER LAYOUT 2 ARTICOLI */
@@ -592,11 +628,19 @@
     function toggleArticleSection() {
       const state = framesState[currentActiveFrame];
       state.twoArticlesActive = !state.twoArticlesActive;
-      if (!state.twoArticlesActive) {
+      if (state.twoArticlesActive) {
+        state.articles.forEach(article => {
+          article.desc = limitDescriptionLines(article.desc);
+        });
+      } else {
         state.activeRow = 0;
       }
       syncSidebarWithState();
       updateAll();
+    }
+
+    function limitDescriptionLines(value) {
+      return value.split(/\r?\n/).slice(0, 3).join('\n');
     }
 
     function selectActiveRow(rowIndex) {
@@ -648,7 +692,20 @@
     function updateData() {
       const state = framesState[currentActiveFrame];
       const art = state.articles[state.activeRow];
-      art.desc = document.getElementById('descFree').value;
+      const descInput = document.getElementById('descFree');
+      if (state.twoArticlesActive) {
+        const limitedDesc = limitDescriptionLines(descInput.value);
+        if (limitedDesc !== descInput.value) {
+          const selectionStart = descInput.selectionStart;
+          const selectionEnd = descInput.selectionEnd;
+          descInput.value = limitedDesc;
+          descInput.setSelectionRange(
+            Math.min(selectionStart, limitedDesc.length),
+            Math.min(selectionEnd, limitedDesc.length)
+          );
+        }
+      }
+      art.desc = descInput.value;
       art.oldPrice = document.getElementById('oldPrice').value;
       art.discount = document.getElementById('discountValue').value;
       art.newPrice = document.getElementById('newPrice').value;
@@ -663,6 +720,14 @@
       if (!state.twoArticlesActive) {
         box.classList.remove('layout-2-articles');
         const art = state.articles[0];
+        const lineCount = art.desc.split(/\r?\n/).length;
+        box.classList.toggle('standard-max-lines', lineCount > 3);
+        box.classList.toggle('standard-two-line-desc', lineCount === 2);
+        if (lineCount > 3) {
+          box.style.setProperty('--standard-desc-font-size', `${54 / lineCount}pt`);
+        } else {
+          box.style.removeProperty('--standard-desc-font-size');
+        }
         container.innerHTML = `
           <img src="assets/img/decoup.png" alt="Decoro Superiore" class="deco-img">
           <div class="frame-content">
@@ -677,6 +742,9 @@
         `;
       } else {
         box.classList.add('layout-2-articles');
+        box.classList.remove('standard-max-lines');
+        box.classList.remove('standard-two-line-desc');
+        box.style.removeProperty('--standard-desc-font-size');
         const art1 = state.articles[0];
         const art2 = state.articles[1];
         container.innerHTML = `
