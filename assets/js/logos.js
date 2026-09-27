@@ -13,6 +13,7 @@ const LOGO_FILES = [
 ];
 
 const LOGO_PATH = "assets/logos/";
+const LOGO_ASSET_VERSION = "20260927";
 
 // BRAND TEBE prioritari: mostrati per primi in ogni menu a cascata dei loghi,
 // subito dopo la voce di default, ed esclusi dal resto dell'elenco alfabetico.
@@ -44,7 +45,7 @@ function getOrderedLogoFiles() {
  * l'unica chiave condivisa tra menu, anteprime e stampa.
  */
 function getLogoSource(fileName) {
-  return fileName ? LOGO_PATH + fileName : '';
+  return fileName ? `${LOGO_PATH}${fileName}?v=${LOGO_ASSET_VERSION}` : '';
 }
 
 /**

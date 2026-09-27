@@ -14,11 +14,12 @@
 (() => {
   const PRINT_LOGOS_PATH = 'assets/img/printlogos/';
   const OFFICIAL_LOGOS_PATH = 'assets/logos/';
+  const LOGO_ASSET_VERSION = '20260927';
   const CUSTOM_LOGOS_STORAGE_KEY = 'custom_brand_logos';
   let customLogoCache = new Map(); // chiave: `${sourceData}|${colorKey}`
 
   function getOfficialPrintLogoPath(logoFileName, color) {
-    return PRINT_LOGOS_PATH + color + getGeneratedLogoFileName(logoFileName);
+    return `${PRINT_LOGOS_PATH}${color}${getGeneratedLogoFileName(logoFileName)}?v=${LOGO_ASSET_VERSION}`;
   }
 
   // Se un logo personalizzato viene rinominato/eliminato in un'altra scheda
@@ -114,7 +115,7 @@
       return Promise.resolve(source);
     }
 
-    const officialMatch = source.match(/assets\/logos\/([^/?#]+)$/);
+    const officialMatch = source.match(/assets\/logos\/([^/?#]+)(?:[?#].*)?$/);
     if (officialMatch && COLOR_RGB[color]) {
       return Promise.resolve(getOfficialPrintLogoPath(officialMatch[1], color));
     }
@@ -125,7 +126,9 @@
         return Promise.resolve(customLogoCache.get(cacheKey));
       }
       const rgb = parseColorToRgb(color);
-      const sourceUrl = officialMatch ? OFFICIAL_LOGOS_PATH + officialMatch[1] : source;
+      const sourceUrl = officialMatch
+        ? `${OFFICIAL_LOGOS_PATH}${officialMatch[1]}?v=${LOGO_ASSET_VERSION}`
+        : source;
       return colorizeDataUrl(sourceUrl, rgb[0], rgb[1], rgb[2]).then(result => {
         customLogoCache.set(cacheKey, result);
         return result;
