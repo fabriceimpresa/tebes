@@ -1156,6 +1156,9 @@
       doc.open();
       doc.write(buildPrintDocument(labelHTML, autoPrint));
       doc.close();
+      if (currentTemplateKey === 'outlet' && /^\d{4}(?:,\d{0,2})?$/.test(document.getElementById('inputOutlet').value.trim())) {
+        doc.querySelector('.tpl-outlet')?.classList.add('price-four-digits');
+      }
       return iframe;
     }
 
@@ -1252,7 +1255,7 @@
             .brand-text-fallback { font-family: Arial, sans-serif; font-weight: 800; color: #000; line-height: 1.1; letter-spacing: -0.5px; }
 
             /* TEMPLATE 1 PRINT */
-            .tpl-outlet { display: flex; flex-direction: column; justify-content: flex-start; height: 29mm; transform: translate(1mm, -1mm) scale(1.06); transform-origin: center center; }
+            .tpl-outlet { display: flex; flex-direction: column; justify-content: flex-start; height: 29mm; transform: translate(1mm, -1mm) scale(1.08); transform-origin: center center; }
             .tpl-outlet .label-top { display: flex; justify-content: space-between; align-items: center; height: 16mm; width: 100%; }
             .tpl-outlet .brand-logo-container { width: 35.625mm; height: 14mm; margin: 1mm 0 0 1.25mm; }
             .tpl-outlet .brand-text-fallback { font-size: 10pt; }
@@ -1264,9 +1267,10 @@
             .tpl-outlet .price-box { width: 36.25mm; display: flex; flex-direction: row; align-items: flex-end; justify-content: space-between; }
             .tpl-outlet .price-label { font: 300 11pt/1 'Bodoni Std', serif; letter-spacing: -0.5px; }
             .tpl-outlet .price-val { position: relative; top: 1.6mm; left: -5mm; transform-origin: right bottom; font: 300 24pt/1 'Bodoni Std', serif; letter-spacing: -1.5px; -webkit-text-stroke: 0.25px #fff; paint-order: fill stroke; white-space: nowrap; }
+            .tpl-outlet.price-four-digits .price-val { left: -2mm; }
 
             /* TEMPLATE 2 PRINT */
-            .tpl-final { display: flex; flex-direction: column; justify-content: flex-start; height: 29mm; transform: translate(1mm, -1mm) scale(1.06); transform-origin: center center; }
+            .tpl-final { display: flex; flex-direction: column; justify-content: flex-start; height: 29mm; transform: translate(1mm, -1mm) scale(1.08); transform-origin: center center; }
             .tpl-final .label-top { display: flex; justify-content: space-between; align-items: center; height: 16mm; width: 100%; }
             .tpl-final .brand-logo-container { width: 35.625mm; height: 14mm; margin: 1mm 0 0 1.25mm; }
             .tpl-final .brand-text-fallback { font-size: 10pt; }
