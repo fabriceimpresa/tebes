@@ -679,6 +679,10 @@
         state.articles.forEach(article => {
           article.desc = limitDescriptionLines(article.desc);
         });
+      } else if (!state.brandActive) {
+        state.articles.forEach(article => {
+          article.desc = limitDescriptionLines(article.desc, 4);
+        });
       }
       if (state.brandActive) {
         if (!state.brand.officialFile && !state.brand.customLogoId) {
@@ -689,8 +693,8 @@
       updateAll();
     }
 
-    function limitDescriptionLines(value) {
-      return value.split(/\r?\n/).slice(0, 3).join('\n');
+    function limitDescriptionLines(value, maxLines = 3) {
+      return value.split(/\r?\n/).slice(0, maxLines).join('\n');
     }
 
     function selectActiveRow(rowIndex) {
@@ -844,8 +848,9 @@
       const state = framesState[currentActiveFrame];
       const art = state.articles[state.activeRow];
       const descInput = document.getElementById('descFree');
-      if (state.twoArticlesActive) {
-        const limitedDesc = limitDescriptionLines(descInput.value);
+      if (!state.brandActive) {
+        const maxLines = state.twoArticlesActive ? 3 : 4;
+        const limitedDesc = limitDescriptionLines(descInput.value, maxLines);
         if (limitedDesc !== descInput.value) {
           const selectionStart = descInput.selectionStart;
           const selectionEnd = descInput.selectionEnd;
@@ -964,7 +969,11 @@
         frame.brandActive = savedFrame.brandActive;
         frame.brand = { ...savedFrame.brand };
         frame.activeRow = savedFrame.activeRow;
-        frame.articles = savedFrame.articles.map(article => ({ ...article }));
+        const maxLines = savedFrame.twoArticlesActive ? 3 : 4;
+        frame.articles = savedFrame.articles.map(article => ({
+          ...article,
+          desc: savedFrame.brandActive ? article.desc : limitDescriptionLines(article.desc, maxLines)
+        }));
       }
       switchActiveFrame(savedState.currentActiveFrame);
       updateAll();
