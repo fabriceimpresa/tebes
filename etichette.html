@@ -187,19 +187,19 @@
     .tpl-outlet .price-label { font: 300 30px/1 'Bodoni Std', serif; letter-spacing: -0.5px; }
     .tpl-outlet .price-val { position: relative; top: 10px; left: -20px; transform-origin: right bottom; font: 300 60px/1 'Bodoni Std', serif; letter-spacing: -1.5px; -webkit-text-stroke: 0.35px #fff; paint-order: fill stroke; white-space: nowrap; }
 
-    /* LAYOUT 2: FINAL PRICE */
-    .tpl-final { height: 100%; width: 100%; display: flex; flex-direction: column; justify-content: space-between; }
-    .tpl-final .label-top { display: flex; justify-content: space-between; align-items: center; height: 112px; width: 100%; }
-    .tpl-final .brand-logo-container { width: 310px; height: 120px; margin: 4px 0 0 10px; }
+    /* LAYOUT 2: DOPPIO PREZZO */
+    .tpl-final { height: 100%; width: 100%; display: flex; flex-direction: column; justify-content: flex-start; }
+    .tpl-final .label-top { display: flex; justify-content: space-between; align-items: center; height: 132px; width: 100%; }
+    .tpl-final .brand-logo-container { width: 285px; height: 112px; margin: 4px 0 0 10px; }
     .tpl-final .brand-text-fallback { font-size: 26px; }
-    .tpl-final .qr-container { width: 96px; height: 96px; display: flex; align-items: center; justify-content: center; }
+    .tpl-final .qr-container { width: 96px; height: 96px; margin-right: 8px; display: flex; align-items: center; justify-content: center; }
     .tpl-final .qr-container img, .tpl-final .qr-container canvas { width: 96px !important; height: 96px !important; }
-    .tpl-final .label-bottom { display: flex; justify-content: space-between; align-items: flex-end; padding-bottom: 18px; width: 100%; }
-    .tpl-final .custom-text-box { display: flex; align-items: flex-end; margin-bottom: 4px; }
-    .tpl-final .custom-text-val { font-size: 34px; font-weight: 400; letter-spacing: -0.3px; text-transform: uppercase; color: #000; line-height: 1; }
-    .tpl-final .price-box { display: flex; flex-direction: column; align-items: flex-end; }
-    .tpl-final .price-label { font-size: 21px; line-height: 1; margin-bottom: 2px; text-align: right; }
-    .tpl-final .price-val { font-size: 51px; font-weight: 800; line-height: 1; letter-spacing: -0.5px; }
+    .tpl-final .label-bottom { box-sizing: border-box; display: flex; justify-content: space-between; align-items: flex-end; height: 52px; margin-top: 18px; padding: 0 8px 0 10px; width: 100%; }
+    .tpl-final .price-box { width: 145px; display: flex; flex-direction: column; align-items: flex-end; }
+    .tpl-final .price-box-original { transform: translateX(-12px); }
+    .tpl-final .price-label { font: 300 18px/1 'Bodoni Std', serif; letter-spacing: -0.3px; margin-bottom: 1px; text-align: right; }
+    .tpl-final .price-val { font: 300 42px/1 'Bodoni Std', serif; letter-spacing: -1px; white-space: nowrap; }
+    .tpl-final .discount-val { width: 88px; font: 300 38px/1 'Bodoni Std', serif; text-align: center; white-space: nowrap; }
 
     /* LAYOUT 3 E 4: LAST CHANCE E LUXURY LABEL */
     .tpl-promo, .tpl-luxury { display: flex; align-items: center; justify-content: space-between; height: 100%; width: 100%; padding: 0 5px; }
@@ -466,9 +466,9 @@
         </div>
 
         <div class="template-card" id="card-tpl-final" onclick="setTemplate('final')">
-          <span class="tpl-name">2. Sale</span>
+          <span class="tpl-name">2. Doppio Prezzo</span>
           <div class="tpl-preview-box">
-            <img src="assets/thumbnail/label2thumb.png" alt="Miniatura Sale">
+            <img src="assets/thumbnail/label2thumb.png" alt="Miniatura Doppio Prezzo">
           </div>
         </div>
 
@@ -626,8 +626,8 @@
           </div>`
       },
       'final': {
-        name: '2. Final | Outlet Price',
-        fields: ['groupBrand', 'groupCustomBrand', 'groupCustomText', 'groupOutlet'],
+        name: '2. Doppio Prezzo',
+        fields: ['groupBrand', 'groupCustomBrand', 'groupOrig', 'groupDiscount', 'groupOutlet'],
         render: () => `
           <div class="tpl-final">
             <div class="label-top">
@@ -638,12 +638,14 @@
               <div class="qr-container" id="labelQR"></div>
             </div>
             <div class="label-bottom">
-              <div class="custom-text-box">
-                <span id="lblCustomText" class="custom-text-val">FINAL PRICE</span>
-              </div>
-              <div class="price-box">
+              <div class="price-box price-box-original">
                 <span class="price-label">Euro</span>
-                <span class="price-val" id="lblOutlet">89,00</span>
+                <span class="price-val" id="lblOrig">250,00</span>
+              </div>
+              <span class="discount-val" id="lblDiscount">-50%</span>
+              <div class="price-box price-outlet">
+                <span class="price-label">Euro</span>
+                <span class="price-val" id="lblOutlet">125,00</span>
               </div>
             </div>
           </div>`
@@ -792,9 +794,10 @@
         document.getElementById('promoSelect').value = "SALE";
       } else if (key === 'final') {
         if (lblOrigTitle) lblOrigTitle.innerText = "Prezzo Pieno (€)";
-        if (lblPriceTitle) lblPriceTitle.innerText = "Prezzo (€)";
-        if (lblCustomTextTitle) lblCustomTextTitle.innerText = "Testo Personalizzato / Etichetta";
-        document.getElementById('inputCustomText').value = "FINAL PRICE";
+        if (lblPriceTitle) lblPriceTitle.innerText = "Prezzo Finale (€)";
+        document.getElementById('inputOrig').value = "250,00";
+        document.getElementById('inputDiscount').value = "-50%";
+        document.getElementById('inputOutlet').value = "125,00";
       } else if (key === 'promo50') {
         if (lblOrigTitle) lblOrigTitle.innerText = "Prezzo Originario (€)";
         if (lblPriceTitle) lblPriceTitle.innerText = "Prezzo Finito (€)";
@@ -823,7 +826,7 @@
       const labelParam = urlParams.get('label') || urlParams.get('tpl') || urlParams.get('template');
       
       const paramMap = {
-        'doppioprezzo': 'outlet',
+        'doppioprezzo': 'final',
         'outlet': 'luxury',
         'finalprice': 'final',
         'final': 'final',
@@ -1050,7 +1053,7 @@
     }
 
     function calculateDiscount() {
-      if (currentTemplateKey === 'promo50') {
+      if (currentTemplateKey === 'promo50' || currentTemplateKey === 'final') {
         updateLabel();
         return;
       }
@@ -1263,18 +1266,18 @@
             .tpl-outlet .price-val { position: relative; top: 1.6mm; left: -5mm; transform-origin: right bottom; font: 300 24pt/1 'Bodoni Std', serif; letter-spacing: -1.5px; -webkit-text-stroke: 0.25px #fff; paint-order: fill stroke; white-space: nowrap; }
 
             /* TEMPLATE 2 PRINT */
-            .tpl-final { display: flex; flex-direction: column; justify-content: space-between; height: 29mm; }
-            .tpl-final .label-top { display: flex; justify-content: space-between; align-items: center; height: 14mm; width: 100%; }
-            .tpl-final .brand-logo-container { width: 38.75mm; height: 15mm; margin: 1mm 0 0 1.25mm; }
+            .tpl-final { display: flex; flex-direction: column; justify-content: flex-start; height: 29mm; transform: translate(1mm, -1mm) scale(1.06); transform-origin: center center; }
+            .tpl-final .label-top { display: flex; justify-content: space-between; align-items: center; height: 16mm; width: 100%; }
+            .tpl-final .brand-logo-container { width: 35.625mm; height: 14mm; margin: 1mm 0 0 1.25mm; }
             .tpl-final .brand-text-fallback { font-size: 10pt; }
-            .tpl-final .qr-container { width: 12mm; height: 12mm; display: flex; align-items: center; justify-content: center; }
+            .tpl-final .qr-container { width: 12mm; height: 12mm; margin-right: 1mm; display: flex; align-items: center; justify-content: center; }
             .tpl-final .qr-container img, .tpl-final .qr-container canvas { width: 12mm !important; height: 12mm !important; }
-            .tpl-final .label-bottom { display: flex; justify-content: space-between; align-items: flex-end; height: 13mm; padding-bottom: 2.5mm; width: 100%; }
-            .tpl-final .custom-text-box { display: flex; align-items: flex-end; margin-bottom: 0.6mm; }
-            .tpl-final .custom-text-val { font-size: 12pt; font-weight: 400; text-transform: uppercase; line-height: 1; letter-spacing: -0.3px; }
-            .tpl-final .price-box { display: flex; flex-direction: column; align-items: flex-end; }
-            .tpl-final .price-label { font-size: 7.5pt; line-height: 1; margin-bottom: 0.5mm; }
-            .tpl-final .price-val { font-size: 18pt; font-weight: 800; line-height: 1; letter-spacing: -0.5px; }
+            .tpl-final .label-bottom { box-sizing: border-box; display: flex; justify-content: space-between; align-items: flex-end; height: 9mm; margin-top: 1.5mm; padding: 0 1mm 0 1.25mm; width: 100%; }
+            .tpl-final .price-box { width: 18mm; display: flex; flex-direction: column; align-items: flex-end; }
+            .tpl-final .price-box-original { transform: translateX(-1.5mm); }
+            .tpl-final .price-label { font: 300 6.5pt/1 'Bodoni Std', serif; letter-spacing: -0.2px; margin-bottom: 0.3mm; text-align: right; }
+            .tpl-final .price-val { font: 300 17pt/1 'Bodoni Std', serif; letter-spacing: -0.3pt; white-space: nowrap; }
+            .tpl-final .discount-val { width: 11mm; font: 300 14pt/1 'Bodoni Std', serif; text-align: center; white-space: nowrap; }
 
             /* TEMPLATE 3 & 4 PRINT */
             .tpl-promo, .tpl-luxury { display: flex; align-items: center; justify-content: space-between; height: 29mm; width: 100%; padding: 0 0.5mm; }
