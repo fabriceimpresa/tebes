@@ -62,9 +62,10 @@
     return connected.find(p => /450/.test(p.modelName)) || connected[0] || null;
   }
 
-  // Etichetta 11354 (57 x 32 mm) con un'unica immagine a piena etichetta. Unità: twips (1/1440").
+  // Etichetta 11354 (2.25 x 1.25 in) con un'immagine a piena etichetta. Unità: twips (1/1440").
   // Il web service non riconosce il nome "11354 Multi-Purpose": si usa l'equivalente USA 30334,
   // identico nelle dimensioni (2-1/4 x 1-1/4 in).
+  // Mantiene i bounds già accettati dal servizio DYMO Connect.
   function buildLabelXml11354(base64Png) {
     return `<?xml version="1.0" encoding="utf-8"?>
 <DieCutLabel Version="8.0" Units="twips">

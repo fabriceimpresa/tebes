@@ -182,7 +182,7 @@
     .tpl-outlet .qr-container { width: 96px; height: 96px; display: flex; align-items: center; justify-content: center; }
     .tpl-outlet .qr-container img, .tpl-outlet .qr-container canvas { width: 96px !important; height: 96px !important; }
     .tpl-outlet .promo-label { position: relative; left: -4px; width: 96px; font: 38px Arial, Helvetica, sans-serif; letter-spacing: -1.4px; text-transform: uppercase; line-height: 1; text-align: center; }
-    .tpl-outlet .label-bottom { box-sizing: border-box; display: flex; justify-content: space-between; align-items: flex-end; height: 52px; margin-top: 26px; padding: 0 8px 0 10px; width: 100%; }
+    .tpl-outlet .label-bottom { box-sizing: border-box; display: flex; justify-content: space-between; align-items: flex-end; height: 52px; margin-top: 18px; padding: 0 8px 0 10px; width: 100%; }
     .tpl-outlet .price-box { width: 290px; display: flex; flex-direction: row; align-items: flex-end; justify-content: space-between; }
     .tpl-outlet .price-label { font: 300 30px/1 'Bodoni Std', serif; letter-spacing: -0.5px; }
     .tpl-outlet .price-val { position: relative; top: 10px; left: -20px; transform-origin: right bottom; font: 300 60px/1 'Bodoni Std', serif; letter-spacing: -1.5px; -webkit-text-stroke: 0.35px #fff; paint-order: fill stroke; white-space: nowrap; }
@@ -1138,8 +1138,8 @@
         // Dimensioni reali dell'etichetta fuori schermo: servono a html2canvas per il rendering
         iframe.style.left = '-10000px';
         iframe.style.top = '0';
-        iframe.style.width = '57mm';
-        iframe.style.height = '32mm';
+        iframe.style.width = '2.25in';
+        iframe.style.height = '1.25in';
         iframe.style.border = '0px';
         document.body.appendChild(iframe);
       }
@@ -1207,7 +1207,7 @@
               font-display: swap;
             }
             @page {
-              size: 57mm 32mm;
+              size: 2.25in 1.25in;
               margin: 0 !important;
             }
             * { 
@@ -1218,8 +1218,8 @@
               print-color-adjust: exact;
             }
             html, body {
-              width: 57mm !important;
-              height: 32mm !important;
+              width: 2.25in !important;
+              height: 1.25in !important;
               margin: 0 !important;
               padding: 0 !important;
               background: #ffffff;
@@ -1228,8 +1228,8 @@
             }
             
             .print-wrapper {
-              width: 57mm !important;
-              height: 32mm !important;
+              width: 2.25in !important;
+              height: 1.25in !important;
               padding: 1.5mm 2.5mm 1.5mm 2.5mm !important;
               background: #ffffff;
               color: #000000;
@@ -1249,7 +1249,7 @@
             .brand-text-fallback { font-family: Arial, sans-serif; font-weight: 800; color: #000; line-height: 1.1; letter-spacing: -0.5px; }
 
             /* TEMPLATE 1 PRINT */
-            .tpl-outlet { display: flex; flex-direction: column; justify-content: flex-start; height: 29mm; }
+            .tpl-outlet { display: flex; flex-direction: column; justify-content: flex-start; height: 29mm; transform: translate(1mm, -1mm) scale(1.06); transform-origin: center center; }
             .tpl-outlet .label-top { display: flex; justify-content: space-between; align-items: center; height: 16mm; width: 100%; }
             .tpl-outlet .brand-logo-container { width: 35.625mm; height: 14mm; margin: 1mm 0 0 1.25mm; }
             .tpl-outlet .brand-text-fallback { font-size: 10pt; }
@@ -1257,7 +1257,7 @@
             .tpl-outlet .qr-container { width: 12mm; height: 12mm; display: flex; align-items: center; justify-content: center; }
             .tpl-outlet .qr-container img, .tpl-outlet .qr-container canvas { width: 12mm !important; height: 12mm !important; }
             .tpl-outlet .promo-label { position: relative; left: -0.83mm; width: 12mm; font: 13.7pt Arial, Helvetica, sans-serif; letter-spacing: -0.4px; text-transform: uppercase; line-height: 1; text-align: center; }
-            .tpl-outlet .label-bottom { box-sizing: border-box; display: flex; justify-content: space-between; align-items: flex-end; height: 9mm; margin-top: 3mm; padding: 0 1mm 0 1.25mm; width: 100%; }
+            .tpl-outlet .label-bottom { box-sizing: border-box; display: flex; justify-content: space-between; align-items: flex-end; height: 9mm; margin-top: 1.5mm; padding: 0 1mm 0 1.25mm; width: 100%; }
             .tpl-outlet .price-box { width: 36.25mm; display: flex; flex-direction: row; align-items: flex-end; justify-content: space-between; }
             .tpl-outlet .price-label { font: 300 11pt/1 'Bodoni Std', serif; letter-spacing: -0.5px; }
             .tpl-outlet .price-val { position: relative; top: 1.6mm; left: -5mm; transform-origin: right bottom; font: 300 24pt/1 'Bodoni Std', serif; letter-spacing: -1.5px; -webkit-text-stroke: 0.25px #fff; paint-order: fill stroke; white-space: nowrap; }
