@@ -2,6 +2,7 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Gestione Loghi (uso interno) · TEBE · OPHILYA</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -236,6 +237,21 @@
   .modal-btn-cancel:hover { background: #e3dacb; }
   .modal-btn-confirm { background: #96382b; color: #fff; }
   .modal-btn-confirm:hover { background: #7a2d22; }
+
+@media screen and (max-width: 600px) {
+  body { padding: 64px 12px 16px; }
+  .container { padding: 16px; }
+  h1 { font-size: 1rem; letter-spacing: 1.2px; }
+  .app-close-btn { top: 10px; right: 10px; width: 44px; height: 44px; z-index: 20; }
+  .folder-bar, .logo-item { align-items: stretch; }
+  .folder-bar { flex-direction: column; gap: 8px; }
+  .btn-folder { width: 100%; min-height: 44px; }
+  .logo-item { gap: 10px; padding: 10px; }
+  .logo-item-name { min-width: 0; }
+  .btn-delete-row { min-height: 44px; }
+  .modal-box { padding: 30px 16px 16px; }
+  .modal-actions .modal-btn { flex: 1 1 100%; min-height: 44px; }
+}
 </style>
 </head>
 <body>

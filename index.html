@@ -40,12 +40,33 @@ button{font:inherit;cursor:pointer}
   height:100vh;
   align-self:start;
 }
+.mobile-menu-toggle,
+.sidebar-overlay{display:none}
 .logo{
+  position:relative;
   padding:0 8px 28px;
   display:flex;
   flex-direction:column;
   align-items:center;
   text-align:center;
+}
+.sidebar-close{
+  display:none;
+  position:absolute;
+  top:-16px;
+  right:-10px;
+  width:30px;
+  height:30px;
+  align-items:center;
+  justify-content:center;
+  border:1px solid var(--gold);
+  border-radius:50%;
+  background:var(--ivory);
+  box-shadow:0 1px 4px rgba(60,52,44,.18);
+  color:var(--gold);
+  font-size:13px;
+  line-height:1;
+  cursor:pointer;
 }
 .logo-name{
   font-size:17px;
@@ -222,7 +243,7 @@ body.creator-mode .content > #cash-tools-area{
   justify-content:space-between;
   align-items:end;
   gap:30px;
-  margin-bottom:43px;
+  margin-bottom:20px;
 }
 h1{
   margin:0;
@@ -434,6 +455,8 @@ h1{
   color:var(--taupe);
   font-size:17px;
   line-height:1;
+  font-family:Arial,Helvetica,sans-serif;
+  font-variant-emoji:text;
 }
 .lower{
   display:grid;
@@ -990,24 +1013,99 @@ body.ophilya .cash-tools-coming-soon{
 }
 @media(max-width:720px){
   .app{grid-template-columns:1fr}
-  .sidebar{display:none}
-  .topbar-inner{padding:0 18px}
+  .topbar{
+    position:sticky;
+    top:0;
+    z-index:35;
+    height:64px;
+    background:var(--ivory);
+  }
+  .topbar-inner{gap:8px;padding:0 12px}
+  .mobile-menu-toggle{
+    display:inline-flex;
+    flex:0 0 36px;
+    width:36px;
+    height:36px;
+    align-items:center;
+    justify-content:center;
+    border:1px solid var(--line);
+    background:var(--cream);
+    color:var(--taupe-dark);
+    font-size:18px;
+  }
+  .switch{flex:0 0 auto}
+  .switch button{padding:8px;font-size:9px}
+  .mode-switcher{flex:0 0 auto}
+  .mode-btn{padding:8px 6px;font-size:8px;letter-spacing:.06em}
+  .sidebar{
+    position:fixed;
+    top:64px;
+    bottom:0;
+    left:0;
+    z-index:45;
+    display:flex;
+    width:min(300px,86vw);
+    height:calc(100dvh - 64px);
+    padding:24px 20px;
+    overflow-y:auto;
+    transform:translateX(-102%);
+    transition:transform .22s ease;
+  }
+  body.mobile-menu-open .sidebar{transform:translateX(0)}
+  .sidebar-close{display:flex}
+  .sidebar-overlay{
+    position:fixed;
+    inset:64px 0 0;
+    z-index:40;
+    display:block;
+    border:0;
+    background:rgba(40,37,34,.42);
+    opacity:0;
+    pointer-events:none;
+    visibility:hidden;
+    transition:opacity .22s ease;
+  }
+  body.mobile-menu-open .sidebar-overlay{opacity:1;pointer-events:auto;visibility:visible}
   .status{display:none}
-  .mode-btn{padding:8px 9px;font-size:9px}
   .home-mark{left:auto;right:18px}
-  .content{padding:32px 20px}
-  .hero{display:block}
-  .identity{text-align:left;margin-top:24px}
+  .content{padding:24px 16px 65px}
+  .hero{
+    display:block;
+    text-align:center;
+  }
+  .hero-logo{max-width:185px;margin-left:auto;margin-right:auto}
+  .identity{text-align:center;margin-top:8px}
+  .identity strong{font-size:10px}
+  .identity span{display:none}
+  .section{margin:26px 0 12px;text-align:center}
+  .cartelli-carousel{
+    grid-template-rows:minmax(220px,auto);
+    grid-auto-columns:100%;
+  }
+  .cartelli-carousel .card,
+  .cartelli-carousel .coming-soon-card{scroll-snap-align:center}
   .lower{grid-template-columns:1fr}
-  .dymo-carousel{grid-auto-columns:85%}
-  .carousel-control.previous{left:-10px}
-  .carousel-control.next{right:-10px}
+  .dymo-carousel{grid-auto-columns:100%}
+  .dymo-carousel .dymo-card{scroll-snap-align:center}
+  .carousel-control{
+    width:34px;
+    height:34px;
+    font-size:23px;
+  }
+  .carousel-control.previous{left:-6px}
+  .carousel-control.next{right:-6px}
   .cash-tools-grid{grid-template-columns:1fr}
   .cash-tool.cash-tool-expanded{
     width:calc(100vw - 28px);
     min-height:0;
     max-height:calc(100vh - 28px);
   }
+}
+@media(max-width:360px){
+  .topbar-inner{gap:5px;padding:0 8px}
+  .mobile-menu-toggle{flex-basis:32px;width:32px;height:34px}
+  .switch button{padding:7px 6px;font-size:8px}
+  .mode-btn{padding:7px 4px;font-size:7px}
 }
 
 
@@ -1127,9 +1225,10 @@ body.ophilya .cash-tools-coming-soon{
 <body>
 <div class="app">
 
-  <aside class="sidebar">
+  <aside class="sidebar" id="dashboard-sidebar">
     <div class="logo">
       <div class="logo-name">STORE // CRAFT</div>
+      <button class="sidebar-close" type="button" aria-label="Chiudi il menu" onclick="toggleMobileSidebar(false)">✕</button>
     </div>
 
     <div class="line"></div>
@@ -1205,10 +1304,12 @@ body.ophilya .cash-tools-coming-soon{
       </div>
     </div>
   </aside>
+  <button class="sidebar-overlay" type="button" aria-label="Chiudi il menu" onclick="toggleMobileSidebar(false)"></button>
 
   <main>
     <header class="topbar">
       <div class="topbar-inner">
+        <button class="mobile-menu-toggle" type="button" aria-label="Apri il menu" aria-controls="dashboard-sidebar" aria-expanded="false" onclick="toggleMobileSidebar()">☰</button>
         <div class="switch">
           <button id="tebe" class="selected" onclick="changeStore('tebe')">TEBE</button>
           <button id="ophilya" onclick="changeStore('ophilya')">OPHILYA</button>
@@ -1250,7 +1351,7 @@ body.ophilya .cash-tools-coming-soon{
             </div>
           </div>
           <h2>Semplice</h2>
-          <div class="arrow">↗</div>
+          <div class="arrow">↗︎</div>
         </a>
 
         <a class="card" data-link="cartelli_sale.html">
@@ -1262,7 +1363,7 @@ body.ophilya .cash-tools-coming-soon{
             </div>
           </div>
           <h2>Sale</h2>
-          <div class="arrow">↗</div>
+          <div class="arrow">↗︎</div>
         </a>
 
         <a class="card" data-link="cartellopercentuale.html">
@@ -1274,7 +1375,7 @@ body.ophilya .cash-tools-coming-soon{
             </div>
           </div>
           <h2>Percentuale</h2>
-          <div class="arrow">↗</div>
+          <div class="arrow">↗︎</div>
         </a>
 
         <a class="card" data-link="cartelli_brand.html">
@@ -1286,7 +1387,7 @@ body.ophilya .cash-tools-coming-soon{
             </div>
           </div>
           <h2>Brand</h2>
-          <div class="arrow">↗</div>
+          <div class="arrow">↗︎</div>
         </a>
 
         <a class="card" data-link="cartelli_multiarticolo.html">
@@ -1298,7 +1399,7 @@ body.ophilya .cash-tools-coming-soon{
             </div>
           </div>
           <h2>Multi Articolo</h2>
-          <div class="arrow">↗</div>
+          <div class="arrow">↗︎</div>
         </a>
 
         <a class="card" data-link="albero.html">
@@ -1310,7 +1411,7 @@ body.ophilya .cash-tools-coming-soon{
             </div>
           </div>
           <h2>Albero Accessori</h2>
-          <div class="arrow">↗</div>
+          <div class="arrow">↗︎</div>
         </a>
         
         <a class="card" data-link="cornici10x15.html">
@@ -1322,7 +1423,7 @@ body.ophilya .cash-tools-coming-soon{
             </div>
           </div>
           <h2>Cornici 10x15</h2>
-          <div class="arrow">↗</div>
+          <div class="arrow">↗︎</div>
         </a>
         
         <a class="card" data-link="cornice21x27.html">
@@ -1334,11 +1435,11 @@ body.ophilya .cash-tools-coming-soon{
             </div>
           </div>
           <h2>Cornice 21x27</h2>
-          <div class="arrow">↗</div>
+          <div class="arrow">↗︎</div>
         </a>
         <a class="card" data-link="paletto.html">
           <h2>Paletto Ferro 1</h2>
-          <div class="arrow">↗</div>
+          <div class="arrow">↗︎</div>
         </a>
         <article class="coming-soon-card" aria-label="Paletto Ferro 2, Coming Soon">
           <h2>Paletto Ferro 2</h2>
@@ -1360,7 +1461,7 @@ body.ophilya .cash-tools-coming-soon{
             <div class="dymo-card-body">
               <h2>Semplice</h2>
             </div>
-            <div class="arrow">↗</div>
+            <div class="arrow">↗︎</div>
           </a>
 
           <a class="card dymo-card" data-link="etichette.html?label=doppioprezzo" aria-label="Apri etichette DYMO Doppio Prezzo">
@@ -1371,7 +1472,7 @@ body.ophilya .cash-tools-coming-soon{
             <div class="dymo-card-body">
               <h2>Doppio Prezzo</h2>
             </div>
-            <div class="arrow">↗</div>
+            <div class="arrow">↗︎</div>
           </a>
           <a class="card dymo-card" data-link="etichette.html?label=promo" aria-label="Apri etichette DYMO Articolo">
             <div class="dymo-card-preview">
@@ -1381,7 +1482,7 @@ body.ophilya .cash-tools-coming-soon{
             <div class="dymo-card-body">
               <h2>Articolo</h2>
             </div>
-            <div class="arrow">↗</div>
+            <div class="arrow">↗︎</div>
           </a>
 
         </div>
@@ -1523,6 +1624,16 @@ function goTo(sectionId){
 
 function openPage(page){
   window.location.href = `${page}?store=${encodeURIComponent(currentStore)}`;
+}
+
+function toggleMobileSidebar(forceOpen){
+  const isOpen = typeof forceOpen === "boolean"
+    ? forceOpen
+    : !document.body.classList.contains("mobile-menu-open");
+  document.body.classList.toggle("mobile-menu-open", isOpen);
+  const toggle = document.querySelector(".mobile-menu-toggle");
+  toggle?.setAttribute("aria-expanded", String(isOpen));
+  toggle?.setAttribute("aria-label", isOpen ? "Chiudi il menu" : "Apri il menu");
 }
 
 function openCashTool(toolId){
