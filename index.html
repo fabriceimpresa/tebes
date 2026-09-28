@@ -1905,10 +1905,50 @@ function updateDymoCarouselControls(){
   next.disabled = carousel.scrollLeft >= maxScrollLeft - 1;
 }
 
+/* Posizioni di partenza delle colonne del carosello (nel carosello dei cartelli
+   due widget condividono la stessa colonna). */
+function getCarouselColumnStarts(carousel){
+  const carouselLeft = carousel.getBoundingClientRect().left;
+  const starts = [];
+  Array.from(carousel.children).forEach(item => {
+    if(item.offsetParent === null) return;
+    const left = Math.round(item.getBoundingClientRect().left - carouselLeft + carousel.scrollLeft);
+    if(!starts.some(start => Math.abs(start - left) <= 2)) starts.push(left);
+  });
+  return starts.sort((a, b) => a - b);
+}
+
+/* Sposta il carosello di un gruppo di colonne intere, così ogni widget resta
+   inquadrato per bene: in vista cellulare si avanza di un solo widget, su
+   schermi larghi di tutte le colonne visibili. Se si tocca di nuovo la
+   freccia mentre l'animazione è in corso, si riparte dalla destinazione
+   precedente e non dalla posizione intermedia. */
+function scrollCarouselByStep(carousel, direction){
+  const starts = getCarouselColumnStarts(carousel);
+  if(!starts.length) return;
+
+  const maxScrollLeft = carousel.scrollWidth - carousel.clientWidth;
+  const columnStep = starts.length > 1 ? starts[1] - starts[0] : carousel.clientWidth;
+  const visibleColumns = Math.max(1, Math.floor((carousel.clientWidth + 2) / columnStep));
+
+  const pending = carousel._carouselTarget;
+  const fromLeft = pending && Date.now() - pending.time < 700 ? pending.left : carousel.scrollLeft;
+
+  let currentIndex = 0;
+  starts.forEach((start, index) => {
+    if(Math.abs(start - fromLeft) < Math.abs(starts[currentIndex] - fromLeft)) currentIndex = index;
+  });
+
+  const targetIndex = Math.min(starts.length - 1, Math.max(0, currentIndex + direction * visibleColumns));
+  const targetLeft = Math.min(maxScrollLeft, Math.max(0, starts[targetIndex]));
+  carousel._carouselTarget = { left: targetLeft, time: Date.now() };
+  carousel.scrollTo({ left: targetLeft, behavior:"smooth" });
+}
+
 function scrollDymoCarousel(direction){
   const carousel = document.getElementById("dymo-carousel");
   if(!carousel) return;
-  carousel.scrollBy({ left: direction * carousel.clientWidth * 0.85, behavior:"smooth" });
+  scrollCarouselByStep(carousel, direction);
 }
 
 function updateCartelliCarouselControls(){
@@ -1927,7 +1967,7 @@ function updateCartelliCarouselControls(){
 function scrollCartelliCarousel(direction){
   const carousel = document.getElementById("cartelli-carousel");
   if(!carousel) return;
-  carousel.scrollBy({left: direction * carousel.clientWidth * 0.85, behavior:"smooth"});
+  scrollCarouselByStep(carousel, direction);
 }
 
 function toggleSidebarSection(sectionId){
