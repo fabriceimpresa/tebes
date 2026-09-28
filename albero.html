@@ -275,7 +275,7 @@
       }
     }
 
-    @media screen and (max-width: 1200px) {
+    @media screen and (max-width: 760px) and (pointer: coarse) {
       body {
         align-items: center;
         flex-direction: column;
@@ -295,6 +295,11 @@
 
     @media (max-width: 760px) {
       body { padding: 12px; }
+      .sidebar { flex-basis: 300px; }
+      .preview-area { padding-bottom: 12px; }
+    }
+
+    @media screen and (max-width: 760px) and (pointer: coarse) {
       body {
         align-items: center;
         flex-direction: column;
@@ -313,16 +318,16 @@
       .form-group input { font-size: 16px; }
       .card-selector button { min-height: 44px; }
       .print-sheet { zoom: 0.75; }
-      .app-close-btn { top: 10px; right: 10px; width: 44px; height: 44px; }
+      .app-close-btn { top: 10px; right: 4px; width: 44px; height: 44px; }
       .floating-nav-box { display: none; }
     }
 
-    @media screen and (max-width: 680px) { .print-sheet { zoom: 0.64; } }
-    @media screen and (max-width: 530px) { .print-sheet { zoom: 0.53; } }
-    @media screen and (max-width: 420px) { .print-sheet { zoom: 0.40; } }
-    @media screen and (max-width: 360px) { .print-sheet { zoom: 0.34; } }
+    @media screen and (max-width: 680px) and (pointer: coarse) { .print-sheet { zoom: 0.64; } }
+    @media screen and (max-width: 530px) and (pointer: coarse) { .print-sheet { zoom: 0.53; } }
+    @media screen and (max-width: 420px) and (pointer: coarse) { .print-sheet { zoom: 0.40; } }
+    @media screen and (max-width: 360px) and (pointer: coarse) { .print-sheet { zoom: 0.34; } }
 
-    @media screen and (max-width: 760px) {
+    @media screen and (max-width: 760px) and (pointer: coarse) {
       .controls { padding: 12px 12px 12px; }
       .controls h1, .controls h2 {
         font-size: 0.95rem;

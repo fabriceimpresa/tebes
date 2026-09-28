@@ -39,6 +39,7 @@ Un insieme di strumenti statici per il visual merchandising, pensati per la stam
 10. **Due tipi di utenti in dashboard.**
     - **CREATOR** (predefinita, non memorizzata) è per chi fa visual merchandising.
     - **CASSIERE** riordina la pagina con `order` CSS e nasconde tutto tranne gli *Strumenti Cassa*.
+11. **La vista cellulare è solo per i cellulari.** Le regole della vista mobile (menu a scomparsa in dashboard, pannello e foglio in colonna negli editor, pulsanti riposizionati, firma STORE // CRAFT in fondo) stanno in media query gated con `and (pointer: coarse)` e con soglia **massima 760 px** (720 px in dashboard). Così restano fuori sia i tablet, che hanno il puntatore grossolano ma sono più larghi, sia le finestre desktop ristrette, che hanno `pointer: fine` e devono continuare a comportarsi come prima. Non allargare quelle soglie e non togliere il gating.
 
 ## Convenzioni
 
@@ -98,6 +99,7 @@ Un insieme di strumenti statici per il visual merchandising, pensati per la stam
   - e inoltre `switchMode(mode)`, `setFrameMode(mode)`, `switchActiveFrame(side)`
 
   Non cambiare questi nomi né gli id degli elementi indicati sopra: il tema li cerca per nome.
+- **Tema per cartello.** Le pagine con più cartelli indipendenti possono tenere lo stato del tema per ciascun cartello definendo `window.temaItaliaIsActive()` (il tema è attivo sul cartello corrente?) e `window.temaItaliaDeactivate()` (ripristina solo il cartello corrente). Quando si cambia cartello, la pagina chiama `window.refreshTemaItaliaButton()` per riallineare il pulsante. Oggi lo fa solo Cornici 10×15.
 - **Altri controlli.** `window.deactivateTemaItalia()` lo disattiva. Paletto, per esempio, lo chiama quando si esce dalla modalità Standard.
 
 ### `assets/js/dymo-direct.js`
@@ -153,6 +155,7 @@ Non ci sono test automatici né linter. Per verificare:
 - Attiva e disattiva il pulsante Made in Italy e verifica che torni lo stato precedente.
 - Se hai toccato loghi o stampa, prova in **Safari e Chrome**. Safari è il browser che in passato ha rovinato i colori in stampa.
 - Se hai toccato la dashboard, controlla anche la modalità OPHILYA, la modalità CASSIERE e le larghezze ridotte (punti di rottura a 1300, 1000, 850 e 720 px).
+- Se hai toccato la vista cellulare, controlla i tre casi: telefono (schermo stretto e touch), tablet e finestra desktop ristretta. Solo il primo deve cambiare aspetto.
 
 ## Registro delle decisioni
 
@@ -187,3 +190,4 @@ Non ci sono test automatici né linter. Per verificare:
   - Aggiunto Albero Accessori (tre cartellini per foglio).
   - Aggiornati il widget Cornici e l'etichetta Articolo (descrizione limitata a 16 caratteri).
   - Aggiunto Paletto Ferro 1 con Standard/Doppio Prezzo, poi Doppio Articolo (ogni articolo può essere descrizione o doppio prezzo).
+  - Cornici 10×15: tasto Made in Italy indipendente per ciascuna cornice.

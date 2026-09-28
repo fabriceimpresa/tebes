@@ -1012,7 +1012,32 @@ body.ophilya .cash-tools-coming-soon{
   .cartelli-carousel .card,
   .cartelli-carousel .coming-soon-card{scroll-snap-align:center}
 }
+/* Finestra desktop stretta o tablet: si mantiene il comportamento storico. */
 @media(max-width:720px){
+  .app{grid-template-columns:1fr}
+  .sidebar{display:none}
+  .topbar-inner{padding:0 18px}
+  .status{display:none}
+  .mode-btn{padding:8px 9px;font-size:9px}
+  .home-mark{left:auto;right:18px}
+  .content{padding:32px 20px}
+  .hero{display:block}
+  .identity{text-align:left;margin-top:24px}
+  .lower{grid-template-columns:1fr}
+  .dymo-carousel{grid-auto-columns:85%}
+  .carousel-control.previous{left:-10px}
+  .carousel-control.next{right:-10px}
+  .cash-tools-grid{grid-template-columns:1fr}
+  .cash-tool.cash-tool-expanded{
+    width:calc(100vw - 28px);
+    min-height:0;
+    max-height:calc(100vh - 28px);
+  }
+}
+
+/* Solo cellulari: schermo stretto e puntatore impreciso (dito).
+   I tablet restano sulla vista desktop. */
+@media(max-width:720px) and (pointer:coarse){
   .app{grid-template-columns:1fr}
   .topbar{
     position:sticky;
@@ -1093,6 +1118,9 @@ body.ophilya .cash-tools-coming-soon{
   .identity strong{font-size:10px;color:#8b8175}
   .identity span{display:none}
   .section{margin:26px 0 12px;text-align:center;color:var(--gold)}
+  /* In cassa il titolo e' superfluo: i widget seguono subito l'intestazione. */
+  body.cassiere-mode .content > #strumenti-cassa{display:none}
+  body.cassiere-mode #cash-tools-area{margin-top:26px}
   .mobile-brand-footer{
     display:block;
     margin:20px 0 0;
@@ -1127,7 +1155,7 @@ body.ophilya .cash-tools-coming-soon{
     max-height:calc(100vh - 28px);
   }
 }
-@media(max-width:360px){
+@media(max-width:360px) and (pointer:coarse){
   .topbar-inner{gap:5px;padding:0 8px}
   .mobile-menu-toggle{flex-basis:32px;width:32px;height:34px}
   .switch button{padding:7px 6px;font-size:8px}

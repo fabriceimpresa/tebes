@@ -520,7 +520,7 @@
       }
     }
 
-    @media screen and (max-width: 1200px) {
+    @media screen and (max-width: 760px) and (pointer: coarse) {
       body { align-items: center; flex-direction: column; gap: 14px; overflow-x: hidden; padding: 20px 20px 84px; }
       .sidebar { width: 100%; max-width: 560px; order: 1; }
       .app-close-btn { right: 18px; }
@@ -545,7 +545,7 @@
       }
     }
 
-    @media screen and (max-width: 760px) {
+    @media screen and (max-width: 760px) and (pointer: coarse) {
       body {
         align-items: center;
         flex-direction: column;
@@ -564,12 +564,12 @@
       .floating-nav-box { display: none; }
     }
 
-    @media screen and (max-width: 680px) { .print-sheet { zoom: 0.64; } }
-    @media screen and (max-width: 530px) { .print-sheet { zoom: 0.53; } }
-    @media screen and (max-width: 420px) { .print-sheet { zoom: 0.40; } }
-    @media screen and (max-width: 360px) { .print-sheet { zoom: 0.34; } }
+    @media screen and (max-width: 680px) and (pointer: coarse) { .print-sheet { zoom: 0.64; } }
+    @media screen and (max-width: 530px) and (pointer: coarse) { .print-sheet { zoom: 0.53; } }
+    @media screen and (max-width: 420px) and (pointer: coarse) { .print-sheet { zoom: 0.40; } }
+    @media screen and (max-width: 360px) and (pointer: coarse) { .print-sheet { zoom: 0.34; } }
 
-    @media screen and (max-width: 760px) {
+    @media screen and (max-width: 760px) and (pointer: coarse) {
       .controls { padding: 12px 12px 12px; }
       .controls h1, .controls h2 {
         font-size: 0.95rem;
@@ -741,6 +741,7 @@
       document.getElementById('btnLeft').classList.toggle('active', side === 'left');
       document.getElementById('btnRight').classList.toggle('active', side === 'right');
       syncSidebarWithState();
+      if (typeof window.refreshTemaItaliaButton === 'function') window.refreshTemaItaliaButton();
     }
 
     function setFrameMode(mode) {
@@ -1031,26 +1032,36 @@
       renderFrameContent('right');
     }
 
-    window.captureTemaItaliaState = () => ({
-      currentActiveFrame,
-      frames: JSON.parse(JSON.stringify(framesState))
-    });
+    // Tema Made in Italy indipendente per ciascuna cornice: per ogni lato si
+    // conserva lo stato di prima dell'attivazione (null = tema spento).
+    const temaItaliaFrames = { left: null, right: null };
 
-    window.restoreTemaItaliaState = savedState => {
-      for (const side of ['left', 'right']) {
-        const savedFrame = savedState.frames[side];
-        const frame = framesState[side];
-        frame.twoArticlesActive = savedFrame.twoArticlesActive;
-        frame.brandActive = savedFrame.brandActive;
-        frame.brand = { ...savedFrame.brand };
-        frame.activeRow = savedFrame.activeRow;
-        const maxLines = savedFrame.twoArticlesActive ? 3 : 4;
-        frame.articles = savedFrame.articles.map(article => ({
-          ...article,
-          desc: savedFrame.brandActive ? article.desc : limitDescriptionLines(article.desc, maxLines)
-        }));
-      }
-      switchActiveFrame(savedState.currentActiveFrame);
+    window.temaItaliaIsActive = () => temaItaliaFrames[currentActiveFrame] !== null;
+
+    window.applyTemaItaliaDescription = () => {
+      const state = framesState[currentActiveFrame];
+      temaItaliaFrames[currentActiveFrame] = {
+        frame: JSON.parse(JSON.stringify(state)),
+        descPreset: document.getElementById('descPreset').value
+      };
+
+      state.brandActive = false;
+      state.twoArticlesActive = false;
+      state.activeRow = 0;
+      state.articles[0].desc = 'MADE\nIN ITALY';
+      document.getElementById('descPreset').value = 'MADE IN ITALY';
+      syncSidebarWithState();
+      updateAll();
+    };
+
+    window.temaItaliaDeactivate = () => {
+      const saved = temaItaliaFrames[currentActiveFrame];
+      temaItaliaFrames[currentActiveFrame] = null;
+      if (!saved) return;
+
+      framesState[currentActiveFrame] = saved.frame;
+      document.getElementById('descPreset').value = saved.descPreset;
+      syncSidebarWithState();
       updateAll();
     };
 

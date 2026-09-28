@@ -24,25 +24,48 @@
 
   let isActive = false;
   let previousState = null;
-  button.addEventListener('click', () => {
-    if (!isActive) previousState = captureState();
-    isActive = !isActive;
+
+  function paintButton() {
     button.classList.toggle('is-active', isActive);
     button.title = isActive ? 'Disattiva tema Italia' : 'Attiva tema Italia';
     button.setAttribute('aria-label', button.title);
     document.querySelectorAll('.tema-italia-flag').forEach(flag => {
       flag.classList.toggle('is-visible', isActive);
     });
+  }
+
+  button.addEventListener('click', () => {
+    // Le pagine con piu' cartelli indipendenti tengono loro lo stato del tema.
+    if (typeof window.temaItaliaIsActive === 'function') {
+      isActive = window.temaItaliaIsActive();
+    }
+    if (!isActive) previousState = captureState();
+    isActive = !isActive;
+    paintButton();
 
     if (isActive) {
       applyMadeInItalyDescription();
+    } else if (typeof window.temaItaliaDeactivate === 'function') {
+      window.temaItaliaDeactivate();
+      previousState = null;
     } else {
       restoreState(previousState);
       previousState = null;
     }
   });
 
+  // Permette alle pagine con stato proprio di riallineare il pulsante,
+  // per esempio quando si passa da un cartello all'altro.
+  window.refreshTemaItaliaButton = function refreshTemaItaliaButton() {
+    if (typeof window.temaItaliaIsActive !== 'function') return;
+    isActive = window.temaItaliaIsActive();
+    paintButton();
+  };
+
   window.deactivateTemaItalia = function deactivateTemaItalia() {
+    if (typeof window.temaItaliaIsActive === 'function') {
+      isActive = window.temaItaliaIsActive();
+    }
     if (isActive) button.click();
   };
 
