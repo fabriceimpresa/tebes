@@ -11,14 +11,16 @@
       min-height: 100vh;
       display: flex;
       gap: 20px;
+      justify-content: center;
       padding: 20px;
+      position: relative;
       background: #f8f6f1;
       color: #282522;
       font-family: Arial, sans-serif;
     }
 
     .sidebar {
-      flex: 0 0 340px;
+      flex: 0 1 360px;
       position: relative;
       z-index: 1;
       font-family: system-ui, -apple-system, sans-serif;
@@ -120,8 +122,10 @@
     .btn-print:hover { background: #7a2d22; }
 
     .preview-area {
-      min-width: 0;
-      flex: 1;
+      flex: 0 0 210mm;
+      width: 210mm;
+      display: flex;
+      align-items: flex-start;
       overflow: auto;
     }
 
