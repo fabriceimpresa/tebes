@@ -34,15 +34,17 @@ Alcune funzioni richiedono la rete o servizi locali:
 
 ### Dashboard: `index.html`
 
-- **Selettore negozio (TEBE / OPHILYA).** Cambia logo e indirizzo nell'intestazione e aggiunge `?store=` a tutti i link. Per ora OPHILYA è un segnaposto: cartelli, galleria PDF e strumenti cassa mostrano "Coming Soon".
+- **Selettore negozio (TEBE / OPHILYA).** Cambia logo e indirizzo nell'intestazione e aggiunge `?store=` a tutti i link. Per ora OPHILYA è un segnaposto: cartelli e galleria PDF mostrano "Coming Soon". Gli strumenti cassa invece funzionano come in TEBE.
 - **Selettore modalità (CREATOR / CASSIERE).** CREATOR mostra tutti i widget. CASSIERE mostra solo gli *Strumenti Cassa*. La pagina si apre sempre in CREATOR.
 - **Menu laterale.** Sezioni comprimibili; lo stato aperto/chiuso è ricordato nel `localStorage`.
-- **Strumenti cassa** (solo TEBE):
+- **Strumenti cassa** (TEBE e OPHILYA):
   - calcolo sconto
   - calcolo aliquota di sconto
   - cambio valuta (USD, GBP, RUB, ILS, CNY, JPY)
   - calcolo IVA (4 / 5 / 10 / 22 %, in entrambe le direzioni)
   - generatore QR (link predefinito: Instagram TEBE)
+
+  Su computer e tablet uno strumento si apre in un popup quando lo tocchi. Sul telefono gli strumenti sono già pronti all'uso nella pagina.
 
 ### Editor cartelli (*Crea Cartelli*), A4 verticale
 
@@ -57,6 +59,7 @@ Alcune funzioni richiedono la rete o servizi locali:
 | `cornici10x15.html` | **Cornici 10×15**: due inserti per foglio, sinistro e destro modificabili separatamente. Modalità: Standard / Doppio Articolo / Brand. |
 | `cornice21x27.html` | **Cornice 21×27**: un inserto grande. Modalità: Descrizione / Brand. |
 | `paletto.html` | **Paletto Ferro 1**: due cartelli indipendenti per foglio, con linea di taglio tratteggiata. Modalità: Standard / Doppio Prezzo / Doppio Articolo. |
+| `paletto18x12.html` | **Paletto 18x12**: come Paletto Ferro 1, con cartelli più grandi (179,94 × 127,09 mm). |
 
 Nei fogli Semplice, Sale, Percentuale, Brand e Multi Articolo lo stesso cartello è stampato due volte. La copia inferiore è ruotata di 180°: si ritaglia la striscia e la si piega lungo il bordo comune, ottenendo un cartello leggibile da entrambi i lati.
 
@@ -92,7 +95,7 @@ I loghi personalizzati compaiono poi nei menu "Loghi personalizzati" degli edito
 
 ```
 index.html                  Dashboard
-cartelli_*.html, cartellopercentuale.html, albero.html, paletto.html,
+cartelli_*.html, cartellopercentuale.html, albero.html, paletto.html, paletto18x12.html,
 cornici10x15.html, cornice21x27.html      Editor cartelli
 etichette.html              Editor etichette DYMO
 galleria-pdf.html, pdf-viewer.html        Materiali PDF

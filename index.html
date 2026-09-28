@@ -217,7 +217,7 @@ body.is-scrolled .home-mark,
   display:flex;
   flex-direction:column;
   max-width:1450px;
-  padding:48px 50px 65px;
+  padding:32px 50px 65px;
   margin:auto;
 }
 .content > *{order:10}
@@ -243,7 +243,7 @@ body.creator-mode .content > #cash-tools-area{
   justify-content:space-between;
   align-items:end;
   gap:30px;
-  margin-bottom:20px;
+  margin-bottom:6px;
 }
 h1{
   margin:0;
@@ -288,6 +288,8 @@ h1{
   color:#8b8175;
   margin:31px 0 14px;
 }
+/* Un po' di respiro in piu' sopra la prima sezione (solo desktop: sul telefono vale la regola mobile). */
+#cartelli{margin-top:43px}
 .mobile-brand-footer{display:none}
 .cards{
   display:grid;
@@ -714,7 +716,8 @@ nav button .soon-tag{
   border:1px solid var(--line);
   transition:border-color .18s ease, box-shadow .18s ease, transform .18s ease;
 }
-.cash-tool:hover{
+.cash-tool:hover,
+.cash-tool.cash-tool-active{
   border-color:var(--gold);
   box-shadow:0 10px 30px rgba(40,37,34,.12);
   transform:translateY(-2px);
@@ -937,11 +940,6 @@ nav button .soon-tag{
   letter-spacing:.04em;
   text-transform:uppercase;
 }
-body.ophilya .cash-tool > *{
-  opacity:.18;
-  filter:grayscale(1);
-}
-body.ophilya .cash-tool,
 body.ophilya .cards .card,
 body.ophilya .dymo-carousel .dymo-card:not([data-link]),
 body.ophilya .lower .wide-card{
@@ -953,14 +951,12 @@ body.ophilya .lower .wide-card{
 body.ophilya .cards .card > *,
 body.ophilya .dymo-carousel .dymo-card:not([data-link]) > *,
 body.ophilya .lower .wide-card > *,
-body.ophilya .cash-tool > *,
 body.ophilya .coming-soon-card h2{
   visibility:hidden;
 }
 body.ophilya .cards .card::before,
 body.ophilya .dymo-carousel .dymo-card:not([data-link])::before,
-body.ophilya .lower .wide-card::before,
-body.ophilya .cash-tool::before{
+body.ophilya .lower .wide-card::before{
   content:"";
   position:absolute;
   z-index:1;
@@ -969,8 +965,7 @@ body.ophilya .cash-tool::before{
 }
 body.ophilya .cards .card::after,
 body.ophilya .dymo-carousel .dymo-card:not([data-link])::after,
-body.ophilya .lower .wide-card::after,
-body.ophilya .cash-tool::after{
+body.ophilya .lower .wide-card::after{
   content:"Coming Soon";
   position:absolute;
   z-index:2;
@@ -1118,6 +1113,7 @@ body.ophilya .cash-tools-coming-soon{
   .identity strong{font-size:10px;color:#8b8175}
   .identity span{display:none}
   .section{margin:26px 0 12px;text-align:center;color:var(--gold)}
+  #cartelli{margin-top:26px}
   /* In cassa il titolo e' superfluo: i widget seguono subito l'intestazione. */
   body.cassiere-mode .content > #strumenti-cassa{display:none}
   body.cassiere-mode #cash-tools-area{margin-top:26px}
@@ -1149,11 +1145,8 @@ body.ophilya .cash-tools-coming-soon{
   .carousel-control.previous{left:-6px}
   .carousel-control.next{right:-6px}
   .cash-tools-grid{grid-template-columns:1fr}
-  .cash-tool.cash-tool-expanded{
-    width:calc(100vw - 28px);
-    min-height:0;
-    max-height:calc(100vh - 28px);
-  }
+  /* Sul telefono gli strumenti cassa non si aprono in popup: sono gia' pronti all'uso. */
+  .cash-tool{scroll-margin-top:80px}
 }
 @media(max-width:360px) and (pointer:coarse){
   .topbar-inner{gap:5px;padding:0 8px}
@@ -1301,6 +1294,8 @@ body.ophilya .cash-tools-coming-soon{
       <button onclick="openPage('albero.html')">Albero Accessori</button>
       <button onclick="openPage('cornici10x15.html')">Cornici 10 x 15</button>
       <button onclick="openPage('cornice21x27.html')">Cornice 21 x 27</button>
+      <button onclick="openPage('paletto.html')">Paletto Ferro 1</button>
+      <button onclick="openPage('paletto18x12.html')">Paletto 18x12</button>
       </nav>
     </div>
 
@@ -1501,9 +1496,13 @@ body.ophilya .cash-tools-coming-soon{
           <h2>Paletto Ferro 1</h2>
           <div class="arrow">↗︎</div>
         </a>
-        <article class="coming-soon-card" aria-label="Paletto Ferro 2, Coming Soon">
-          <h2>Paletto Ferro 2</h2>
-        </article>
+        <a class="card" data-link="paletto18x12.html">
+          <div>
+            <div class="number">10</div>
+          </div>
+          <h2>Paletto 18x12</h2>
+          <div class="arrow">↗︎</div>
+        </a>
         </div>
         <button class="carousel-control next" id="cartelli-next" type="button" aria-label="Cartelli successivi" onclick="scrollCartelliCarousel(1)">›</button>
       </div>
@@ -1698,9 +1697,24 @@ function toggleMobileSidebar(forceOpen){
   toggle?.setAttribute("aria-label", isOpen ? "Chiudi il menu" : "Apri il menu");
 }
 
+// Stessa soglia delle regole CSS della vista cellulare.
+const phoneViewQuery = window.matchMedia("(max-width:720px) and (pointer:coarse)");
+
+function isPhoneView(){
+  return phoneViewQuery.matches;
+}
+
 function openCashTool(toolId){
+  // Sul telefono i widget sono gia' pronti nella pagina: si scorre fino allo strumento, senza popup.
+  if(isPhoneView()){
+    const tool = document.getElementById(toolId);
+    toggleMobileSidebar(false);
+    tool?.scrollIntoView({behavior:"smooth", block:"start"});
+    setActiveCashTool(tool);
+    window.setTimeout(() => tool?.querySelector("input, select, button")?.focus({preventScroll:true}), 450);
+    return;
+  }
   document.getElementById("strumenti-cassa")?.scrollIntoView({behavior:"smooth", block:"start"});
-  if(currentStore !== "tebe") return;
   focusCashTool(null, document.getElementById(toolId));
   window.setTimeout(() => document.getElementById(toolId)?.querySelector("input, select, button:not(.cash-tool-close)")?.focus({preventScroll:true}), 450);
 }
@@ -1708,11 +1722,23 @@ function openCashTool(toolId){
 function focusCashTool(event, tool){
   if(event?.target.closest(".cash-tool-close")) return;
   const area = document.querySelector(".cash-tools-area");
-  if(!area || !tool || currentStore !== "tebe") return;
+  if(!area || !tool) return;
+  if(isPhoneView()){
+    setActiveCashTool(tool);
+    return;
+  }
   document.querySelectorAll(".cash-tool-expanded").forEach(item => item.classList.remove("cash-tool-expanded"));
   area.classList.add("is-focused");
   tool.classList.add("cash-tool-expanded");
   if(tool.id === "cash-currency") updateCurrencyLabels(true);
+}
+
+// Sul telefono lo strumento in uso resta evidenziato finche' non se ne usa un altro.
+function setActiveCashTool(tool){
+  document.querySelectorAll(".cash-tool-active").forEach(item => {
+    if(item !== tool) item.classList.remove("cash-tool-active");
+  });
+  tool?.classList.add("cash-tool-active");
 }
 
 function closeCashTool(event){
@@ -1747,6 +1773,17 @@ function updateCurrencyLabels(expanded){
 
 document.addEventListener("keydown", event => {
   if(event.key === "Escape") closeCashTool();
+});
+
+// Anche scrivendo in un campo (es. passando da un widget all'altro con la tastiera) si evidenzia il suo strumento.
+document.addEventListener("focusin", event => {
+  const tool = event.target.closest?.(".cash-tool");
+  if(tool && isPhoneView()) setActiveCashTool(tool);
+});
+
+// Se la vista diventa quella del telefono con un popup aperto, lo si chiude.
+phoneViewQuery.addEventListener?.("change", event => {
+  if(event.matches) closeCashTool();
 });
 
 function formatCurrency(value){

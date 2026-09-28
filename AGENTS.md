@@ -16,7 +16,7 @@ Un insieme di strumenti statici per il visual merchandising, pensati per la stam
    - Le etichette usano `@page { size: 2.25in 1.25in }`.
 
    Le misure sono state tarate su una specifica grafica: pannelli da 118,35 mm, margine superiore di 14,56 mm, bordi da 0,34 mm, testi da 76,23 pt / 105,8 pt. Non arrotondarle e non convertirle in `px`/`rem`.
-4. **Cartelli bifacciali.** In Semplice, Sale, Percentuale, Brand e Multi Articolo il foglio contiene `#cardTop` e `#cardBottom` con lo stesso contenuto. `#cardBottom` è ruotato con `rotate(180deg)` e non ha bordo inferiore, così i due pannelli condividono un lato che fa da linea di piega. Ogni modifica al cartello va resa in **entrambe** le metà. Fa eccezione Paletto: due cartelli *indipendenti*, ciascuno con il proprio stato, separati da una `.cut-line` tratteggiata.
+4. **Cartelli bifacciali.** In Semplice, Sale, Percentuale, Brand e Multi Articolo il foglio contiene `#cardTop` e `#cardBottom` con lo stesso contenuto. `#cardBottom` è ruotato con `rotate(180deg)` e non ha bordo inferiore, così i due pannelli condividono un lato che fa da linea di piega. Ogni modifica al cartello va resa in **entrambe** le metà. Fanno eccezione Paletto e Paletto 18x12: due cartelli *indipendenti*, ciascuno con il proprio stato, separati da una `.cut-line` tratteggiata.
 5. **Il colore dei loghi è nei file, non nei filtri CSS.** Safari (e a volte Chrome) ignorano il `filter` CSS in stampa, e ricolorare via canvas un'immagine letta da disco fallisce con `file://` perché il canvas risulta "tainted". Quindi:
    - Ogni logo ufficiale in `assets/logos/` deve avere quattro varianti pregenerate in `assets/img/printlogos/`, con nome `{white,black,red,gold}<NOME>.png`. L'estensione è sempre `.png` minuscolo, anche se l'originale è `.PNG`.
    - Le pagine ottengono l'URL del logo da `PrintLogoColors.getBrandLogoSrc()` / `resolve()` (`assets/js/print-logo-colors.js`). I colori con nome puntano a quei file; i loghi personalizzati (data URL) e i colori esadecimali arbitrari vengono ricolorati via canvas e tenuti in cache in memoria.
@@ -35,11 +35,11 @@ Un insieme di strumenti statici per il visual merchandising, pensati per la stam
    - Nei menu brand vengono prima i loghi ufficiali, con i `PRIORITY_BRANDS` (i brand della casa TEBE `269TEBE.PNG`, `Tebe269.png`, `Tebe.png`) in cima e con la stella. I personalizzati sono in un menu separato "Loghi personalizzati", con il prefisso `★`.
    - Selezionarne uno di un tipo azzera l'altro.
    - Il brand predefinito è il primo file che inizia con `269`.
-9. **OPHILYA è un segnaposto.** Il selettore in dashboard esiste, ma in modalità OPHILYA cartelli, galleria PDF e strumenti cassa sono coperti da "Coming Soon" e gli strumenti cassa non si aprono. Le sottopagine hanno il marchio TEBE e ignorano `?store=`. Non creare varianti OPHILYA se non richiesto.
+9. **OPHILYA è un segnaposto.** Il selettore in dashboard esiste, ma in modalità OPHILYA cartelli e galleria PDF sono coperti da "Coming Soon". Gli strumenti cassa invece sono attivi e identici a quelli di TEBE (QR predefinito compreso). Le sottopagine hanno il marchio TEBE e ignorano `?store=`. Non creare varianti OPHILYA se non richiesto.
 10. **Due tipi di utenti in dashboard.**
     - **CREATOR** (predefinita, non memorizzata) è per chi fa visual merchandising.
     - **CASSIERE** riordina la pagina con `order` CSS e nasconde tutto tranne gli *Strumenti Cassa*.
-11. **La vista cellulare è solo per i cellulari.** Le regole della vista mobile (menu a scomparsa in dashboard, pannello e foglio in colonna negli editor, pulsanti riposizionati, firma STORE // CRAFT in fondo) stanno in media query gated con `and (pointer: coarse)` e con soglia **massima 760 px** (720 px in dashboard). Così restano fuori sia i tablet, che hanno il puntatore grossolano ma sono più larghi, sia le finestre desktop ristrette, che hanno `pointer: fine` e devono continuare a comportarsi come prima. Non allargare quelle soglie e non togliere il gating.
+11. **La vista cellulare è solo per i cellulari.** Le regole della vista mobile (menu a scomparsa in dashboard, pannello e foglio in colonna negli editor, pulsanti riposizionati, firma STORE // CRAFT in fondo, strumenti cassa già pronti all'uso invece che in popup) stanno in media query gated con `and (pointer: coarse)` e con soglia **massima 760 px** (720 px in dashboard). Così restano fuori sia i tablet, che hanno il puntatore grossolano ma sono più larghi, sia le finestre desktop ristrette, che hanno `pointer: fine` e devono continuare a comportarsi come prima. Non allargare quelle soglie e non togliere il gating. In JS la stessa condizione è in `phoneViewQuery` di `index.html`: tienila allineata alla media query.
 
 ## Convenzioni
 
@@ -51,7 +51,7 @@ Un insieme di strumenti statici per il visual merchandising, pensati per la stam
   - Le tre frasi lunghe hanno un corpo più piccolo (`long-text` / `is-long-description`).
 - **Tipografia dei cartelli:**
   - Arial con `letter-spacing: -0.05em` (il "tracking −50" della specifica) per Semplice, Sale, Percentuale, Brand e Multi Articolo.
-  - Bodoni Std (OTF locale) per Paletto, etichette e cartellini.
+  - Bodoni Std (OTF locale) per Paletto, Paletto 18x12, etichette e cartellini.
   - Castoro (Google Fonts) per le cornici.
   - Oro d'accento `#cc9e25` per "sale" e percentuali; nero per i prezzi.
 - **Struttura dell'interfaccia degli editor:**
@@ -191,3 +191,6 @@ Non ci sono test automatici né linter. Per verificare:
   - Aggiornati il widget Cornici e l'etichetta Articolo (descrizione limitata a 16 caratteri).
   - Aggiunto Paletto Ferro 1 con Standard/Doppio Prezzo, poi Doppio Articolo (ogni articolo può essere descrizione o doppio prezzo).
   - Cornici 10×15: tasto Made in Italy indipendente per ciascuna cornice.
+- **29/09/2026**:
+  - Strumenti cassa: sul telefono niente popup, il widget in uso resta evidenziato; attivi anche in OPHILYA.
+  - Aggiunto Paletto 18x12 (`paletto18x12.html`), copia di Paletto Ferro 1 con cartelli da 1062,61 × 750,53 px a 150 dpi (179,94 × 127,09 mm) e contenuti riproporzionati di circa 1,25×. Prende il posto del segnaposto "Paletto Ferro 2" in dashboard.
