@@ -288,6 +288,7 @@ h1{
   color:#8b8175;
   margin:31px 0 14px;
 }
+.mobile-brand-footer{display:none}
 .cards{
   display:grid;
   grid-template-rows:repeat(2, minmax(220px, auto));
@@ -1082,16 +1083,27 @@ body.ophilya .cash-tools-coming-soon{
   body.mobile-menu-open .sidebar-overlay{opacity:1;pointer-events:auto;visibility:visible}
   .status{display:none}
   .home-mark{left:auto;right:18px}
-  .content{padding:24px 16px 65px}
+  .content{padding:24px 16px 0}
   .hero{
     display:block;
     text-align:center;
   }
   .hero-logo{max-width:185px;margin-left:auto;margin-right:auto}
   .identity{text-align:center;margin-top:8px}
-  .identity strong{font-size:10px}
+  .identity strong{font-size:10px;color:#8b8175}
   .identity span{display:none}
-  .section{margin:26px 0 12px;text-align:center}
+  .section{margin:26px 0 12px;text-align:center;color:var(--gold)}
+  .mobile-brand-footer{
+    display:block;
+    margin:20px 0 0;
+    padding-bottom:26px;
+    text-align:center;
+    font-size:19px;
+    letter-spacing:.16em;
+    font-weight:400;
+    color:var(--gold);
+    text-transform:uppercase;
+  }
   .cartelli-carousel{
     grid-template-rows:minmax(220px,auto);
     grid-auto-columns:100%;
@@ -1586,6 +1598,8 @@ body.ophilya .cash-tools-coming-soon{
       </div>
 
     </section>
+
+    <div class="mobile-brand-footer">STORE // CRAFT</div>
   </main>
 </div>
 
