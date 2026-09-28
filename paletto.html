@@ -113,7 +113,7 @@
 
     .mode-switch.card-mode-switch button {
       padding: 9px 3px;
-      font-size: 0.62rem;
+      font-size: 0.58rem;
       letter-spacing: 0.02em;
     }
 
@@ -124,7 +124,8 @@
       font-size: 0.72rem;
     }
 
-    .form-group input {
+    .form-group input,
+    .form-group select {
       width: 100%;
       padding: 0.45rem;
       border: 1px solid #e3dacb;
@@ -134,10 +135,49 @@
       font-size: 0.82rem;
     }
 
-    .form-group input:focus {
+    .form-group input:focus,
+    .form-group select:focus {
       outline: none;
       border-color: #b49a62;
       box-shadow: 0 0 4px rgba(180, 154, 98, 0.35);
+    }
+
+    .preset-select {
+      position: relative;
+      margin-bottom: 0.6rem;
+      overflow: hidden;
+      border: 1px solid #e3dacb;
+      border-radius: 4px;
+      background: #f8f6f1;
+    }
+
+    .preset-select:focus-within {
+      border-color: #b49a62;
+      box-shadow: 0 0 4px rgba(180, 154, 98, 0.35);
+    }
+
+    .form-group .preset-select select {
+      appearance: none;
+      padding-right: 2rem;
+      border: none;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .preset-select::after {
+      content: '▼';
+      position: absolute;
+      inset: 0 0 0 auto;
+      width: 1.6rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-left: 1px solid #e3dacb;
+      background: #f3ede0;
+      color: #b49a62;
+      font-size: 0.6rem;
+      pointer-events: none;
     }
 
     .btn-print {
@@ -245,24 +285,69 @@
 
     .card-title {
       position: absolute;
-      top: 18.5mm;
+      top: 17mm;
       left: 2mm;
       width: calc(100% - 4mm);
       font-family: "Bodoni Std", "Bodoni MT", serif;
-      font-size: 20pt;
+      font-size: 27pt;
       font-style: italic;
       font-weight: 400;
-      letter-spacing: -0.05em;
+      letter-spacing: -0.025em;
       line-height: 1.15;
       white-space: nowrap;
       opacity: 1;
       visibility: visible;
       transform: translateY(0);
-      transition: opacity 0.35s ease, transform 0.4s ease, visibility 0.4s;
+      transition: top 0.4s ease, opacity 0.35s ease, transform 0.4s ease, visibility 0.4s;
+    }
+
+    .card-title.is-long-description {
+      font-size: 21pt;
     }
 
     .card-title .separator {
       color: #c99a27;
+    }
+
+    .card-title .description-tail {
+      color: #231f20;
+    }
+
+    .card.is-made-in-italy .card-title {
+      color: #231f20;
+      transition: color 0.35s ease;
+    }
+
+    .card.is-made-in-italy .card-title .separator {
+      color: #c99a27;
+    }
+
+    .card.is-made-in-italy .card-title .description-tail {
+      color: #231f20;
+    }
+
+    .card-content .paletto-made-in-italy-flag {
+      position: absolute;
+      top: 9.5mm;
+      left: 50%;
+      width: 7mm;
+      height: auto;
+      border: 0;
+      box-shadow: none;
+      object-fit: contain;
+      transform: translateX(-50%);
+    }
+
+    .card.is-made-in-italy .card-title {
+      top: 24.5mm;
+    }
+
+    .card.is-made-in-italy .card-price {
+      top: 37mm;
+    }
+
+    .card.is-made-in-italy .card-logo {
+      top: 75mm;
     }
 
     .card-price {
@@ -276,6 +361,7 @@
       letter-spacing: -0.05em;
       line-height: 1;
       white-space: nowrap;
+      transition: top 0.4s ease;
     }
 
     .card-price-row {
@@ -322,6 +408,147 @@
       transform: translateY(-5mm);
     }
 
+    .dual-items,
+    .dual-divider {
+      display: none;
+    }
+
+    .card.is-double-article .card-content > .card-title,
+    .card.is-double-article .card-content > .card-price-row,
+    .card.is-double-article .card-content > .card-price {
+      display: none;
+    }
+
+    .card.is-double-article .dual-items {
+      position: absolute;
+      top: 26mm;
+      left: 50%;
+      width: 108%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      transform: translateX(-50%);
+    }
+
+    .card.is-double-article .dual-item {
+      position: relative;
+      min-width: 0;
+      height: 38mm;
+    }
+
+    .card.is-double-article .dual-item-title {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      overflow: hidden;
+      font-family: "Bodoni Std", "Bodoni MT", serif;
+      font-size: 14pt;
+      font-style: italic;
+      font-weight: 400;
+      letter-spacing: -0.025em;
+      line-height: 1.15;
+      white-space: nowrap;
+      text-overflow: clip;
+    }
+
+    .card.is-double-article .dual-item-title.is-long-description {
+      font-size: 11pt;
+    }
+
+    .card.is-double-article .dual-item-price {
+      position: absolute;
+      top: 8mm;
+      left: 0;
+      width: 100%;
+      overflow: hidden;
+      font-family: "Bodoni Std", "Bodoni MT", serif;
+      font-size: 70pt;
+      font-weight: 400;
+      letter-spacing: -0.05em;
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    .card.is-double-article.is-article-double-price .dual-item-title {
+      display: none;
+    }
+
+    .card.is-double-article .dual-item-price-row {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      display: none;
+      align-items: baseline;
+      justify-content: center;
+      gap: 3mm;
+      font-family: "Bodoni Std", "Bodoni MT", serif;
+      font-size: 17pt;
+      letter-spacing: -0.05em;
+      line-height: 1;
+      white-space: nowrap;
+      text-align: center;
+    }
+
+    .card.is-double-article.is-article-double-price .dual-item-price-row {
+      display: flex;
+    }
+
+    .card.is-double-article.is-article-double-price .dual-item-price {
+      top: 8mm;
+      font-size: 70pt;
+    }
+
+    .card.is-double-article .dual-divider {
+      position: absolute;
+      top: 36mm;
+      left: 50%;
+      height: 24mm;
+      display: block;
+      border-left: 0.7mm solid #c99a27;
+      transform: translateX(-50%);
+    }
+
+    .article-mode-switch {
+      margin: -0.35rem 0 0.9rem;
+    }
+
+    .article-mode-switch button {
+      padding-right: 4px;
+      padding-left: 4px;
+      white-space: nowrap;
+    }
+
+    .article-fields {
+      padding-top: 0.3rem;
+      border-top: 1px solid #e3dacb;
+    }
+
+    .article-fields h2 {
+      margin-bottom: 0.5rem;
+      color: #8a6a35;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .article-fields .form-group {
+      margin-bottom: 0.7rem;
+    }
+
+    .article-fields [data-article-fields="double"] {
+      display: none;
+    }
+
+    #doubleArticleFields.is-double-price [data-article-fields="standard"] {
+      display: none;
+    }
+
+    #doubleArticleFields.is-double-price [data-article-fields="double"] {
+      display: block;
+    }
+
     .card-logo {
       position: absolute;
       top: 70mm;
@@ -329,6 +556,7 @@
       width: 45mm;
       height: auto;
       transform: translateX(-50%);
+      transition: top 0.4s ease;
     }
 
     .cut-line {
@@ -399,17 +627,28 @@
       <div class="mode-switch" aria-label="Seleziona la modalità del cartello">
         <button type="button" class="active" id="standardMode" onclick="setMode('standard')">STANDARD</button>
         <button type="button" id="doublePriceMode" onclick="setMode('double')">DOPPIO<br>PREZZO</button>
+        <button type="button" id="doubleArticleMode" onclick="setMode('doubleArticle')">DOPPIO<br>ARTICOLO</button>
       </div>
 
       <div id="standardFields">
         <div class="form-group">
-          <label for="descriptionLeft">Descrizione sinistra</label>
-          <input id="descriptionLeft" type="text" value="Vera Pelle" oninput="updateCards()">
-        </div>
-
-        <div class="form-group">
-          <label for="descriptionRight">Descrizione destra</label>
-          <input id="descriptionRight" type="text" value="Genuine Leather" oninput="updateCards()">
+          <label for="descriptionPreset">Testo Descrittivo</label>
+          <div class="preset-select">
+            <select id="descriptionPreset" onchange="applyDescriptionPreset()">
+              <option value="">-- Seleziona un testo --</option>
+              <option value="Special Deal">Special Deal</option>
+              <option value="Final Price">Final Price</option>
+              <option value="Summer Sale">Summer Sale</option>
+              <option value="Spring Sale">Spring Sale</option>
+              <option value="Winter Sale">Winter Sale</option>
+              <option value="Black Friday">Black Friday</option>
+              <option value="Made in Italy">Made in Italy</option>
+              <option value="Vera Pelle • Genuine Leather">Vera Pelle • Genuine Leather</option>
+              <option value="Made in Italy • Genuine Leather">Made in Italy • Genuine Leather</option>
+              <option value="Fino ad esaurimento scorte">Fino ad esaurimento scorte</option>
+            </select>
+          </div>
+          <input id="description" type="text" value="Vera Pelle • Genuine Leather" placeholder="-- Testo Libero --" oninput="updateDescription()">
         </div>
 
         <div class="form-group">
@@ -433,24 +672,124 @@
         </div>
       </div>
 
+      <div id="doubleArticleFields" hidden>
+        <div class="section-label">Modalità articoli</div>
+        <div class="mode-switch article-mode-switch" aria-label="Seleziona la modalità degli articoli">
+          <button type="button" class="active" id="articleStandardMode" onclick="setArticlePriceMode('standard')">DESCRIZIONE</button>
+          <button type="button" id="articleDoublePriceMode" onclick="setArticlePriceMode('double')">DOPPIO PREZZO</button>
+        </div>
+        <div class="article-fields">
+          <h2>Articolo sinistro</h2>
+          <div data-article-fields="standard">
+            <div class="form-group">
+              <label for="firstDescriptionPreset">Testo Descrittivo</label>
+              <div class="preset-select">
+                <select id="firstDescriptionPreset" onchange="applyArticleDescriptionPreset('first')">
+                  <option value="">-- Seleziona un testo --</option>
+                </select>
+              </div>
+              <input id="firstDescription" type="text" placeholder="-- Testo Libero --" oninput="updateArticleDescription('first')">
+            </div>
+            <div class="form-group">
+              <label for="firstPrice">Prezzo</label>
+              <input id="firstPrice" type="text" inputmode="decimal" oninput="updateCards()">
+            </div>
+          </div>
+          <div data-article-fields="double">
+            <div class="form-group">
+              <label for="firstOldPrice">Prezzo Originario</label>
+              <input id="firstOldPrice" type="text" inputmode="decimal" oninput="updateCards()">
+            </div>
+            <div class="form-group">
+              <label for="firstDiscount">Percentuale Sconto</label>
+              <input id="firstDiscount" type="number" min="1" max="99" oninput="updateCards()">
+            </div>
+            <div class="form-group">
+              <label for="firstFinalPrice">Prezzo Finale</label>
+              <input id="firstFinalPrice" type="text" inputmode="decimal" oninput="updateCards()">
+            </div>
+          </div>
+        </div>
+        <div class="article-fields">
+          <h2>Articolo destro</h2>
+          <div data-article-fields="standard">
+            <div class="form-group">
+              <label for="secondDescriptionPreset">Testo Descrittivo</label>
+              <div class="preset-select">
+                <select id="secondDescriptionPreset" onchange="applyArticleDescriptionPreset('second')">
+                  <option value="">-- Seleziona un testo --</option>
+                </select>
+              </div>
+              <input id="secondDescription" type="text" placeholder="-- Testo Libero --" oninput="updateArticleDescription('second')">
+            </div>
+            <div class="form-group">
+              <label for="secondPrice">Prezzo</label>
+              <input id="secondPrice" type="text" inputmode="decimal" oninput="updateCards()">
+            </div>
+          </div>
+          <div data-article-fields="double">
+            <div class="form-group">
+              <label for="secondOldPrice">Prezzo Originario</label>
+              <input id="secondOldPrice" type="text" inputmode="decimal" oninput="updateCards()">
+            </div>
+            <div class="form-group">
+              <label for="secondDiscount">Percentuale Sconto</label>
+              <input id="secondDiscount" type="number" min="1" max="99" oninput="updateCards()">
+            </div>
+            <div class="form-group">
+              <label for="secondFinalPrice">Prezzo Finale</label>
+              <input id="secondFinalPrice" type="text" inputmode="decimal" oninput="updateCards()">
+            </div>
+          </div>
+        </div>
+      </div>
+
       <button class="btn-print" type="button" onclick="window.print()">Stampa Cartelli (A4)</button>
     </div>
   </aside>
 
   <main class="print-sheet" aria-label="Anteprima paletto su foglio A4">
-    <article class="card" id="cardTop">
+    <article class="card tema-italia-no-side-flags" id="cardTop">
       <div class="card-content">
-        <div class="card-title"><span class="description-left"></span><span class="separator"> · </span><span class="description-right"></span></div>
+        <img class="tema-italia-flag paletto-made-in-italy-flag" src="assets/img/madeinitaly.png" alt="Bandiera italiana">
+        <div class="card-title"></div>
         <div class="card-price-row"><span class="price-old"></span><span class="price-percent"></span></div>
         <div class="card-price"></div>
+        <div class="dual-items">
+          <div class="dual-item">
+            <div class="card-title dual-item-title"></div>
+            <div class="dual-item-price-row"><span class="price-old"></span><span class="price-percent"></span></div>
+            <div class="dual-item-price"></div>
+          </div>
+          <div class="dual-item">
+            <div class="card-title dual-item-title"></div>
+            <div class="dual-item-price-row"><span class="price-old"></span><span class="price-percent"></span></div>
+            <div class="dual-item-price"></div>
+          </div>
+        </div>
+        <div class="dual-divider" aria-hidden="true"></div>
         <img class="card-logo" src="assets/img/footer_tebe.png" alt="TEBE">
       </div>
     </article>
-    <article class="card" id="cardBottom">
+    <article class="card tema-italia-no-side-flags" id="cardBottom">
       <div class="card-content">
-        <div class="card-title"><span class="description-left"></span><span class="separator"> · </span><span class="description-right"></span></div>
+        <img class="tema-italia-flag paletto-made-in-italy-flag" src="assets/img/madeinitaly.png" alt="Bandiera italiana">
+        <div class="card-title"></div>
         <div class="card-price-row"><span class="price-old"></span><span class="price-percent"></span></div>
         <div class="card-price"></div>
+        <div class="dual-items">
+          <div class="dual-item">
+            <div class="card-title dual-item-title"></div>
+            <div class="dual-item-price-row"><span class="price-old"></span><span class="price-percent"></span></div>
+            <div class="dual-item-price"></div>
+          </div>
+          <div class="dual-item">
+            <div class="card-title dual-item-title"></div>
+            <div class="dual-item-price-row"><span class="price-old"></span><span class="price-percent"></span></div>
+            <div class="dual-item-price"></div>
+          </div>
+        </div>
+        <div class="dual-divider" aria-hidden="true"></div>
         <img class="card-logo" src="assets/img/footer_tebe.png" alt="TEBE">
       </div>
     </article>
@@ -460,14 +799,50 @@
   <script src="assets/js/tema-italia.js"></script>
   <script>
     const cardStates = {
-      top: { mode: 'standard', descriptionLeft: 'Vera Pelle', descriptionRight: 'Genuine Leather', price: '29,90', oldPrice: '59,80', discount: '50', finalPrice: '29,90' },
-      bottom: { mode: 'standard', descriptionLeft: 'Vera Pelle', descriptionRight: 'Genuine Leather', price: '29,90', oldPrice: '59,80', discount: '50', finalPrice: '29,90' }
+      top: {
+        mode: 'standard', description: 'Vera Pelle • Genuine Leather', descriptionPreset: '', price: '29,90',
+        oldPrice: '59,80', discount: '50', finalPrice: '29,90', articlePriceMode: 'standard',
+        articles: {
+          first: { description: 'Vera Pelle • Genuine Leather', descriptionPreset: 'Vera Pelle • Genuine Leather', price: '12,00', oldPrice: '24,00', discount: '50', finalPrice: '12,00' },
+          second: { description: 'Vera Pelle • Genuine Leather', descriptionPreset: 'Vera Pelle • Genuine Leather', price: '15,00', oldPrice: '30,00', discount: '50', finalPrice: '15,00' }
+        }
+      },
+      bottom: {
+        mode: 'standard', description: 'Vera Pelle • Genuine Leather', descriptionPreset: '', price: '29,90',
+        oldPrice: '59,80', discount: '50', finalPrice: '29,90', articlePriceMode: 'standard',
+        articles: {
+          first: { description: 'Vera Pelle • Genuine Leather', descriptionPreset: 'Vera Pelle • Genuine Leather', price: '12,00', oldPrice: '24,00', discount: '50', finalPrice: '12,00' },
+          second: { description: 'Vera Pelle • Genuine Leather', descriptionPreset: 'Vera Pelle • Genuine Leather', price: '15,00', oldPrice: '30,00', discount: '50', finalPrice: '15,00' }
+        }
+      }
     };
+    const longDescriptions = new Set([
+      'Vera Pelle • Genuine Leather',
+      'Made in Italy • Genuine Leather',
+      'Fino ad esaurimento scorte'
+    ]);
+    const longDescriptionLengthThreshold = 'Fino ad esaurimento scorte'.length;
+    const descriptionPreset = document.getElementById('descriptionPreset');
+    const descriptionMaxLength = Math.max(
+      ...Array.from(descriptionPreset.options, option => option.value.length)
+    );
+    for (const articleKey of ['first', 'second']) {
+      const preset = document.getElementById(`${articleKey}DescriptionPreset`);
+      for (const option of Array.from(descriptionPreset.options).slice(1)) {
+        preset.add(new Option(option.textContent, option.value));
+      }
+      document.getElementById(`${articleKey}Description`).maxLength = descriptionMaxLength;
+    }
+    document.getElementById('description').maxLength = descriptionMaxLength;
     let activeCard = 'top';
 
     function formatPrice(value) {
       const amount = value.trim().replace(/[€\s]/g, '');
       return amount ? `€ ${amount}` : '€ 0,00';
+    }
+
+    function formatArticlePrice(value) {
+      return value.trim().replace(/[€\s]/g, '') || '0,00';
     }
 
     function selectCard(card) {
@@ -478,52 +853,187 @@
     }
 
     function setMode(mode) {
+      const isTemaItaliaActive = document.querySelector('.tema-italia-btn.is-active');
+      if (
+        mode !== 'standard' &&
+        isTemaItaliaActive &&
+        typeof window.deactivateTemaItalia === 'function'
+      ) {
+        window.deactivateTemaItalia();
+      }
+
       const state = cardStates[activeCard];
       state.mode = mode;
       document.getElementById('standardMode').classList.toggle('active', mode === 'standard');
       document.getElementById('doublePriceMode').classList.toggle('active', mode === 'double');
+      document.getElementById('doubleArticleMode').classList.toggle('active', mode === 'doubleArticle');
       document.getElementById('standardFields').hidden = mode !== 'standard';
       document.getElementById('doublePriceFields').hidden = mode !== 'double';
+      document.getElementById('doubleArticleFields').hidden = mode !== 'doubleArticle';
       renderCard(activeCard);
+    }
+
+    function setArticlePriceMode(mode) {
+      const state = cardStates[activeCard];
+      state.articlePriceMode = mode;
+      document.getElementById('articleStandardMode').classList.toggle('active', mode === 'standard');
+      document.getElementById('articleDoublePriceMode').classList.toggle('active', mode === 'double');
+      document.getElementById('doubleArticleFields').classList.toggle('is-double-price', mode === 'double');
+      renderCard(activeCard);
+    }
+
+    function applyDescriptionPreset() {
+      document.getElementById('description').value = document.getElementById('descriptionPreset').value;
+      updateCards();
+    }
+
+    function applyArticleDescriptionPreset(articleKey) {
+      document.getElementById(`${articleKey}Description`).value =
+        document.getElementById(`${articleKey}DescriptionPreset`).value;
+      updateCards();
+    }
+
+    function updateDescription() {
+      document.getElementById('descriptionPreset').value = '';
+      updateCards();
+    }
+
+    function updateArticleDescription(articleKey) {
+      document.getElementById(`${articleKey}DescriptionPreset`).value = '';
+      updateCards();
     }
 
     function syncControls() {
       const state = cardStates[activeCard];
-      document.getElementById('descriptionLeft').value = state.descriptionLeft;
-      document.getElementById('descriptionRight').value = state.descriptionRight;
+      document.getElementById('description').value = state.description;
+      document.getElementById('descriptionPreset').value = state.descriptionPreset;
       document.getElementById('price').value = state.price;
       document.getElementById('oldPrice').value = state.oldPrice;
       document.getElementById('discount').value = state.discount;
       document.getElementById('finalPrice').value = state.finalPrice;
       document.getElementById('standardMode').classList.toggle('active', state.mode === 'standard');
       document.getElementById('doublePriceMode').classList.toggle('active', state.mode === 'double');
+      document.getElementById('doubleArticleMode').classList.toggle('active', state.mode === 'doubleArticle');
       document.getElementById('standardFields').hidden = state.mode !== 'standard';
       document.getElementById('doublePriceFields').hidden = state.mode !== 'double';
+      document.getElementById('doubleArticleFields').hidden = state.mode !== 'doubleArticle';
+      document.getElementById('articleStandardMode').classList.toggle('active', state.articlePriceMode === 'standard');
+      document.getElementById('articleDoublePriceMode').classList.toggle('active', state.articlePriceMode === 'double');
+      document.getElementById('doubleArticleFields').classList.toggle('is-double-price', state.articlePriceMode === 'double');
+      for (const articleKey of ['first', 'second']) {
+        const articleState = state.articles[articleKey];
+        document.getElementById(`${articleKey}Description`).value = articleState.description;
+        document.getElementById(`${articleKey}DescriptionPreset`).value = articleState.descriptionPreset;
+        document.getElementById(`${articleKey}Price`).value = articleState.price;
+        document.getElementById(`${articleKey}OldPrice`).value = articleState.oldPrice;
+        document.getElementById(`${articleKey}Discount`).value = articleState.discount;
+        document.getElementById(`${articleKey}FinalPrice`).value = articleState.finalPrice;
+      }
     }
 
     function updateCards() {
       const state = cardStates[activeCard];
-      state.descriptionLeft = document.getElementById('descriptionLeft').value.trim();
-      state.descriptionRight = document.getElementById('descriptionRight').value.trim();
+      state.description = document.getElementById('description').value.trim();
+      state.descriptionPreset = document.getElementById('descriptionPreset').value;
       state.price = document.getElementById('price').value;
       state.oldPrice = document.getElementById('oldPrice').value;
       state.discount = document.getElementById('discount').value;
       state.finalPrice = document.getElementById('finalPrice').value;
+      for (const articleKey of ['first', 'second']) {
+        const articleState = state.articles[articleKey];
+        articleState.description = document.getElementById(`${articleKey}Description`).value.trim();
+        articleState.descriptionPreset = document.getElementById(`${articleKey}DescriptionPreset`).value;
+        articleState.price = document.getElementById(`${articleKey}Price`).value;
+        articleState.oldPrice = document.getElementById(`${articleKey}OldPrice`).value;
+        articleState.discount = document.getElementById(`${articleKey}Discount`).value;
+        articleState.finalPrice = document.getElementById(`${articleKey}FinalPrice`).value;
+      }
       renderCard(activeCard);
+    }
+
+    function renderDescription(title, description) {
+      const normalizedDescription = description.trim();
+      title.classList.toggle(
+        'is-long-description',
+        longDescriptions.has(normalizedDescription) || normalizedDescription.length >= longDescriptionLengthThreshold
+      );
+      const descriptionParts = description.split(/\s+•\s+/);
+      title.replaceChildren();
+      title.append(document.createTextNode(descriptionParts[0]));
+      if (descriptionParts.length > 1) {
+        const separator = document.createElement('span');
+        separator.className = 'separator';
+        separator.textContent = ' · ';
+        title.append(separator);
+        const descriptionTail = document.createElement('span');
+        descriptionTail.className = 'description-tail';
+        descriptionTail.textContent = descriptionParts.slice(1).join(' • ');
+        title.append(descriptionTail);
+      }
     }
 
     function renderCard(cardName) {
       const state = cardStates[cardName];
       const card = document.getElementById(cardName === 'top' ? 'cardTop' : 'cardBottom');
       const isDoublePrice = state.mode === 'double';
+      const isDoubleArticle = state.mode === 'doubleArticle';
 
       card.classList.toggle('is-double-price', isDoublePrice);
-      card.querySelector('.description-left').textContent = state.descriptionLeft;
-      card.querySelector('.description-right').textContent = state.descriptionRight;
+      card.classList.toggle('is-double-article', isDoubleArticle);
+      card.classList.toggle('is-article-double-price', isDoubleArticle && state.articlePriceMode === 'double');
+      renderDescription(card.querySelector('.card-content > .card-title'), state.description);
+      for (const [index, articleKey] of ['first', 'second'].entries()) {
+        const articleState = state.articles[articleKey];
+        const item = card.querySelectorAll('.dual-item')[index];
+        renderDescription(item.querySelector('.dual-item-title'), articleState.description);
+        item.querySelector('.dual-item-price').textContent =
+          formatArticlePrice(state.articlePriceMode === 'double' ? articleState.finalPrice : articleState.price);
+        item.querySelector('.price-old').textContent = formatArticlePrice(articleState.oldPrice);
+        item.querySelector('.price-percent').textContent = `-${articleState.discount || '0'}%`;
+      }
       card.querySelector('.card-price').textContent = formatPrice(isDoublePrice ? state.finalPrice : state.price);
-      card.querySelector('.price-old').textContent = formatPrice(state.oldPrice);
-      card.querySelector('.price-percent').textContent = `-${state.discount || '0'}%`;
+      card.querySelector('.card-content > .card-price-row .price-old').textContent = formatPrice(state.oldPrice);
+      card.querySelector('.card-content > .card-price-row .price-percent').textContent = `-${state.discount || '0'}%`;
     }
+
+    window.applyTemaItaliaDescription = function applyTemaItaliaDescription() {
+      for (const cardName of ['top', 'bottom']) {
+        cardStates[cardName].mode = 'standard';
+        cardStates[cardName].description = 'Made in Italy';
+        cardStates[cardName].descriptionPreset = 'Made in Italy';
+        document.getElementById(cardName === 'top' ? 'cardTop' : 'cardBottom')
+          .classList.add('is-made-in-italy');
+        renderCard(cardName);
+      }
+      syncControls();
+    };
+
+    window.captureTemaItaliaState = function captureTemaItaliaState() {
+      return {
+        activeCard,
+        cards: {
+          top: { ...cardStates.top },
+          bottom: { ...cardStates.bottom }
+        }
+      };
+    };
+
+    window.restoreTemaItaliaState = function restoreTemaItaliaState(state) {
+      if (!state || !state.cards || !state.cards.top || !state.cards.bottom) {
+        console.error('Impossibile ripristinare lo stato precedente del cartello Paletto.');
+        return;
+      }
+      Object.assign(cardStates.top, state.cards.top);
+      Object.assign(cardStates.bottom, state.cards.bottom);
+      activeCard = state.activeCard === 'bottom' ? 'bottom' : 'top';
+      document.getElementById('cardTop').classList.remove('is-made-in-italy');
+      document.getElementById('cardBottom').classList.remove('is-made-in-italy');
+      document.getElementById('selectTop').classList.toggle('active', activeCard === 'top');
+      document.getElementById('selectBottom').classList.toggle('active', activeCard === 'bottom');
+      renderCard('top');
+      renderCard('bottom');
+      syncControls();
+    };
 
     syncControls();
     updateCards();

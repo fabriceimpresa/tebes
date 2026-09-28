@@ -15,7 +15,7 @@
   button.appendChild(buttonImage);
   document.body.appendChild(button);
 
-  document.querySelectorAll('.card, .frame-box.tema-italia-target:not(.tema-italia-no-side-flags)').forEach(card => {
+  document.querySelectorAll('.card:not(.tema-italia-no-side-flags), .frame-box.tema-italia-target:not(.tema-italia-no-side-flags)').forEach(card => {
     card.append(
       createFlag('left'),
       createFlag('right')
@@ -41,6 +41,10 @@
       previousState = null;
     }
   });
+
+  window.deactivateTemaItalia = function deactivateTemaItalia() {
+    if (isActive) button.click();
+  };
 
   function captureState() {
     return {
@@ -124,6 +128,11 @@
   }
 
   function applyMadeInItalyDescription() {
+    if (typeof window.applyTemaItaliaDescription === 'function') {
+      window.applyTemaItaliaDescription();
+      return;
+    }
+
     const descriptionModeButton = document.getElementById('modeDescrizione')
       || document.getElementById('modeDescription');
     if (descriptionModeButton && !descriptionModeButton.classList.contains('active')) {
