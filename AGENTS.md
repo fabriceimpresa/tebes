@@ -195,5 +195,5 @@ Non ci sono test automatici né linter. Per verificare:
   - Strumenti cassa: sul telefono niente popup, il widget in uso resta evidenziato; attivi anche in OPHILYA.
   - Paletto Ferro 1 rinominato "Paletto 15x10" in dashboard (widget 9 e menu laterale).
   - In CREATOR tornano visibili anche gli strumenti cassa, in fondo alla dashboard.
-  - Creata `etichetteophilya.html`, copia di `etichette.html` per le etichette OPHILYA (i layout verranno cambiati), collegata dalla dashboard in modalità OPHILYA.
+  - Creata `etichetteophilya.html`, copia di `etichette.html` per le etichette OPHILYA, collegata dalla dashboard in modalità OPHILYA. Logo OPHILYA predefinito (voce speciale `DEFAULT_BRAND_VALUE` nel menu brand), centrato e senza QR. Menu Promo con promo di due parole su due righe di pari larghezza (spaziatura in `em` calcolata in `renderTwoLinePromo`), elenchi `PROMO_WITHOUT_STRETCH`, `PROMO_LARGE`, `PROMO_INVERTED` (bianco su nero, con stella nel menu). Vista mobile limitata ai telefoni come nelle altre pagine.
   - Aggiunto Paletto 18x12 (`paletto18x12.html`), copia di Paletto Ferro 1 con cartelli da 1062,61 × 750,53 px a 150 dpi (179,94 × 127,09 mm) e contenuti riproporzionati di circa 1,25×. Prende il posto del segnaposto "Paletto Ferro 2" in dashboard.

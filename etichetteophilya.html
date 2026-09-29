@@ -181,7 +181,15 @@
     .tpl-outlet .qr-promo-box { width: 96px; display: flex; flex-direction: column; align-items: center; margin-right: 8px; }
     .tpl-outlet .qr-container { width: 96px; height: 96px; display: flex; align-items: center; justify-content: center; }
     .tpl-outlet .qr-container img, .tpl-outlet .qr-container canvas { width: 96px !important; height: 96px !important; }
-    .tpl-outlet .promo-label { position: relative; left: -4px; width: 96px; font: 38px Arial, Helvetica, sans-serif; letter-spacing: -1.4px; text-transform: uppercase; line-height: 1; text-align: center; }
+    /* SALE piu' piccolo e alzato di quanto serve per avere la stessa linea di base di "Euro" (Bodoni 30px: 9,06px sopra il fondo; Arial 32px: 4,9px). */
+    .tpl-outlet .promo-label { position: relative; left: -4px; bottom: 4.16px; width: 96px; font: 32px Arial, Helvetica, sans-serif; letter-spacing: -1.2px; text-transform: uppercase; line-height: 1; text-align: center; }
+    /* GENUINE LEATHER: due righe; la base di LEATHER resta sulla linea di "Euro" (Arial 17px, interlinea 1,05: 3,03px sopra il fondo). */
+    .tpl-outlet .promo-label.is-two-lines { bottom: 6.03px; font-size: 17px; letter-spacing: 0; line-height: 1.05; white-space: pre-line; }
+    .tpl-outlet .promo-label .promo-line { display: block; width: max-content; margin: 0 auto; }
+    /* Casella nera: il margine interno inferiore alza il testo, quindi si abbassa la casella di altrettanto per tenere la base sulla linea di "Euro". */
+    .tpl-outlet .promo-label.is-inverted { bottom: 2.03px; padding: 4px 0; background: #000; color: #fff; }
+    /* FINAL PRICE piu' grande: 20px, base di PRICE ricalcolata sulla linea di "Euro". */
+    .tpl-outlet .promo-label.is-large { bottom: 5.49px; font-size: 20px; }
     .tpl-outlet .label-bottom { box-sizing: border-box; display: flex; justify-content: space-between; align-items: flex-end; height: 52px; margin-top: 18px; padding: 0 8px 0 10px; width: 100%; }
     .tpl-outlet .price-box { width: 290px; display: flex; flex-direction: row; align-items: flex-end; justify-content: space-between; }
     .tpl-outlet .price-label { font: 300 30px/1 'Bodoni Std', serif; letter-spacing: -0.5px; }
@@ -283,7 +291,8 @@
     /* ==========================================
        MEDIA QUERIES PER RESPONSIVE MOBILE
     ========================================== */
-    @media (max-width: 768px) {
+    /* Vista mobile solo su telefono: le finestre desktop strette e i tablet restano sulla vista desktop. */
+    @media (max-width: 760px) and (pointer: coarse) {
       body {
         flex-direction: column;
         height: 100vh;
@@ -422,7 +431,7 @@
       }
     }
 
-    @media (max-width: 480px) {
+    @media (max-width: 480px) and (pointer: coarse) {
       main {
         padding-top: 135px;
         padding-bottom: 95px;
@@ -436,7 +445,7 @@
       }
     }
 
-    @media (max-width: 380px) {
+    @media (max-width: 380px) and (pointer: coarse) {
       main {
         padding-top: 125px;
         padding-bottom: 90px;
@@ -538,7 +547,16 @@
       <div class="form-group" id="groupPromo" style="display:none;">
         <label for="promoSelect">Promo</label>
         <select id="promoSelect" class="form-control" onchange="updateLabel()">
-          <option value="SALE" selected>SALE</option>
+          <option value="BLACK FRIDAY" class="priority-brand-option">⭐ BLACK FRIDAY</option>
+          <option value="SPRING SALE" class="priority-brand-option">⭐ SPRING SALE</option>
+          <option value="SUMMER SALE" class="priority-brand-option">⭐ SUMMER SALE</option>
+          <option value="WINTER SALE" class="priority-brand-option">⭐ WINTER SALE</option>
+          <option value="FINAL PRICE">FINAL PRICE</option>
+          <option value="GENUINE LEATHER" selected>GENUINE LEATHER</option>
+          <option value="OUTLET PRICE">OUTLET PRICE</option>
+          <option value="SALE">SALE</option>
+          <option value="SPECIAL DEAL">SPECIAL DEAL</option>
+          <option value="VERA PELLE">VERA PELLE</option>
         </select>
       </div>
 
@@ -604,6 +622,8 @@
 
   <script>
     const DEFAULT_LOGO_SRC = "assets/img/ophilyablack.png";
+    // Voce del menu brand che rimette il logo OPHILYA predefinito.
+    const DEFAULT_BRAND_VALUE = "__ophilya__";
     const PLACEHOLDER_TEXT = "-- Seleziona Brand --";
     const SIZE_OPTIONS = ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '54', '56', '58', '60'];
     const DEFAULT_SIZES = ['S', 'M', 'L', 'XL', '2XL', '3XL'];
@@ -814,7 +834,7 @@
         document.getElementById('inputCustomText').value = "OUTLET PRICE • FW26";
       } else if (key === 'outlet' || key === 'promo') {
         if (lblPriceTitle) lblPriceTitle.innerText = "Prezzo (€)";
-        document.getElementById('promoSelect').value = "SALE";
+        document.getElementById('promoSelect').value = "GENUINE LEATHER";
         if (key === 'promo') {
           if (lblCustomTextTitle) lblCustomTextTitle.innerText = "Descrizione";
           document.getElementById('inputCustomText').value = "Occhiali";
@@ -898,6 +918,7 @@
     function loadBrandSelect() {
       const select = document.getElementById('brandSelect');
       select.innerHTML = `<option value="">${PLACEHOLDER_TEXT}</option>`;
+      appendBrandOption(select, DEFAULT_BRAND_VALUE, 'OPHILYA', true);
 
       if (typeof LOGO_FILES !== 'undefined' && Array.isArray(LOGO_FILES)) {
         const { priorityFiles, remainingFiles } = getSortedLogoFiles();
@@ -906,8 +927,8 @@
         });
       }
 
-      select.value = "";
-      selectedBrand = "";
+      select.value = DEFAULT_BRAND_VALUE;
+      selectedBrand = DEFAULT_BRAND_VALUE;
     }
 
     function loadCustomLogosSelect() {
@@ -939,10 +960,9 @@
     function onCustomLogoSelectChange() {
       const val = document.getElementById('customLogoSelect').value;
       selectedCustomLogo = val;
-      if (val) {
-        selectedBrand = '';
-        document.getElementById('brandSelect').value = '';
-      }
+      // Senza logo personalizzato si torna al logo OPHILYA predefinito.
+      selectedBrand = val ? '' : DEFAULT_BRAND_VALUE;
+      document.getElementById('brandSelect').value = selectedBrand;
       updateLabel();
     }
 
@@ -1016,7 +1036,7 @@
           imgElement.src = selectedCustomLogo;
           imgElement.style.display = 'block';
           if (textElement) textElement.style.display = 'none';
-        } else if (selectedBrand) {
+        } else if (selectedBrand && selectedBrand !== DEFAULT_BRAND_VALUE) {
           imgElement.src = getLogoSource(selectedBrand);
           imgElement.style.display = 'block';
           if (textElement) textElement.style.display = 'none';
@@ -1073,7 +1093,19 @@
       }
       if (elemProd) elemProd.innerText = document.getElementById('inputProdName').value;
       if (elemCode) elemCode.innerText = document.getElementById('inputCode').value;
-      if (elemPromo) elemPromo.innerText = document.getElementById('promoSelect').value;
+      if (elemPromo) {
+        // Le promo di due parole (es. GENUINE LEATHER) vanno su due righe, in corpo piu' piccolo.
+        const promo = document.getElementById('promoSelect').value;
+        const isTwoLines = promo.includes(' ');
+        elemPromo.classList.toggle('is-two-lines', isTwoLines);
+        elemPromo.classList.toggle('is-inverted', PROMO_INVERTED.includes(promo));
+        elemPromo.classList.toggle('is-large', PROMO_LARGE.includes(promo));
+        if (isTwoLines) {
+          renderTwoLinePromo(elemPromo, promo.split(' '), !PROMO_WITHOUT_STRETCH.includes(promo));
+        } else {
+          elemPromo.textContent = promo;
+        }
+      }
 
       if (currentTemplateKey === 'tagliedoppiacifra') {
         for (let i = 1; i <= 6; i++) {
@@ -1085,6 +1117,36 @@
         }
         adjustFinalPriceFontSize();
       }
+    }
+
+    // Le due righe di una promo (es. VERA / PELLE) devono essere larghe uguali:
+    // la parola piu' corta riceve una spaziatura in em, cosi' vale uguale in anteprima e in stampa.
+    const promoMeasureContext = document.createElement('canvas').getContext('2d');
+    // Promo che restano con la spaziatura normale: allargata, la parola corta viene male.
+    const PROMO_WITHOUT_STRETCH = ['SPECIAL DEAL'];
+    // Promo in corpo un po' piu' grande.
+    const PROMO_LARGE = ['FINAL PRICE'];
+    // Promo in bianco su casella nera (nel menu hanno la stella e stanno in cima).
+    const PROMO_INVERTED = ['SUMMER SALE', 'WINTER SALE', 'SPRING SALE', 'BLACK FRIDAY'];
+
+    function renderTwoLinePromo(element, words, stretch = true) {
+      promoMeasureContext.font = '100px Arial, Helvetica, sans-serif';
+      const widths = words.map(word => promoMeasureContext.measureText(word).width);
+      const target = Math.max(...widths);
+      const lines = words.map((word, index) => {
+        const line = document.createElement('span');
+        line.className = 'promo-line';
+        line.textContent = word;
+        const gaps = Array.from(word).length - 1;
+        if (stretch && gaps > 0 && widths[index] < target) {
+          const spacing = ((target - widths[index]) / gaps / 100).toFixed(4);
+          // La spaziatura si aggiunge anche dopo l'ultima lettera: un margine interno uguale a sinistra la bilancia.
+          line.style.letterSpacing = `${spacing}em`;
+          line.style.paddingLeft = `${spacing}em`;
+        }
+        return line;
+      });
+      element.replaceChildren(...lines);
     }
 
     function onLogoError() {
@@ -1325,7 +1387,11 @@
             .tpl-outlet .qr-promo-box { width: 12mm; display: flex; flex-direction: column; align-items: center; margin-right: 1mm; }
             .tpl-outlet .qr-container { width: 12mm; height: 12mm; display: flex; align-items: center; justify-content: center; }
             .tpl-outlet .qr-container img, .tpl-outlet .qr-container canvas { width: 12mm !important; height: 12mm !important; }
-            .tpl-outlet .promo-label { position: relative; left: -0.83mm; width: 12mm; font: 13.7pt Arial, Helvetica, sans-serif; letter-spacing: -0.4px; text-transform: uppercase; line-height: 1; text-align: center; }
+            .tpl-outlet .promo-label { position: relative; left: -0.83mm; bottom: 1.56pt; width: 12mm; font: 11.5pt Arial, Helvetica, sans-serif; letter-spacing: -0.34px; text-transform: uppercase; line-height: 1; text-align: center; }
+            .tpl-outlet .promo-label.is-two-lines { bottom: 2.23pt; font-size: 6.1pt; letter-spacing: 0; line-height: 1.05; white-space: pre-line; }
+            .tpl-outlet .promo-label .promo-line { display: block; width: max-content; margin: 0 auto; }
+            .tpl-outlet .promo-label.is-inverted { bottom: 0.79pt; padding: 1.44pt 0; background: #000; color: #fff; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .tpl-outlet .promo-label.is-large { bottom: 2.04pt; font-size: 7.18pt; }
             .tpl-outlet .label-bottom { box-sizing: border-box; display: flex; justify-content: space-between; align-items: flex-end; height: 9mm; margin-top: 1.5mm; padding: 0 1mm 0 1.25mm; width: 100%; }
             .tpl-outlet .price-box { width: 36.25mm; display: flex; flex-direction: row; align-items: flex-end; justify-content: space-between; }
             .tpl-outlet .price-label { font: 300 11pt/1 'Bodoni Std', serif; letter-spacing: -0.5px; }

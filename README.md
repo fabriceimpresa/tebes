@@ -67,7 +67,7 @@ Quasi tutte le pagine cartello hanno un pulsante tondo **Made in Italy** (`asset
 
 ### Etichette: `etichette.html` (TEBE) ed `etichetteophilya.html` (OPHILYA)
 
-Etichette DYMO **11354** (57 × 32 mm, 2,25 × 1,25 in). In modalità OPHILYA la dashboard apre `etichetteophilya.html`, uguale a quella di TEBE ma con il logo OPHILYA come logo predefinito, centrato e senza QR code.
+Etichette DYMO **11354** (57 × 32 mm, 2,25 × 1,25 in). In modalità OPHILYA la dashboard apre `etichetteophilya.html`, uguale a quella di TEBE con queste differenze: logo OPHILYA predefinito (selezionabile come ⭐ OPHILYA nel menu brand), centrato e senza QR code; nel layout Semplice il menu Promo propone anche GENUINE LEATHER (predefinita), VERA PELLE, OUTLET PRICE, FINAL PRICE, SPECIAL DEAL e, in bianco su nero, BLACK FRIDAY e le Sale stagionali, su due righe di pari larghezza.
 
 - **Modelli:** Semplice, Doppio Prezzo, Articolo, Taglie | Doppia Cifra e Promo. Si può aprire direttamente un modello con `?label=` (per esempio `?label=doppioprezzo`).
 - **Stampa:** l'etichetta viene resa in un PNG a 300 dpi e inviata a DYMO Connect. Se DYMO Connect o la stampante non sono disponibili, si passa alla stampa del browser.
