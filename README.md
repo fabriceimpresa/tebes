@@ -67,11 +67,14 @@ Quasi tutte le pagine cartello hanno un pulsante tondo **Made in Italy** (`asset
 
 ### Etichette: `etichette.html` (TEBE) ed `etichetteophilya.html` (OPHILYA)
 
-Etichette DYMO **11354** (57 × 32 mm, 2,25 × 1,25 in). In modalità OPHILYA la dashboard apre `etichetteophilya.html`, uguale a quella di TEBE con queste differenze: logo OPHILYA predefinito (selezionabile come ⭐ OPHILYA nel menu brand), centrato e senza QR code; nel layout Semplice il menu Promo propone anche GENUINE LEATHER (predefinita), VERA PELLE, OUTLET PRICE, FINAL PRICE, SPECIAL DEAL e, in bianco su nero, BLACK FRIDAY e le Sale stagionali, su due righe di pari larghezza.
+Etichette DYMO **11354** (57 × 32 mm, 2,25 × 1,25 in). In modalità OPHILYA la dashboard apre `etichetteophilya.html`, uguale a quella di TEBE tranne che per il logo OPHILYA predefinito (selezionabile come ⭐ OPHILYA nel menu brand), centrato e senza QR code, e per la promo predefinita GENUINE LEATHER (in TEBE è SALE).
 
 - **Modelli:** Semplice, Doppio Prezzo, Articolo, Taglie | Doppia Cifra e Promo. Si può aprire direttamente un modello con `?label=` (per esempio `?label=doppioprezzo`).
 - **Stampa:** l'etichetta viene resa in un PNG a 300 dpi e inviata a DYMO Connect. Se DYMO Connect o la stampante non sono disponibili, si passa alla stampa del browser.
-- **QR code:** il QR di ogni etichetta punta all'Instagram di TEBE.
+- **Promo (layout Semplice):** SALE, GENUINE LEATHER, VERA PELLE, OUTLET PRICE, FINAL PRICE, SPECIAL DEAL e, in bianco su nero con la stella nel menu, BLACK FRIDAY e le Sale stagionali. Le promo di due parole vanno su due righe.
+- **Made in Italy (layout 1–3):** il tasto tondo in alto a destra sposta il logo a sinistra e aggiunge l'adesivo Made in Italy a destra (in TEBE al posto del QR).
+- **Numero di copie:** il campo sopra "Stampa etichetta" fa stampare più copie con un solo invio alla DYMO.
+- **QR code:** nelle etichette TEBE il QR punta all'Instagram di TEBE.
 
 ### Materiali pronti
 

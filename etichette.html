@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Etichette DYMO · TEBE · OPHILYA</title>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/tema-italia.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <!-- COLLEGAMENTO AL FILE CENTRALIZZATO LOGHI -->
   <script src="assets/js/logos.js?v=20260927"></script>
@@ -74,8 +75,18 @@
       justify-content: center;
       pointer-events: none;
       overflow: hidden;
-      background: transparent;
+      /* La miniatura e' bianca come la card: bordo e ombra leggera la staccano, come un'etichetta appoggiata. */
+      background: #fff;
+      border: 1px solid var(--border);
+      box-shadow: 0 2px 6px rgba(40, 34, 28, 0.16);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
       align-self: center;
+    }
+
+    .template-card:hover .tpl-preview-box,
+    .template-card.active .tpl-preview-box {
+      border-color: var(--accent);
+      box-shadow: 0 3px 10px rgba(40, 34, 28, 0.22);
     }
 
     .tpl-preview-box img {
@@ -181,7 +192,34 @@
     .tpl-outlet .qr-promo-box { width: 96px; display: flex; flex-direction: column; align-items: center; margin-right: 8px; }
     .tpl-outlet .qr-container { width: 96px; height: 96px; display: flex; align-items: center; justify-content: center; }
     .tpl-outlet .qr-container img, .tpl-outlet .qr-container canvas { width: 96px !important; height: 96px !important; }
-    .tpl-outlet .promo-label { position: relative; left: -4px; width: 96px; font: 38px Arial, Helvetica, sans-serif; letter-spacing: -1.4px; text-transform: uppercase; line-height: 1; text-align: center; }
+    /* SALE alzato di quanto serve per avere la stessa linea di base di "Euro" (Bodoni 30px: 9,06px sopra il fondo; Arial 36px: 5,52px). */
+    /* TEBE: la promo e' larga quanto il QR (96px) e ha lo stesso margine destro (8px), cosi' sta esattamente sotto il QR. */
+    .tpl-outlet .promo-label { position: relative; left: 0; bottom: 3.54px; width: 96px; font: 36px Arial, Helvetica, sans-serif; letter-spacing: -1.35px; text-transform: uppercase; line-height: 1; text-align: center; }
+    /* GENUINE LEATHER: due righe; la base di LEATHER resta sulla linea di "Euro" (Arial 19,5px, interlinea 1,05: 3,48px sopra il fondo). */
+    .tpl-outlet .promo-label.is-two-lines { bottom: 5.58px; font-size: 19.5px; letter-spacing: 0; line-height: 1.05; white-space: pre-line; }
+    .tpl-outlet .promo-label .promo-line { display: block; width: max-content; margin: 0 auto; }
+    /* Casella nera: il margine interno inferiore alza il testo, quindi si abbassa la casella di altrettanto per tenere la base sulla linea di "Euro". */
+    .tpl-outlet .promo-label.is-inverted { bottom: 1.58px; padding: 4px 0; background: #000; color: #fff; }
+    /* Casella solo bordata, un po' piu' grande (4px in piu' per lato, margine interno 6px): bordo e margine alzano il testo, quindi la casella scende di altrettanto. */
+    .tpl-outlet .promo-label.is-outlined { left: 0; bottom: -2.42px; width: 96px; padding: 6px 0; border: 2px solid #000; }
+    /* FINAL PRICE piu' grande: 23px, base di PRICE ricalcolata sulla linea di "Euro". */
+    .tpl-outlet .promo-label.is-large { bottom: 4.96px; font-size: 23px; }
+
+    /* MADE IN ITALY: logo allineato a sinistra con "Euro", adesivo a destra, a 6px dal bordo. */
+    .made-in-italy-sticker { display: none; }
+    .tpl-outlet.is-made-in-italy .label-top,
+    .tpl-final.is-made-in-italy .label-top { justify-content: space-between; padding: 0 6px 0 10px; }
+    /* Con l'adesivo il logo (TEBE, ufficiale o personalizzato) si rimpicciolisce un poco e l'adesivo cresce. */
+    .tpl-outlet.is-made-in-italy .brand-logo-container,
+    .tpl-final.is-made-in-italy .brand-logo-container { justify-content: flex-start; width: 240px; height: 96px; margin: 4px 0 0; }
+    /* Il QR code lascia il posto all'adesivo. */
+    .is-made-in-italy .qr-promo-box,
+    .is-made-in-italy .qr-container { display: none; }
+    .is-made-in-italy .made-in-italy-sticker { display: block; flex: 0 0 auto; width: 120px; height: auto; margin-top: 4px; }
+    /* La promo si centra sull'adesivo: centro dell'adesivo a 6 + 120/2 = 66px dal bordo destro;
+       la casella (96px, bordata 104px) parte a 8px dal bordo, quindi si sposta di 8 - (66 - larghezza/2). */
+    .tpl-outlet.is-made-in-italy .promo-label { left: -10px; }
+    .tpl-outlet.is-made-in-italy .promo-label.is-outlined { left: -6px; }
     .tpl-outlet .label-bottom { box-sizing: border-box; display: flex; justify-content: space-between; align-items: flex-end; height: 52px; margin-top: 18px; padding: 0 8px 0 10px; width: 100%; }
     .tpl-outlet .price-box { width: 290px; display: flex; flex-direction: row; align-items: flex-end; justify-content: space-between; }
     .tpl-outlet .price-label { font: 300 30px/1 'Bodoni Std', serif; letter-spacing: -0.5px; }
@@ -453,6 +491,10 @@
 </head>
 <body>
   <a href="index.html?store=tebe" class="app-close-btn" title="Chiudi e torna all'index">✕</a>
+  <!-- Made in Italy: grafica del pulsante condivisa (tema-italia.css), logica propria della pagina. -->
+  <button type="button" class="tema-italia-btn" id="madeInItalyBtn" title="Attiva Made in Italy" aria-label="Attiva Made in Italy" aria-pressed="false" onclick="toggleMadeInItaly()">
+    <img src="assets/img/madeinitaly.png" alt="">
+  </button>
 
   <aside>
     <div>
@@ -538,7 +580,16 @@
       <div class="form-group" id="groupPromo" style="display:none;">
         <label for="promoSelect">Promo</label>
         <select id="promoSelect" class="form-control" onchange="updateLabel()">
+          <option value="BLACK FRIDAY" class="priority-brand-option">⭐ BLACK FRIDAY</option>
+          <option value="SPRING SALE" class="priority-brand-option">⭐ SPRING SALE</option>
+          <option value="SUMMER SALE" class="priority-brand-option">⭐ SUMMER SALE</option>
+          <option value="WINTER SALE" class="priority-brand-option">⭐ WINTER SALE</option>
+          <option value="FINAL PRICE">FINAL PRICE</option>
+          <option value="GENUINE LEATHER">GENUINE LEATHER</option>
+          <option value="OUTLET PRICE">OUTLET PRICE</option>
           <option value="SALE" selected>SALE</option>
+          <option value="SPECIAL DEAL">SPECIAL DEAL</option>
+          <option value="VERA PELLE">VERA PELLE</option>
         </select>
       </div>
 
@@ -590,6 +641,12 @@
         <input type="text" id="inputOutlet" class="form-control" value="29,90" inputmode="decimal" oninput="handleOutletPriceInput(this)" onblur="formatOutletPrice(this)">
       </div>
 
+      <!-- Copie da stampare: vale per tutti i layout, quindi resta sempre visibile. -->
+      <div class="form-group" id="groupCopies">
+        <label for="inputCopies">Numero di copie</label>
+        <input type="number" id="inputCopies" class="form-control" value="1" min="1" max="99" step="1" inputmode="numeric" onblur="this.value = getPrintCopies()">
+      </div>
+
       <button class="btn-print" id="btnPrint" onclick="printLabel()">STAMPA ETICHETTA</button>
     </div>
 
@@ -611,6 +668,9 @@
     let selectedBrand = '';
     let selectedCustomLogo = '';
     let currentTemplateKey = 'outlet';
+    // Made in Italy: logo a sinistra e adesivo a destra (al posto del QR), solo nei layout con il logo in alto.
+    const MADE_IN_ITALY_TEMPLATES = ['outlet', 'final', 'promo'];
+    let madeInItalyActive = false;
 
     function renderSimpleTemplate(showPromo) {
       return `
@@ -623,6 +683,7 @@
             <div class="qr-promo-box">
               <div class="qr-container" id="labelQR"></div>
             </div>
+            <img class="made-in-italy-sticker" src="assets/img/madeinitalysticker.png" alt="Made in Italy">
           </div>
           <div class="label-bottom">
             ${showPromo ? '' : '<span class="promo-description" id="lblCustomText">Occhiali</span>'}
@@ -652,6 +713,7 @@
                 <span id="labelFallbackText" class="brand-text-fallback" style="display:none;">SELEZIONA<br>IL BRAND</span>
               </div>
               <div class="qr-container" id="labelQR"></div>
+              <img class="made-in-italy-sticker" src="assets/img/madeinitalysticker.png" alt="Made in Italy">
             </div>
             <div class="label-bottom">
               <div class="price-box price-box-original">
@@ -777,6 +839,7 @@
     function setTemplate(key) {
       if (!TEMPLATES[key]) return;
       currentTemplateKey = key;
+      document.getElementById('madeInItalyBtn').style.display = MADE_IN_ITALY_TEMPLATES.includes(key) ? '' : 'none';
       const customTextInput = document.getElementById('inputCustomText');
       if (key === 'promo') {
         customTextInput.maxLength = 16;
@@ -1011,7 +1074,21 @@
       }
     }
 
+    function toggleMadeInItaly() {
+      madeInItalyActive = !madeInItalyActive;
+      const btn = document.getElementById('madeInItalyBtn');
+      btn.classList.toggle('is-active', madeInItalyActive);
+      btn.setAttribute('aria-pressed', String(madeInItalyActive));
+      btn.title = madeInItalyActive ? 'Disattiva Made in Italy' : 'Attiva Made in Italy';
+      updateLabel();
+    }
+
     function updateLabel() {
+      const labelRoot = document.querySelector('#labelPreview > div');
+      if (labelRoot) {
+        labelRoot.classList.toggle('is-made-in-italy', madeInItalyActive && MADE_IN_ITALY_TEMPLATES.includes(currentTemplateKey));
+      }
+
       const imgElement = document.getElementById('labelLogo');
       const textElement = document.getElementById('labelFallbackText');
 
@@ -1077,7 +1154,20 @@
       }
       if (elemProd) elemProd.innerText = document.getElementById('inputProdName').value;
       if (elemCode) elemCode.innerText = document.getElementById('inputCode').value;
-      if (elemPromo) elemPromo.innerText = document.getElementById('promoSelect').value;
+      if (elemPromo) {
+        // Le promo di due parole (es. GENUINE LEATHER) vanno su due righe, in corpo piu' piccolo.
+        const promo = document.getElementById('promoSelect').value;
+        const isTwoLines = promo.includes(' ');
+        elemPromo.classList.toggle('is-two-lines', isTwoLines);
+        elemPromo.classList.toggle('is-inverted', PROMO_INVERTED.includes(promo));
+        elemPromo.classList.toggle('is-outlined', PROMO_OUTLINED.includes(promo));
+        elemPromo.classList.toggle('is-large', PROMO_LARGE.includes(promo));
+        if (isTwoLines) {
+          renderTwoLinePromo(elemPromo, promo.split(' '), !PROMO_WITHOUT_STRETCH.includes(promo));
+        } else {
+          elemPromo.textContent = promo;
+        }
+      }
 
       if (currentTemplateKey === 'tagliedoppiacifra') {
         for (let i = 1; i <= 6; i++) {
@@ -1089,6 +1179,38 @@
         }
         adjustFinalPriceFontSize();
       }
+    }
+
+    // Le due righe di una promo (es. VERA / PELLE) devono essere larghe uguali:
+    // la parola piu' corta riceve una spaziatura in em, cosi' vale uguale in anteprima e in stampa.
+    const promoMeasureContext = document.createElement('canvas').getContext('2d');
+    // Promo che restano con la spaziatura normale: allargata, la parola corta viene male.
+    const PROMO_WITHOUT_STRETCH = ['SPECIAL DEAL', 'SUMMER SALE', 'SPRING SALE', 'WINTER SALE'];
+    // Promo in corpo un po' piu' grande.
+    const PROMO_LARGE = ['FINAL PRICE'];
+    // Promo in bianco su casella nera (nel menu hanno la stella e stanno in cima).
+    const PROMO_INVERTED = ['SUMMER SALE', 'WINTER SALE', 'SPRING SALE', 'BLACK FRIDAY'];
+    // Promo con testo nero in una casella solo bordata di nero (oggi nessuna).
+    const PROMO_OUTLINED = [];
+
+    function renderTwoLinePromo(element, words, stretch = true) {
+      promoMeasureContext.font = '100px Arial, Helvetica, sans-serif';
+      const widths = words.map(word => promoMeasureContext.measureText(word).width);
+      const target = Math.max(...widths);
+      const lines = words.map((word, index) => {
+        const line = document.createElement('span');
+        line.className = 'promo-line';
+        line.textContent = word;
+        const gaps = Array.from(word).length - 1;
+        if (stretch && gaps > 0 && widths[index] < target) {
+          const spacing = ((target - widths[index]) / gaps / 100).toFixed(4);
+          // La spaziatura si aggiunge anche dopo l'ultima lettera: un margine interno uguale a sinistra la bilancia.
+          line.style.letterSpacing = `${spacing}em`;
+          line.style.paddingLeft = `${spacing}em`;
+        }
+        return line;
+      });
+      element.replaceChildren(...lines);
     }
 
     function onLogoError() {
@@ -1161,6 +1283,12 @@
     }
 
     // STAMPA DIRETTA SU DYMO; SE IL SERVIZIO NON RISPONDE RIPIEGA SULLA STAMPA DEL BROWSER
+    // Copie richieste, sempre un intero tra 1 e 99.
+    function getPrintCopies() {
+      const copies = Number.parseInt(document.getElementById('inputCopies').value, 10);
+      return Number.isFinite(copies) ? Math.min(99, Math.max(1, copies)) : 1;
+    }
+
     async function printLabel() {
       const btn = document.getElementById('btnPrint');
       const originalText = btn.innerText;
@@ -1175,14 +1303,17 @@
           png = await renderLabelPng();
         } catch (err) {
           console.warn('Stampa DYMO diretta non disponibile:', err);
-          alert(`Stampa DYMO diretta non disponibile (${err.message}).\nUso la stampa del browser.`);
+          const copies = getPrintCopies();
+          const copiesHint = copies > 1 ? `\nImposta ${copies} copie nella finestra di stampa.` : '';
+          alert(`Stampa DYMO diretta non disponibile (${err.message}).\nUso la stampa del browser.${copiesHint}`);
           printLabelIsolated();
           return;
         }
 
         try {
-          await DymoDirect.dymoPrintPng(printer.name, png);
-          setDymoStatus('CONNESSA', true, `${printer.name} · etichetta inviata`);
+          const copies = getPrintCopies();
+          await DymoDirect.dymoPrintPng(printer.name, png, copies);
+          setDymoStatus('CONNESSA', true, `${printer.name} · ${copies === 1 ? 'etichetta inviata' : `${copies} etichette inviate`}`);
         } catch (err) {
           // La richiesta potrebbe essere già arrivata alla stampante: niente fallback automatico
           console.error('Errore stampa DYMO:', err);
@@ -1258,6 +1389,9 @@
         img.src = canvas.toDataURL('image/png');
       });
 
+      // html2canvas disegna il testo un po' piu' in basso del browser: la classe attiva le correzioni solo per la stampa DYMO.
+      doc.documentElement.classList.add('is-raster');
+
       const canvas = await html2canvas(doc.querySelector('.print-wrapper'), {
         scale: 300 / 96,
         backgroundColor: '#ffffff',
@@ -1329,7 +1463,28 @@
             .tpl-outlet .qr-promo-box { width: 12mm; display: flex; flex-direction: column; align-items: center; margin-right: 1mm; }
             .tpl-outlet .qr-container { width: 12mm; height: 12mm; display: flex; align-items: center; justify-content: center; }
             .tpl-outlet .qr-container img, .tpl-outlet .qr-container canvas { width: 12mm !important; height: 12mm !important; }
-            .tpl-outlet .promo-label { position: relative; left: -0.83mm; width: 12mm; font: 13.7pt Arial, Helvetica, sans-serif; letter-spacing: -0.4px; text-transform: uppercase; line-height: 1; text-align: center; }
+            .tpl-outlet .promo-label { position: relative; left: 0; bottom: 1.33pt; width: 12mm; font: 13pt Arial, Helvetica, sans-serif; letter-spacing: -0.38px; text-transform: uppercase; line-height: 1; text-align: center; }
+            .tpl-outlet .promo-label.is-two-lines { bottom: 2.07pt; font-size: 7pt; letter-spacing: 0; line-height: 1.05; white-space: pre-line; }
+            .tpl-outlet .promo-label .promo-line { display: block; width: max-content; margin: 0 auto; }
+            .tpl-outlet .promo-label.is-inverted { bottom: 0.63pt; padding: 1.44pt 0; background: #000; color: #fff; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .tpl-outlet .promo-label.is-outlined { left: 0; bottom: -0.69pt; width: 12mm; padding: 2.16pt 0; border: 0.6pt solid #000; }
+            /* Solo stampa DYMO (html2canvas): il testo nella casella nera si alza per restare centrato. */
+            .is-raster .tpl-outlet .promo-label.is-inverted .promo-line,
+            .is-raster .tpl-outlet .promo-label.is-outlined .promo-line { position: relative; top: -0.6pt; }
+            .tpl-outlet .promo-label.is-large { bottom: 1.85pt; font-size: 8.26pt; }
+
+            /* MADE IN ITALY (stampa): adesivo 15 mm, a 1,08 mm dal bordo. */
+            .made-in-italy-sticker { display: none; }
+            .tpl-outlet.is-made-in-italy .label-top,
+            .tpl-final.is-made-in-italy .label-top { justify-content: space-between; padding: 0 1.08mm 0 1.25mm; }
+            .tpl-outlet.is-made-in-italy .brand-logo-container,
+            .tpl-final.is-made-in-italy .brand-logo-container { justify-content: flex-start; width: 30mm; height: 12mm; margin: 1mm 0 0; }
+            .is-made-in-italy .qr-promo-box,
+            .is-made-in-italy .qr-container { display: none; }
+            .is-made-in-italy .made-in-italy-sticker { display: block; flex: 0 0 auto; width: 15mm; height: auto; margin-top: 1mm; }
+            /* Promo centrata sull'adesivo: centro a 1,08 + 15/2 = 8,58 mm dal bordo destro, casella a 1 mm dal bordo. */
+            .tpl-outlet.is-made-in-italy .promo-label { left: -1.58mm; }
+            .tpl-outlet.is-made-in-italy .promo-label.is-outlined { left: -1.08mm; }
             .tpl-outlet .label-bottom { box-sizing: border-box; display: flex; justify-content: space-between; align-items: flex-end; height: 9mm; margin-top: 1.5mm; padding: 0 1mm 0 1.25mm; width: 100%; }
             .tpl-outlet .price-box { width: 36.25mm; display: flex; flex-direction: row; align-items: flex-end; justify-content: space-between; }
             .tpl-outlet .price-label { font: 300 11pt/1 'Bodoni Std', serif; letter-spacing: -0.5px; }

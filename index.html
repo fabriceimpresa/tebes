@@ -984,6 +984,11 @@ body.ophilya .lower .wide-card::after{
 body.ophilya .lower{
   pointer-events:none;
 }
+/* OPHILYA: in CREA CARTELLI i cartelli TEBE lasciano il posto a voci "Presto disponibile" non cliccabili. */
+.sidebar-nav-ophilya,
+body.ophilya .sidebar-nav-tebe{display:none}
+body.ophilya .sidebar-nav-ophilya{display:grid}
+body.ophilya .sidebar-section.is-collapsed .sidebar-nav-ophilya{display:none}
 body.ophilya .cash-tools-coming-soon{
   display:none;
 }
@@ -1281,7 +1286,7 @@ body.ophilya .cash-tools-coming-soon{
         <span>CREA CARTELLI</span>
         <button class="section-toggle" type="button" aria-label="Comprimi CREA CARTELLI" aria-expanded="true" onclick="toggleSidebarSection('cartelli')">⌄</button>
       </div>
-      <nav>
+      <nav class="sidebar-nav-tebe">
       <button onclick="openPage('cartelli_semplici.html')">Semplice</button>
       <button onclick="openPage('cartelli_sale.html')">Sale</button>
       <button onclick="openPage('cartellopercentuale.html')">Percentuale</button>
@@ -1292,6 +1297,13 @@ body.ophilya .cash-tools-coming-soon{
       <button onclick="openPage('cornice21x27.html')">Cornice 21 x 27</button>
       <button onclick="openPage('paletto.html')">Paletto 15x10</button>
       <button onclick="openPage('paletto18x12.html')">Paletto 18x12</button>
+      </nav>
+      <nav class="sidebar-nav-ophilya" aria-label="Cartelli OPHILYA">
+      <button class="soon" type="button" disabled>Presto disponibile</button>
+      <button class="soon" type="button" disabled>Presto disponibile</button>
+      <button class="soon" type="button" disabled>Presto disponibile</button>
+      <button class="soon" type="button" disabled>Presto disponibile</button>
+      <button class="soon" type="button" disabled>Presto disponibile</button>
       </nav>
     </div>
 
@@ -1514,7 +1526,7 @@ body.ophilya .cash-tools-coming-soon{
           <a class="card dymo-card" data-link="etichette.html" aria-label="Apri etichette DYMO Semplice">
             <div class="dymo-card-preview">
               <div class="number">01</div>
-              <div class="card-thumb"><img src="assets/thumbnail/label1thumb.png" alt="Anteprima etichetta Semplice"></div>
+              <div class="card-thumb"><img src="assets/thumbnail/label1thumb.png" data-ophilya-src="assets/thumbnail/label1thumb-ophilya.png" alt="Anteprima etichetta Semplice"></div>
             </div>
             <div class="dymo-card-body">
               <h2>Semplice</h2>
@@ -1525,7 +1537,7 @@ body.ophilya .cash-tools-coming-soon{
           <a class="card dymo-card" data-link="etichette.html?label=doppioprezzo" aria-label="Apri etichette DYMO Doppio Prezzo">
             <div class="dymo-card-preview">
               <div class="number">02</div>
-              <div class="card-thumb"><img src="assets/thumbnail/label2thumb.png" alt="Anteprima etichetta Doppio Prezzo"></div>
+              <div class="card-thumb"><img src="assets/thumbnail/label2thumb.png" data-ophilya-src="assets/thumbnail/label2thumb-ophilya.png" alt="Anteprima etichetta Doppio Prezzo"></div>
             </div>
             <div class="dymo-card-body">
               <h2>Doppio Prezzo</h2>
@@ -1535,7 +1547,7 @@ body.ophilya .cash-tools-coming-soon{
           <a class="card dymo-card" data-link="etichette.html?label=promo" aria-label="Apri etichette DYMO Articolo">
             <div class="dymo-card-preview">
               <div class="number">03</div>
-              <div class="card-thumb"><img src="assets/thumbnail/label3thumb.png" alt="Anteprima etichetta Articolo"></div>
+              <div class="card-thumb"><img src="assets/thumbnail/label3thumb.png" data-ophilya-src="assets/thumbnail/label3thumb-ophilya.png" alt="Anteprima etichetta Articolo"></div>
             </div>
             <div class="dymo-card-body">
               <h2>Articolo</h2>
@@ -1679,6 +1691,11 @@ function changeStore(store){
   document.getElementById("tebe").classList.toggle("selected",store==="tebe");
   document.getElementById("ophilya").classList.toggle("selected",store==="ophilya");
   document.body.classList.toggle("ophilya", store === "ophilya");
+  // Miniature con una versione OPHILYA (es. etichette DYMO).
+  document.querySelectorAll("img[data-ophilya-src]").forEach(img => {
+    if(!img.dataset.tebeSrc) img.dataset.tebeSrc = img.getAttribute("src");
+    img.src = store === "ophilya" ? img.dataset.ophilyaSrc : img.dataset.tebeSrc;
+  });
 
   updateLinks();
 }
