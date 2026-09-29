@@ -65,6 +65,10 @@
 
     .template-card .tpl-name { font-size: 0.75rem; font-weight: 600; color: var(--text); text-align: center; }
     
+    /* Selettore a pulsanti, come nelle pagine dei cartelli. */
+    .mode-switch { display: flex; gap: 4px; padding: 4px; border: 1px solid var(--border); border-radius: 6px; background: #f3ede0; }
+    .mode-switch button { flex: 1; padding: 9px 8px; border: 0; border-radius: 4px; background: transparent; color: #8a7f6e; font-family: system-ui, -apple-system, sans-serif; font-size: 0.68rem; font-weight: 600; line-height: 1.2; text-align: center; cursor: pointer; transition: all 0.2s ease; }
+    .mode-switch button.active { background: #fffdfa; color: #282522; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); }
     .tpl-preview-box {
       width: 100%;
       max-width: 145px;
@@ -268,26 +272,44 @@
 
     /* LAYOUT 6: TAGLIE | DOPPIA CIFRA */
     .tpl-tagliedoppiacifra { display: flex; justify-content: space-between; align-items: stretch; width: 100%; height: 100%; padding: 2px 0; color: #000; }
-    .tpl-tagliedoppiacifra .size-section { display: flex; flex-direction: column; align-items: center; width: 110px; }
-    .tpl-tagliedoppiacifra .size-title { font-size: 18px; font-weight: 400; letter-spacing: 0.5px; margin-bottom: 6px; text-transform: uppercase; }
-    .tpl-tagliedoppiacifra .size-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; width: 100%; }
+    .tpl-tagliedoppiacifra .size-section { display: flex; flex-direction: column; justify-content: center; align-items: center; width: 110px; padding-bottom: 8px; }
+    /* "SIZE / TAGLIA" e' piu' lungo di "SIZE": corpo ridotto per restare nella larghezza della colonna taglie. */
+    /* Il margine a sinistra bilancia la spaziatura aggiunta dopo l'ultima lettera; la griglia e' larga quanto le caselle, cosi' titolo e caselle hanno lo stesso centro. */
+    .tpl-tagliedoppiacifra .size-title { font-size: 14px; font-weight: 400; letter-spacing: 0.5px; padding-left: 0.5px; margin-bottom: 13px; text-transform: uppercase; white-space: nowrap; }
+    .tpl-tagliedoppiacifra .size-grid { display: grid; grid-template-columns: repeat(2, 48px); gap: 6px; }
     .tpl-tagliedoppiacifra .size-box { width: 48px; height: 48px; border: 2.5px solid #000000; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 400; background-color: #ffffff; text-align: center; }
-    .tpl-tagliedoppiacifra .price-section { flex: 1; display: flex; flex-direction: column; justify-content: space-between; align-items: flex-end; padding-left: 10px; padding-bottom: 6px; }
-    .tpl-tagliedoppiacifra .top-price-row { display: flex; align-items: center; justify-content: flex-end; gap: 14px; width: 100%; margin-top: 2px; }
-    .tpl-tagliedoppiacifra .original-price { font-size: 32px; font-weight: 400; letter-spacing: -0.5px; }
-    .tpl-tagliedoppiacifra .discount-tag { font-size: 32px; font-weight: 900; }
+    /* Prezzo originario e sconto stanno subito sopra il prezzo finale, in Bodoni Std come le altre etichette TEBE. */
+    /* Colonna prezzi alta quanto il blocco taglie (titolo 16px + 13px + caselle 156px = 185px, centrato in 228px con 8px sotto):
+       riga prezzo originario/sconto centrata sul titolo SIZE / TAGLIA (padding sopra 9,5px), testo descrittivo sul fondo
+       delle caselle (padding sotto 25,5px), prezzo finale al centro dello spazio fra i due. */
+    .tpl-tagliedoppiacifra .price-section { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: flex-start; align-items: flex-end; padding: 13px 0 25.5px 10px; }
+    .tpl-tagliedoppiacifra .top-price-row { display: flex; align-items: baseline; justify-content: flex-end; gap: 14px; width: 100%; }
+    .tpl-tagliedoppiacifra .footer-text { position: relative; bottom: 3px; max-width: 100%; overflow: hidden; padding: 5px 0; margin: -5px 0; font: 400 var(--footer-size-screen, 20px)/20px Arial, Helvetica, sans-serif; letter-spacing: 0.3px; text-transform: uppercase; text-align: right; white-space: nowrap; }
+    /* BLACK FRIDAY: bianco su casella nera. I margini negativi annullano il margine interno: la casella si allarga solo
+       visivamente, il testo resta dov'era e il blocco prezzi non si sposta. */
+    .tpl-tagliedoppiacifra .footer-text.is-inverted { padding: 3px 6px; margin: -3px -6px -3px 0; font-size: 22px; background: #000; color: #fff; }
+    /* STANDARD: logo OPHILYA piccolo al posto della riga prezzo originario/sconto, centrato sul titolo SIZE / TAGLIA.
+       ophilyablack.png non ha margini trasparenti: largo 150px, alto circa 20px nella casella da 28px. */
+    .tpl-tagliedoppiacifra .size-logo { display: none; justify-content: flex-end; width: 150px; height: 28px; margin-top: 2px; overflow: hidden; }
+    .tpl-tagliedoppiacifra .size-logo img { flex: 0 0 auto; width: 150px; max-width: none; max-height: none; }
+    .tpl-tagliedoppiacifra.is-standard .size-logo { display: flex; }
+    .tpl-tagliedoppiacifra.is-standard .top-price-row { display: none; }
+    /* Tracking -50 = -0,05em. */
+    .tpl-tagliedoppiacifra .original-price { font: 300 32px/1 'Bodoni Std', serif; letter-spacing: -0.05em; }
+    .tpl-tagliedoppiacifra .discount-tag { font: 300 32px/1 'Bodoni Std', serif; letter-spacing: -0.05em; }
     
     /* FONT DINAMICO PREZZO FINALE (SCHERMO) */
-    .tpl-tagliedoppiacifra .final-price { 
-      font-size: var(--final-price-size-screen, 76px); 
-      font-weight: 900; 
-      line-height: 0.85; 
-      letter-spacing: -2px; 
-      margin-top: -2px; 
+    /* Prezzo finale in Bodoni Std come il prezzo dell'etichetta Semplice. */
+    .tpl-tagliedoppiacifra .final-price {
+      margin: auto 0;
+      font-family: 'Bodoni Std', serif;
+      font-size: var(--final-price-size-screen, 80px);
+      font-weight: 300;
+      line-height: 0.85;
+      letter-spacing: -1.5px;
       white-space: nowrap; 
     }
     
-    .tpl-tagliedoppiacifra .footer-text { font-size: 19px; font-weight: 400; letter-spacing: 0.3px; text-transform: uppercase; text-align: right; margin-bottom: 4px; }
 
     /* NAVIGAZIONE */
     .app-close-btn {
@@ -590,6 +612,15 @@
         </select>
       </div>
 
+      <!-- TAGLIE: DOPPIA CIFRA (prezzo originario e sconto) o STANDARD (logo OPHILYA al loro posto) -->
+      <div class="form-group" id="groupSizeMode" style="display:none;">
+        <label>Tipo di etichetta</label>
+        <div class="mode-switch" role="group" aria-label="Tipo di etichetta">
+          <button type="button" data-size-mode="standard" onclick="setSizeMode('standard')">STANDARD</button>
+          <button type="button" data-size-mode="doppia" class="active" onclick="setSizeMode('doppia')">DOPPIA CIFRA</button>
+        </div>
+      </div>
+
       <!-- SELEZIONE TAGLIE GRID (6 DROPDOWN) -->
       <div class="form-group" id="groupSizes" style="display:none;">
         <label>Seleziona Taglie (6 Riquadri)</label>
@@ -601,6 +632,24 @@
           <select id="sizeSelect5" class="form-control" onchange="updateLabel()"></select>
           <select id="sizeSelect6" class="form-control" onchange="updateLabel()"></select>
         </div>
+      </div>
+
+      <!-- TAGLIE: testi gia' pronti che riempiono il testo descrittivo (solo BLACK FRIDAY ha lo sfondo nero) -->
+      <div class="form-group" id="groupSizePreset" style="display:none;">
+        <label for="sizePresetSelect">Testo preimpostato</label>
+        <select id="sizePresetSelect" class="form-control" onchange="applySizePreset(this)">
+          <option value="">-- Scegli un testo --</option>
+          <option value="BLACK FRIDAY" class="priority-brand-option">⭐ BLACK FRIDAY</option>
+          <option value="FINAL PRICE">FINAL PRICE</option>
+          <option value="GENUINE LEATHER">GENUINE LEATHER</option>
+          <option value="OUTLET PRICE">OUTLET PRICE</option>
+          <option value="SALE">SALE</option>
+          <option value="SPECIAL DEAL">SPECIAL DEAL</option>
+          <option value="SPRING SALE">SPRING SALE</option>
+          <option value="SUMMER SALE">SUMMER SALE</option>
+          <option value="VERA PELLE">VERA PELLE</option>
+          <option value="WINTER SALE">WINTER SALE</option>
+        </select>
       </div>
 
       <div class="form-group" id="groupCustomText" style="display:none;">
@@ -669,7 +718,8 @@
     let currentTemplateKey = 'outlet';
     // Made in Italy: logo a sinistra e adesivo a destra, solo nei layout con il logo in alto.
     const MADE_IN_ITALY_TEMPLATES = ['outlet', 'final', 'promo'];
-    let madeInItalyActive = false;
+    // Stato del Made in Italy per ciascun layout: ogni layout lo attiva o disattiva per conto suo.
+    const madeInItalyByTemplate = {};
 
     function renderSimpleTemplate(showPromo) {
       return `
@@ -790,11 +840,11 @@
       },
       'tagliedoppiacifra': {
         name: '6. Taglie | Doppia Cifra',
-        fields: ['groupSizes', 'groupOrig', 'groupDiscount', 'groupOutlet', 'groupCustomText'],
+        fields: ['groupSizeMode', 'groupSizes', 'groupOrig', 'groupDiscount', 'groupOutlet', 'groupSizePreset', 'groupCustomText'],
         render: () => `
           <div class="tpl-tagliedoppiacifra">
             <div class="size-section">
-              <div class="size-title">SIZE</div>
+              <div class="size-title">SIZE / TAGLIA</div>
               <div class="size-grid">
                 <div class="size-box" id="lblSize1">S</div>
                 <div class="size-box" id="lblSize2">M</div>
@@ -805,12 +855,13 @@
               </div>
             </div>
             <div class="price-section">
+              <div class="brand-logo-container size-logo"><img src="${DEFAULT_LOGO_SRC}" alt="OPHILYA"></div>
               <div class="top-price-row">
                 <span class="original-price" id="lblOrig">€ 330,00</span>
                 <span class="discount-tag" id="lblDiscount">-70%</span>
               </div>
               <div class="final-price" id="lblOutlet">€ 99,00</div>
-              <div class="footer-text" id="lblCustomText">OUTLET PRICE • FW26</div>
+              <div class="footer-text" id="lblCustomText">GENUINE LEATHER</div>
             </div>
           </div>`
       }
@@ -835,9 +886,14 @@
       if (!TEMPLATES[key]) return;
       currentTemplateKey = key;
       document.getElementById('madeInItalyBtn').style.display = MADE_IN_ITALY_TEMPLATES.includes(key) ? '' : 'none';
+      refreshMadeInItalyButton();
       const customTextInput = document.getElementById('inputCustomText');
+      // Articolo: oltre 16 caratteri il testo non sta piu' nello spazio dell'etichetta.
+      // Taglie: fino a 22, il corpo si riduce da solo quando serve (fitSizeFooterText).
       if (key === 'promo') {
         customTextInput.maxLength = 16;
+      } else if (key === 'tagliedoppiacifra') {
+        customTextInput.maxLength = SIZE_FOOTER_MAX_LENGTH;
       } else {
         customTextInput.removeAttribute('maxlength');
       }
@@ -848,7 +904,7 @@
 
       document.getElementById('labelPreview').innerHTML = TEMPLATES[key].render();
 
-      const allFields = ['groupBrand', 'groupCustomBrand', 'groupPromo', 'groupCustomText', 'groupProdName', 'groupCode', 'groupOrig', 'groupDiscounted', 'groupDiscount', 'groupOutlet', 'groupSizes'];
+      const allFields = ['groupBrand', 'groupCustomBrand', 'groupPromo', 'groupCustomText', 'groupProdName', 'groupCode', 'groupOrig', 'groupDiscounted', 'groupDiscount', 'groupOutlet', 'groupSizeMode', 'groupSizes', 'groupSizePreset'];
       allFields.forEach(fId => {
         const elem = document.getElementById(fId);
         if (elem) elem.style.display = TEMPLATES[key].fields.includes(fId) ? 'block' : 'none';
@@ -861,6 +917,7 @@
       if (priceRow) {
         priceRow.style.display = (showOrig || showDiscounted || showDiscount) ? 'flex' : 'none';
       }
+      syncSizeModeFields();
 
       const lblOrigTitle = document.getElementById('lblOrigTitle');
       const lblPriceTitle = document.getElementById('lblPriceTitle');
@@ -869,11 +926,11 @@
       if (key === 'tagliedoppiacifra') {
         if (lblOrigTitle) lblOrigTitle.innerText = "Prezzo Originario (€)";
         if (lblPriceTitle) lblPriceTitle.innerText = "Prezzo Finale (€)";
-        if (lblCustomTextTitle) lblCustomTextTitle.innerText = "Frase Descrittiva / Testo Libero";
         document.getElementById('inputOrig').value = "330,00";
         document.getElementById('inputDiscount').value = "-70%";
         document.getElementById('inputOutlet').value = "99,00";
-        document.getElementById('inputCustomText').value = "OUTLET PRICE • FW26";
+        if (lblCustomTextTitle) lblCustomTextTitle.innerText = "Testo Descrittivo";
+        document.getElementById('inputCustomText').value = "GENUINE LEATHER";
       } else if (key === 'outlet' || key === 'promo') {
         if (lblPriceTitle) lblPriceTitle.innerText = "Prezzo (€)";
         document.getElementById('promoSelect').value = "GENUINE LEATHER";
@@ -1022,24 +1079,26 @@
       const text = elemOutlet.innerText.trim();
       const len = text.length;
 
-      let screenSize = '76px';
-      let printSize = '28pt';
+      // Corpi originali +6%. In stampa il layout e' ingrandito x1,08: i corpi di stampa sono i valori originali divisi per 1,08,
+      // cosi' il prezzo stampato ha la stessa grandezza di prima e non viene tagliato.
+      let screenSize = '80px';
+      let printSize = '27.5pt';
 
       if (len <= 7) {
-        screenSize = '84px';
-        printSize = '31pt';
+        screenSize = '89px';
+        printSize = '30.4pt';
       } else if (len === 8) {
-        screenSize = '70px';
-        printSize = '25pt';
+        screenSize = '74px';
+        printSize = '24.5pt';
       } else if (len === 9) {
-        screenSize = '62px';
-        printSize = '22pt';
+        screenSize = '66px';
+        printSize = '21.6pt';
       } else if (len === 10) {
-        screenSize = '52px';
-        printSize = '18.5pt';
+        screenSize = '55px';
+        printSize = '18.1pt';
       } else if (len >= 11) {
-        screenSize = '44px';
-        printSize = '15.5pt';
+        screenSize = '47px';
+        printSize = '15.2pt';
       }
 
       elemOutlet.style.setProperty('--final-price-size-screen', screenSize);
@@ -1069,19 +1128,78 @@
       }
     }
 
-    function toggleMadeInItaly() {
-      madeInItalyActive = !madeInItalyActive;
+    // Taglie in modalita' STANDARD: niente prezzo originario e sconto, quindi i loro campi spariscono dal pannello.
+    let sizeMode = 'doppia';
+
+    // Testo descrittivo delle Taglie: fino a 22 caratteri. Se non sta nella colonna prezzi il corpo si riduce,
+    // calcolato a parte per schermo (colonna 296px, corpo 20px) e stampa (colonna 91,5pt, corpo 8,2pt).
+    const SIZE_FOOTER_MAX_LENGTH = 22;
+    const sizeFooterMeasure = document.createElement('canvas').getContext('2d');
+
+    function applySizePreset(select) {
+      if (!select.value) return;
+      document.getElementById('inputCustomText').value = select.value;
+      updateLabel();
+    }
+
+    // BLACK FRIDAY (scelto dal menu o scritto a mano) esce bianco su casella nera.
+    const SIZE_FOOTER_INVERTED = ['BLACK FRIDAY'];
+
+    function fitSizeFooterText(element) {
+      if (!element) return;
+      const text = element.textContent.toUpperCase();
+      const chars = Array.from(text).length;
+      sizeFooterMeasure.font = '100px Arial, Helvetica, sans-serif';
+      const width100 = sizeFooterMeasure.measureText(text).width;
+      const screenWidth = width100 * 0.20 + 0.3 * chars;
+      const printWidth = width100 * 0.082 + 0.1 * chars;
+      const screenScale = Math.min(1, 290 / screenWidth);
+      const printScale = Math.min(1, 89 / printWidth);
+      element.style.setProperty('--footer-size-screen', `${(20 * screenScale).toFixed(2)}px`);
+      element.style.setProperty('--footer-size-print', `${(8.2 * printScale).toFixed(2)}pt`);
+    }
+
+    function setSizeMode(mode) {
+      sizeMode = mode;
+      document.querySelectorAll('[data-size-mode]').forEach(button => {
+        button.classList.toggle('active', button.dataset.sizeMode === mode);
+      });
+      syncSizeModeFields();
+      updateLabel();
+    }
+
+    function syncSizeModeFields() {
+      if (currentTemplateKey !== 'tagliedoppiacifra') return;
+      const isStandard = sizeMode === 'standard';
+      document.getElementById('groupPriceRow').style.display = isStandard ? 'none' : 'flex';
+    }
+
+    function isMadeInItalyActive() {
+      return Boolean(madeInItalyByTemplate[currentTemplateKey]);
+    }
+
+    // Allinea il pulsante allo stato del layout corrente (chiamata anche al cambio di layout).
+    function refreshMadeInItalyButton() {
+      const active = isMadeInItalyActive();
       const btn = document.getElementById('madeInItalyBtn');
-      btn.classList.toggle('is-active', madeInItalyActive);
-      btn.setAttribute('aria-pressed', String(madeInItalyActive));
-      btn.title = madeInItalyActive ? 'Disattiva Made in Italy' : 'Attiva Made in Italy';
+      btn.classList.toggle('is-active', active);
+      btn.setAttribute('aria-pressed', String(active));
+      btn.title = active ? 'Disattiva Made in Italy' : 'Attiva Made in Italy';
+    }
+
+    function toggleMadeInItaly() {
+      madeInItalyByTemplate[currentTemplateKey] = !isMadeInItalyActive();
+      refreshMadeInItalyButton();
       updateLabel();
     }
 
     function updateLabel() {
       const labelRoot = document.querySelector('#labelPreview > div');
+      if (labelRoot && currentTemplateKey === 'tagliedoppiacifra') {
+        labelRoot.classList.toggle('is-standard', sizeMode === 'standard');
+      }
       if (labelRoot) {
-        labelRoot.classList.toggle('is-made-in-italy', madeInItalyActive && MADE_IN_ITALY_TEMPLATES.includes(currentTemplateKey));
+        labelRoot.classList.toggle('is-made-in-italy', isMadeInItalyActive() && MADE_IN_ITALY_TEMPLATES.includes(currentTemplateKey));
       }
 
       const imgElement = document.getElementById('labelLogo');
@@ -1140,10 +1258,19 @@
       }
       
       const customTextInput = document.getElementById('inputCustomText');
-      if (currentTemplateKey === 'promo' && Array.from(customTextInput.value).length > 16) {
-        customTextInput.value = Array.from(customTextInput.value).slice(0, 16).join('');
+      const customTextLimit = currentTemplateKey === 'promo' ? 16 : (currentTemplateKey === 'tagliedoppiacifra' ? SIZE_FOOTER_MAX_LENGTH : Infinity);
+      if (Array.from(customTextInput.value).length > customTextLimit) {
+        customTextInput.value = Array.from(customTextInput.value).slice(0, customTextLimit).join('');
       }
       if (elemCustomText) elemCustomText.innerText = customTextInput.value;
+      if (currentTemplateKey === 'tagliedoppiacifra') {
+        fitSizeFooterText(elemCustomText);
+        const footerText = customTextInput.value.trim().toUpperCase();
+        elemCustomText?.classList.toggle('is-inverted', SIZE_FOOTER_INVERTED.includes(footerText));
+        // Il menu mostra il testo preimpostato solo se il campo coincide ancora con uno dei suoi valori.
+        const presetSelect = document.getElementById('sizePresetSelect');
+        presetSelect.value = [...presetSelect.options].some(option => option.value === footerText) ? footerText : '';
+      }
       if (currentTemplateKey === 'promo') {
         adjustPromoDescriptionFontSize(document.querySelector('#labelPreview .tpl-outlet-promo'));
       }
@@ -1530,23 +1657,39 @@
             .tpl-promo50 .banner-right .price-val { color: #fff; font-size: 23pt; font-weight: 800; line-height: 1; letter-spacing: -0.5pt; white-space: nowrap; text-align: right; }
 
             /* TEMPLATE 6 PRINT (TAGLIE DOPPIA CIFRA CON FONT STAMPA DINAMICO) */
-            .tpl-tagliedoppiacifra { display: flex; justify-content: space-between; align-items: stretch; height: 29mm; width: 100%; }
-            .tpl-tagliedoppiacifra .size-section { display: flex; flex-direction: column; align-items: center; width: 15mm; }
-            .tpl-tagliedoppiacifra .size-title { font-size: 8pt; font-weight: 400; letter-spacing: 0.2pt; margin-bottom: 0.5mm; text-transform: uppercase; }
-            .tpl-tagliedoppiacifra .size-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.8mm; width: 100%; }
+            /* Stesso ingrandimento x1,08 dei layout 1-3 (senza lo spostamento in alto, che faceva tagliare la riga prezzi). Il layout occupa tutta la larghezza utile:
+               parte largo 100%/1,08 e centrato, cosi' una volta ingrandito torna esattamente alla larghezza utile senza essere tagliato a destra. */
+            .tpl-tagliedoppiacifra { display: flex; justify-content: space-between; align-items: stretch; height: 29mm; transform: scale(1.08); transform-origin: center center; }
+            .print-wrapper .tpl-tagliedoppiacifra { width: calc(100% / 1.08) !important; align-self: center; }
+            .tpl-tagliedoppiacifra .size-section { display: flex; flex-direction: column; justify-content: center; align-items: center; width: 15mm; padding-bottom: 1mm; }
+            .tpl-tagliedoppiacifra .size-title { font-size: 5.6pt; font-weight: 400; letter-spacing: 0.2pt; padding-left: 0.2pt; margin-bottom: 1.4mm; text-transform: uppercase; white-space: nowrap; }
+            .tpl-tagliedoppiacifra .size-grid { display: grid; grid-template-columns: repeat(2, 7mm); gap: 0.8mm; }
             .tpl-tagliedoppiacifra .size-box { width: 7mm; height: 7mm; border: 0.5mm solid #000000; display: flex; align-items: center; justify-content: center; font-size: 7.5pt; font-weight: 400; background-color: #ffffff; }
-            .tpl-tagliedoppiacifra .price-section { flex: 1; display: flex; flex-direction: column; justify-content: space-between; align-items: flex-end; padding-left: 1mm; padding-bottom: 1.5mm; }
-            .tpl-tagliedoppiacifra .top-price-row { display: flex; align-items: center; justify-content: flex-end; gap: 2mm; width: 100%; }
-            .tpl-tagliedoppiacifra .original-price { font-size: 12.5pt; font-weight: 400; }
-            .tpl-tagliedoppiacifra .discount-tag { font-size: 12.5pt; font-weight: 900; }
+            /* Come a schermo: blocco taglie da 26,27 mm centrato in 28 mm; riga prezzi in alto, testo sul fondo delle caselle (1,87 mm dal fondo). */
+            /* Riga prezzi 1,2 mm sotto il bordo: con l'ingrandimento x1,08 il layout sborda di circa 1,3 mm, e senza questo margine veniva tagliata. */
+            .tpl-tagliedoppiacifra .price-section { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: flex-start; align-items: flex-end; padding: 1.2mm 0 1.87mm 1mm; }
+            .tpl-tagliedoppiacifra .top-price-row { display: flex; align-items: baseline; justify-content: flex-end; gap: 2mm; width: 100%; }
+            /* Riga ad altezza fissa (il blocco prezzi non si muove anche se il testo si rimpicciolisce) e margine interno sopra e sotto, annullato dai margini negativi: il riquadro che taglia il testo in larghezza non taglia
+               la parte bassa delle lettere quando html2canvas le disegna un po' piu' in basso. */
+            .tpl-tagliedoppiacifra .footer-text { position: relative; bottom: 0.35mm; max-width: 100%; overflow: hidden; padding: 2pt 0; margin: -2pt 0; font: 400 var(--footer-size-print, 8.2pt)/8.2pt Arial, Helvetica, sans-serif; letter-spacing: 0.1pt; text-transform: uppercase; text-align: right; white-space: nowrap; }
+            .tpl-tagliedoppiacifra .footer-text.is-inverted { padding: 1.1pt 2.2pt; margin: -1.1pt -2.2pt -1.1pt 0; font-size: 9pt; background: #000; color: #fff; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            /* Solo stampa DYMO (html2canvas): testo alzato di 0,6pt per restare centrato nella casella nera. */
+            .is-raster .tpl-tagliedoppiacifra .footer-text.is-inverted { padding: 0.5pt 2.2pt 1.7pt; margin: -1.1pt -2.2pt -1.1pt 0; }
+            .tpl-tagliedoppiacifra .size-logo { display: none; justify-content: flex-end; width: 19mm; height: 3.6mm; margin-top: 0.24mm; overflow: hidden; }
+            .tpl-tagliedoppiacifra .size-logo img { flex: 0 0 auto; width: 19mm; max-width: none; max-height: none; }
+            .tpl-tagliedoppiacifra.is-standard .size-logo { display: flex; }
+            .tpl-tagliedoppiacifra.is-standard .top-price-row { display: none; }
+            .tpl-tagliedoppiacifra .original-price { font: 300 11.57pt/1 'Bodoni Std', serif; letter-spacing: -0.05em; }
+            .tpl-tagliedoppiacifra .discount-tag { font: 300 11.57pt/1 'Bodoni Std', serif; letter-spacing: -0.05em; }
             .tpl-tagliedoppiacifra .final-price { 
-              font-size: var(--final-price-size-print, 28pt) !important; 
-              font-weight: 900; 
-              line-height: 0.85; 
-              letter-spacing: -0.5pt; 
+              margin: auto 0;
+              font-family: 'Bodoni Std', serif;
+              font-size: var(--final-price-size-print, 27.5pt) !important;
+              font-weight: 300;
+              line-height: 0.85;
+              letter-spacing: -1.5px;
               white-space: nowrap; 
             }
-            .tpl-tagliedoppiacifra .footer-text { font-size: 8.5pt; font-weight: 400; text-transform: uppercase; text-align: right; margin-bottom: 1mm; }
           </style>
         </head>
         <body>
