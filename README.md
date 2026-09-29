@@ -34,7 +34,7 @@ Alcune funzioni richiedono la rete o servizi locali:
 
 ### Dashboard: `index.html`
 
-- **Selettore negozio (TEBE / OPHILYA).** Cambia logo e indirizzo nell'intestazione e aggiunge `?store=` a tutti i link. Per ora OPHILYA è un segnaposto: cartelli e galleria PDF mostrano "Coming Soon". Gli strumenti cassa invece funzionano come in TEBE.
+- **Selettore negozio (TEBE / OPHILYA).** Cambia logo e indirizzo nell'intestazione e aggiunge `?store=` a tutti i link. Per ora OPHILYA è un segnaposto: cartelli e materiali pronti mostrano "Coming Soon". Gli strumenti cassa invece funzionano come in TEBE.
 - **Selettore modalità (CREATOR / CASSIERE).** CREATOR mostra tutti i widget, con gli *Strumenti Cassa* in fondo. CASSIERE mostra solo gli *Strumenti Cassa*. La pagina si apre sempre in CREATOR.
 - **Menu laterale.** Sezioni comprimibili; lo stato aperto/chiuso è ricordato nel `localStorage`.
 - **Strumenti cassa** (TEBE e OPHILYA):
@@ -78,7 +78,7 @@ Etichette DYMO **11354** (57 × 32 mm, 2,25 × 1,25 in). In modalità OPHILYA la
 
 ### Materiali pronti
 
-- `galleria-pdf.html`: locandine stagionali (Spring, Summer e Winter Sale, Last Chance) e segnaletica del negozio (orari, taglie, vietato fumare, staff only, vietato cibo).
+- In dashboard, un carosello con le stampe pronte: Taglie Internazionali, Staff Only, Vietato Fumare e No Food & Drinks Indoor. Ogni widget ha miniatura, titolo e tasto Apri / Stampa, e apre il PDF nel visualizzatore.
 - `pdf-viewer.html?file=…`: visualizzatore integrato. Da telefono apre direttamente il PDF.
 
 ### Loghi personalizzati
@@ -102,7 +102,7 @@ cartelli_*.html, cartellopercentuale.html, albero.html, paletto.html, paletto18x
 cornici10x15.html, cornice21x27.html      Editor cartelli
 etichette.html              Editor etichette DYMO (TEBE)
 etichetteophilya.html       Editor etichette DYMO (OPHILYA)
-galleria-pdf.html, pdf-viewer.html        Materiali PDF
+pdf-viewer.html             Visualizzatore dei PDF pronti
 genera_loghi.html, gestisci_lista.html    Loghi personalizzati (per browser)
 logoimport.html, logogestione.html        Loghi ufficiali (scrivono nel repo, uso interno)
 assets/
@@ -114,8 +114,8 @@ assets/
   img/printlogos/           Varianti precolorate: {white,black,red,gold}<NOME>.png
   img/                      Loghi negozio, decori, bandiere, logo footer
   fonts/                    Bodoni Std (in uso) e altri font con licenza
-  pdf/                      Locandine e segnaletica pronte da stampare
-  thumbnail/                Anteprime per dashboard e galleria
+  pdf/                      Segnaletica pronta da stampare (i PDF del carosello Materiali Pronti)
+  thumbnail/                Anteprime dei widget della dashboard e delle etichette
 ```
 
 ## Crediti

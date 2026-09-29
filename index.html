@@ -6,7 +6,7 @@
 <title>TEBE · OPHILYA — Visual Merchandising</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600&family=Fraunces:opsz,wght@9..144,400;9..144,500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
 :root{
@@ -44,7 +44,7 @@ button{font:inherit;cursor:pointer}
 .sidebar-overlay{display:none}
 .logo{
   position:relative;
-  padding:0 8px 28px;
+  padding:0 8px 56px;
   display:flex;
   flex-direction:column;
   align-items:center;
@@ -69,14 +69,16 @@ button{font:inherit;cursor:pointer}
   cursor:pointer;
 }
 .logo-name{
+  font-family:'Cinzel',serif;
   font-size:17px;
+  /* Stessa altezza di riga che aveva con Arial, così il divisorio sotto non si sposta. */
+  line-height:1.15;
   letter-spacing:.16em;
-  font-weight:400;
+  font-weight:600;
   color:var(--gold);
   text-transform:uppercase;
   white-space:nowrap;
 }
-.line{height:1px;background:var(--line);margin:0 8px 27px}
 .label{
   font-size:10px;
   letter-spacing:.24em;
@@ -230,6 +232,7 @@ body.cassiere-mode .content > #cartelli,
 body.cassiere-mode .content > .cartelli-carousel-shell,
 body.cassiere-mode .content > #etichette,
 body.cassiere-mode .content > .dymo-carousel-shell,
+body.cassiere-mode .content > .prints-carousel-shell,
 body.cassiere-mode .content > .section:not(#strumenti-cassa),
 body.cassiere-mode .content > .lower{
   display:none;
@@ -492,6 +495,37 @@ h1{
 }
 .lower-single{
   grid-template-columns:1fr;
+}
+/* Stampe pronte: carosello a una riga che riusa le regole di .cartelli-carousel;
+   solo titolo e tasto Apri / Stampa, il PDF si apre in pdf-viewer.html. */
+.prints-carousel-shell{
+  position:relative;
+}
+.prints-carousel{
+  grid-template-rows:minmax(220px, auto);
+}
+.print-card .card-thumb img{
+  object-fit:contain;
+}
+.print-card h2{
+  padding-right:0;
+}
+.print-card-btn{
+  align-self:flex-start;
+  margin-top:14px;
+  padding:8px 12px;
+  border:1px solid var(--gold);
+  background:var(--gold);
+  color:var(--white);
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  transition:.18s ease;
+}
+.print-card:hover .print-card-btn{
+  background:var(--white);
+  color:var(--gold);
 }
 .dymo-carousel-shell{
   position:relative;
@@ -1077,9 +1111,8 @@ body.ophilya .cash-tools-coming-soon{
   }
   body.mobile-menu-open .sidebar{transform:translateX(0)}
   .sidebar-close{display:flex}
-  .logo{padding:0 4px 14px}
+  .logo{padding:0 4px 29px}
   .logo-name{font-size:15px}
-  .line{margin:0 4px 14px}
   .sidebar-section .label{margin-top:12px !important;padding:0 6px 6px}
   nav{gap:1px}
   nav button{padding:9px 8px;font-size:13px}
@@ -1280,8 +1313,6 @@ body.ophilya .cash-tools-coming-soon{
       <div class="logo-name">STORE // CRAFT</div>
       <button class="sidebar-close" type="button" aria-label="Chiudi il menu" onclick="toggleMobileSidebar(false)">✕</button>
     </div>
-
-    <div class="line"></div>
 
     <div class="sidebar-section" data-sidebar-section="cartelli">
       <div class="label">
@@ -1583,13 +1614,43 @@ body.ophilya .cash-tools-coming-soon{
 
       <div class="section">MATERIALI PRONTI</div>
 
-      <div class="lower lower-single">
-        <a class="wide-card" data-link="galleria-pdf.html">
+      <div class="prints-carousel-shell">
+        <button class="carousel-control previous" id="prints-previous" type="button" aria-label="Stampe precedenti" onclick="scrollPrintsCarousel(-1)">‹</button>
+        <div class="cards cartelli-carousel prints-carousel" id="prints-carousel">
+        <a class="card print-card" data-link="pdf-viewer.html?file=assets/pdf/taglie.pdf">
           <div>
-            <h2>Galleria PDF</h2>
-            <p>Locandine e avvisi pronti da stampare: orari, taglie, stagionali e cartellonistica del punto vendita.</p>
+            <div class="number">01</div>
+            <div class="card-thumb"><img src="assets/thumbnail/taglieinternazionalithumb.png" alt="Taglie Internazionali"></div>
           </div>
+          <h2>Taglie Internazionali</h2>
+          <span class="print-card-btn">Apri / Stampa</span>
         </a>
+        <a class="card print-card" data-link="pdf-viewer.html?file=assets/pdf/staffonly.pdf">
+          <div>
+            <div class="number">02</div>
+            <div class="card-thumb"><img src="assets/thumbnail/staffonlythumb.png" alt="Staff Only"></div>
+          </div>
+          <h2>Staff Only</h2>
+          <span class="print-card-btn">Apri / Stampa</span>
+        </a>
+        <a class="card print-card" data-link="pdf-viewer.html?file=assets/pdf/vietatofumare.pdf">
+          <div>
+            <div class="number">03</div>
+            <div class="card-thumb"><img src="assets/thumbnail/vietatofumarethumb.png" alt="Vietato Fumare"></div>
+          </div>
+          <h2>Vietato Fumare</h2>
+          <span class="print-card-btn">Apri / Stampa</span>
+        </a>
+        <a class="card print-card" data-link="pdf-viewer.html?file=assets/pdf/nofood_indoor.pdf">
+          <div>
+            <div class="number">04</div>
+            <div class="card-thumb"><img src="assets/thumbnail/nofoodindoorthumb.png" alt="No Food &amp; Drinks Indoor"></div>
+          </div>
+          <h2>No Food &amp; Drinks Indoor</h2>
+          <span class="print-card-btn">Apri / Stampa</span>
+        </a>
+        </div>
+        <button class="carousel-control next" id="prints-next" type="button" aria-label="Stampe successive" onclick="scrollPrintsCarousel(1)">›</button>
       </div>
 
       <div class="section" id="strumenti-cassa">STRUMENTI CASSA</div>
@@ -2056,6 +2117,25 @@ function scrollCartelliCarousel(direction){
   scrollCarouselByStep(carousel, direction);
 }
 
+function updatePrintsCarouselControls(){
+  const carousel = document.getElementById("prints-carousel");
+  if(!carousel) return;
+
+  const previous = document.getElementById("prints-previous");
+  const next = document.getElementById("prints-next");
+  if(!previous || !next) return;
+  const maxScrollLeft = carousel.scrollWidth - carousel.clientWidth;
+
+  previous.disabled = carousel.scrollLeft <= 1;
+  next.disabled = carousel.scrollLeft >= maxScrollLeft - 1;
+}
+
+function scrollPrintsCarousel(direction){
+  const carousel = document.getElementById("prints-carousel");
+  if(!carousel) return;
+  scrollCarouselByStep(carousel, direction);
+}
+
 function toggleSidebarSection(sectionId){
   const section = document.querySelector(`[data-sidebar-section="${sectionId}"]`);
   if(!section) return;
@@ -2117,8 +2197,12 @@ function restoreSidebarSections(){
   cartelliCarousel?.addEventListener("scroll", updateCartelliCarouselControls, { passive:true });
   window.addEventListener("resize", updateDymoCarouselControls);
   window.addEventListener("resize", updateCartelliCarouselControls);
+  const printsCarousel = document.getElementById("prints-carousel");
+  printsCarousel?.addEventListener("scroll", updatePrintsCarouselControls, { passive:true });
+  window.addEventListener("resize", updatePrintsCarouselControls);
   updateDymoCarouselControls();
   updateCartelliCarouselControls();
+  updatePrintsCarouselControls();
   generateQrCode();
   loadExchangeRates();
 })();
