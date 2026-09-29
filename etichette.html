@@ -130,6 +130,22 @@
     .form-group label { display: block; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--accent); margin-bottom: 0.4rem; font-weight: 600; }
     .form-control { width: 100%; padding: 0.65rem; background: var(--card); border: 1px solid var(--border); color: var(--text); border-radius: 4px; font-size: 0.9rem; outline: none; }
     .form-control:focus { border-color: var(--accent); }
+
+    /* Menu a cascata come nelle pagine dei cartelli: niente freccia di sistema, fascetta beige a destra con ▼ oro. */
+    select.form-control {
+      -webkit-appearance: none;
+      appearance: none;
+      padding-right: 2.2rem;
+      background-color: var(--card);
+      background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 7'%3E%3Cpath d='M0 0h10L5 7z' fill='%23b49a62'/%3E%3C/svg%3E"),
+        linear-gradient(var(--border), var(--border)),
+        linear-gradient(#f3ede0, #f3ede0);
+      background-repeat: no-repeat;
+      background-position: right 0.55rem center, right 1.6rem top, right top;
+      background-size: 0.5rem 0.35rem, 1px 100%, 1.6rem 100%;
+      cursor: pointer;
+    }
     .row { display: flex; gap: 0.8rem; }
 
     .custom-brand-box {
@@ -152,7 +168,7 @@
       gap: 0.4rem;
     }
     .form-control.custom-select {
-      background: var(--card);
+      background-color: var(--card);
       border: 1px solid var(--accent);
       color: #6b4f1f;
       font-weight: 600;
@@ -218,8 +234,8 @@
     .tpl-outlet.is-made-in-italy .brand-logo-container,
     .tpl-final.is-made-in-italy .brand-logo-container { justify-content: flex-start; width: 240px; height: 96px; margin: 4px 0 0; }
     /* Il QR code lascia il posto all'adesivo. */
-    .is-made-in-italy .qr-promo-box,
-    .is-made-in-italy .qr-container { display: none; }
+    .tpl-outlet.is-made-in-italy .qr-promo-box,
+    .tpl-final.is-made-in-italy .qr-container { display: none; }
     .is-made-in-italy .made-in-italy-sticker { display: block; flex: 0 0 auto; width: 120px; height: auto; margin-top: 4px; }
     /* La promo si centra sull'adesivo: centro dell'adesivo a 6 + 120/2 = 66px dal bordo destro;
        la casella (96px, bordata 104px) parte a 8px dal bordo, quindi si sposta di 8 - (66 - larghezza/2). */
@@ -299,6 +315,18 @@
     .tpl-tagliedoppiacifra .size-logo img { flex: 0 0 auto; width: 150px; max-width: none; max-height: none; margin-right: -7.75px; }
     .tpl-tagliedoppiacifra.is-standard .size-logo { display: flex; }
     .tpl-tagliedoppiacifra.is-standard .top-price-row { display: none; }
+    /* 5. TAGLIE BRAND: logo scelto (ufficiale o personalizzato) in una casella 170x70,8 (proporzione 1200x500 dei loghi ufficiali),
+       senza ritaglio, cosi' anche i loghi alti (HAVEONE, 269TEBE) restano interi. In DOPPIA CIFRA il logo resta in alto a destra, il testo descrittivo sparisce e prezzo originario/sconto
+       scendono appena sopra il prezzo finale, appoggiato in basso. */
+    .tpl-tagliebrand .size-logo { width: 170px; height: 70.8px; margin-top: -9px; align-items: center; }
+    .tpl-tagliebrand .size-logo img { width: 170px; height: 70.8px; object-fit: contain; object-position: right center; margin-right: 0; }
+    .tpl-tagliebrand .size-logo .brand-text-fallback { font-size: 14px; text-align: right; }
+    .tpl-tagliebrand:not(.is-standard) .size-logo { display: flex; }
+    .tpl-tagliebrand:not(.is-standard) .top-price-row { margin-top: auto; margin-bottom: 12px; }
+    .tpl-tagliebrand:not(.is-standard) .final-price { margin: 0; }
+    /* Blocco prezzi un po' piu' in basso (padding sotto 22px invece di 25,5px). */
+    .tpl-tagliebrand:not(.is-standard) .price-section { padding-bottom: 22px; }
+    .tpl-tagliebrand:not(.is-standard) .footer-text { display: none; }
     /* Tracking -50 = -0,05em. */
     .tpl-tagliedoppiacifra .original-price { font: 300 32px/1 'Bodoni Std', serif; letter-spacing: -0.05em; }
     .tpl-tagliedoppiacifra .discount-tag { font: 300 32px/1 'Bodoni Std', serif; letter-spacing: -0.05em; }
@@ -549,16 +577,16 @@
         </div>
 
         <div class="template-card" id="card-tpl-tagliedoppiacifra" onclick="setTemplate('tagliedoppiacifra')">
-          <span class="tpl-name">4. Taglie</span>
+          <span class="tpl-name">4. Taglie Tebe</span>
           <div class="tpl-preview-box">
-            <img src="assets/thumbnail/label4thumbnail.png" alt="Miniatura Taglie">
+            <img src="assets/thumbnail/label4thumb.png" alt="Miniatura Taglie">
           </div>
         </div>
 
-        <div class="template-card" id="card-tpl-promo5" onclick="setTemplate('promo5')">
-          <span class="tpl-name">5. Promo</span>
+        <div class="template-card" id="card-tpl-tagliebrand" onclick="setTemplate('tagliebrand')">
+          <span class="tpl-name">5. Taglie Brand</span>
           <div class="tpl-preview-box">
-            <img src="assets/thumbnail/label3thumb.png" alt="Miniatura Promo">
+            <img src="assets/thumbnail/label5thumb.png" alt="Miniatura Taglie Brand">
           </div>
         </div>
 
@@ -583,6 +611,15 @@
       </div>
 
       <button class="btn-scan" onclick="checkDymoPresence()">🔄 Ricontrolla stampante DYMO</button>
+
+      <!-- TAGLIE: DOPPIA CIFRA (prezzo originario e sconto) o STANDARD (logo TEBE al loro posto) -->
+      <div class="form-group" id="groupSizeMode" style="display:none;">
+        <label>Tipo di etichetta</label>
+        <div class="mode-switch" role="group" aria-label="Tipo di etichetta">
+          <button type="button" data-size-mode="standard" class="active" onclick="setSizeMode('standard')">STANDARD</button>
+          <button type="button" data-size-mode="doppia" onclick="setSizeMode('doppia')">DOPPIA CIFRA</button>
+        </div>
+      </div>
 
       <div class="form-group" id="groupBrand">
         <label for="brandSelect">Brand Ufficiale</label>
@@ -614,15 +651,6 @@
           <option value="SPECIAL DEAL">SPECIAL DEAL</option>
           <option value="VERA PELLE">VERA PELLE</option>
         </select>
-      </div>
-
-      <!-- TAGLIE: DOPPIA CIFRA (prezzo originario e sconto) o STANDARD (logo TEBE al loro posto) -->
-      <div class="form-group" id="groupSizeMode" style="display:none;">
-        <label>Tipo di etichetta</label>
-        <div class="mode-switch" role="group" aria-label="Tipo di etichetta">
-          <button type="button" data-size-mode="standard" onclick="setSizeMode('standard')">STANDARD</button>
-          <button type="button" data-size-mode="doppia" class="active" onclick="setSizeMode('doppia')">DOPPIA CIFRA</button>
-        </div>
       </div>
 
       <!-- SELEZIONE TAGLIE GRID (6 DROPDOWN) -->
@@ -718,6 +746,11 @@
     let selectedBrand = '';
     let selectedCustomLogo = '';
     let currentTemplateKey = 'outlet';
+    // Layout con le taglie: 4. Taglie Tebe e 5. Taglie Brand condividono struttura e logica.
+    const SIZE_TEMPLATES = ['tagliedoppiacifra', 'tagliebrand'];
+    function isSizeTemplate(key = currentTemplateKey) {
+      return SIZE_TEMPLATES.includes(key);
+    }
     // Made in Italy: logo a sinistra e adesivo a destra (al posto del QR), solo nei layout con il logo in alto.
     const MADE_IN_ITALY_TEMPLATES = ['outlet', 'final', 'promo'];
     // Stato del Made in Italy per ciascun layout: ogni layout lo attiva o disattiva per conto suo.
@@ -845,7 +878,7 @@
           </div>`
       },
       'tagliedoppiacifra': {
-        name: '6. Taglie | Doppia Cifra',
+        name: '4. Taglie Tebe',
         fields: ['groupSizeMode', 'groupSizes', 'groupOrig', 'groupDiscount', 'groupOutlet', 'groupSizePreset', 'groupCustomText'],
         render: () => `
           <div class="tpl-tagliedoppiacifra">
@@ -862,6 +895,33 @@
             </div>
             <div class="price-section">
               <div class="brand-logo-container size-logo"><img src="${DEFAULT_LOGO_SRC}" alt="TEBE"></div>
+              <div class="top-price-row">
+                <span class="original-price" id="lblOrig">€ 330,00</span>
+                <span class="discount-tag" id="lblDiscount">-70%</span>
+              </div>
+              <div class="final-price" id="lblOutlet">€ 99,00</div>
+              <div class="footer-text" id="lblCustomText">GENUINE LEATHER</div>
+            </div>
+          </div>`
+      },
+      'tagliebrand': {
+        name: '5. Taglie Brand',
+        fields: ['groupSizeMode', 'groupBrand', 'groupCustomBrand', 'groupSizes', 'groupOrig', 'groupDiscount', 'groupOutlet', 'groupSizePreset', 'groupCustomText'],
+        render: () => `
+          <div class="tpl-tagliedoppiacifra tpl-tagliebrand">
+            <div class="size-section">
+              <div class="size-title">SIZE / TAGLIA</div>
+              <div class="size-grid">
+                <div class="size-box" id="lblSize1">S</div>
+                <div class="size-box" id="lblSize2">M</div>
+                <div class="size-box" id="lblSize3">L</div>
+                <div class="size-box" id="lblSize4">XL</div>
+                <div class="size-box" id="lblSize5">2XL</div>
+                <div class="size-box" id="lblSize6">3XL</div>
+              </div>
+            </div>
+            <div class="price-section">
+              <div class="brand-logo-container size-logo"><img id="labelLogo" src="" alt="Logo Brand" onerror="onLogoError()"><span id="labelFallbackText" class="brand-text-fallback" style="display:none;">SELEZIONA<br>IL BRAND</span></div>
               <div class="top-price-row">
                 <span class="original-price" id="lblOrig">€ 330,00</span>
                 <span class="discount-tag" id="lblDiscount">-70%</span>
@@ -898,7 +958,7 @@
       // Taglie: fino a 22, il corpo si riduce da solo quando serve (fitSizeFooterText).
       if (key === 'promo') {
         customTextInput.maxLength = 16;
-      } else if (key === 'tagliedoppiacifra') {
+      } else if (isSizeTemplate(key)) {
         customTextInput.maxLength = SIZE_FOOTER_MAX_LENGTH;
       } else {
         customTextInput.removeAttribute('maxlength');
@@ -929,7 +989,7 @@
       const lblPriceTitle = document.getElementById('lblPriceTitle');
       const lblCustomTextTitle = document.getElementById('lblCustomTextTitle');
 
-      if (key === 'tagliedoppiacifra') {
+      if (isSizeTemplate(key)) {
         if (lblOrigTitle) lblOrigTitle.innerText = "Prezzo Originario (€)";
         if (lblPriceTitle) lblPriceTitle.innerText = "Prezzo Finale (€)";
         document.getElementById('inputOrig').value = "330,00";
@@ -986,7 +1046,8 @@
         'promo': 'promo',
         'luxury': 'luxury',
         'promo50': 'promo50',
-        'tagliedoppiacifra': 'tagliedoppiacifra'
+        'tagliedoppiacifra': 'tagliedoppiacifra',
+        'tagliebrand': 'tagliebrand'
       };
 
       if (labelParam && paramMap[labelParam.toLowerCase()]) {
@@ -1080,7 +1141,7 @@
 
     function adjustFinalPriceFontSize() {
       const elemOutlet = document.getElementById('lblOutlet');
-      if (!elemOutlet || currentTemplateKey !== 'tagliedoppiacifra') return;
+      if (!elemOutlet || !isSizeTemplate()) return;
 
       const text = elemOutlet.innerText.trim();
       const len = text.length;
@@ -1135,7 +1196,11 @@
     }
 
     // Taglie in modalita' STANDARD: niente prezzo originario e sconto, quindi i loro campi spariscono dal pannello.
-    let sizeMode = 'doppia';
+    // STANDARD / DOPPIA CIFRA, separato per ciascun layout taglie; entrambi partono da STANDARD.
+    const sizeModeByTemplate = { tagliedoppiacifra: 'standard', tagliebrand: 'standard' };
+    function getSizeMode() {
+      return sizeModeByTemplate[currentTemplateKey] || 'standard';
+    }
 
     // Testo descrittivo delle Taglie: fino a 22 caratteri. Se non sta nella colonna prezzi il corpo si riduce,
     // calcolato a parte per schermo (colonna 296px, corpo 20px) e stampa (colonna 91,5pt, corpo 8,2pt).
@@ -1166,18 +1231,22 @@
     }
 
     function setSizeMode(mode) {
-      sizeMode = mode;
-      document.querySelectorAll('[data-size-mode]').forEach(button => {
-        button.classList.toggle('active', button.dataset.sizeMode === mode);
-      });
+      sizeModeByTemplate[currentTemplateKey] = mode;
       syncSizeModeFields();
       updateLabel();
     }
 
     function syncSizeModeFields() {
-      if (currentTemplateKey !== 'tagliedoppiacifra') return;
-      const isStandard = sizeMode === 'standard';
+      if (!isSizeTemplate()) return;
+      const isStandard = getSizeMode() === 'standard';
+      document.querySelectorAll('[data-size-mode]').forEach(button => {
+        button.classList.toggle('active', button.dataset.sizeMode === getSizeMode());
+      });
       document.getElementById('groupPriceRow').style.display = isStandard ? 'none' : 'flex';
+      // Taglie Brand in DOPPIA CIFRA: niente testo descrittivo (al suo posto scende il blocco prezzi).
+      const showDescription = currentTemplateKey !== 'tagliebrand' || isStandard;
+      document.getElementById('groupSizePreset').style.display = showDescription ? 'block' : 'none';
+      document.getElementById('groupCustomText').style.display = showDescription ? 'block' : 'none';
     }
 
     function isMadeInItalyActive() {
@@ -1201,8 +1270,8 @@
 
     function updateLabel() {
       const labelRoot = document.querySelector('#labelPreview > div');
-      if (labelRoot && currentTemplateKey === 'tagliedoppiacifra') {
-        labelRoot.classList.toggle('is-standard', sizeMode === 'standard');
+      if (labelRoot && isSizeTemplate()) {
+        labelRoot.classList.toggle('is-standard', getSizeMode() === 'standard');
       }
       if (labelRoot) {
         labelRoot.classList.toggle('is-made-in-italy', isMadeInItalyActive() && MADE_IN_ITALY_TEMPLATES.includes(currentTemplateKey));
@@ -1238,7 +1307,7 @@
 
       if (elemOrig) {
         const origValue = document.getElementById('inputOrig').value.trim();
-        if (currentTemplateKey === 'tagliedoppiacifra') {
+        if (isSizeTemplate()) {
           elemOrig.innerText = origValue === '' ? '' : (origValue.includes('€') ? origValue : `€ ${origValue}`);
         } else {
           elemOrig.innerText = origValue;
@@ -1252,7 +1321,7 @@
       
       if (elemOutlet) {
         const outletValue = document.getElementById('inputOutlet').value;
-        if (currentTemplateKey === 'tagliedoppiacifra') {
+        if (isSizeTemplate()) {
           elemOutlet.innerText = outletValue.includes('€') ? outletValue : `€ ${outletValue}`;
         } else if (currentTemplateKey === 'promo') {
           const price = outletValue.trim();
@@ -1264,12 +1333,12 @@
       }
       
       const customTextInput = document.getElementById('inputCustomText');
-      const customTextLimit = currentTemplateKey === 'promo' ? 16 : (currentTemplateKey === 'tagliedoppiacifra' ? SIZE_FOOTER_MAX_LENGTH : Infinity);
+      const customTextLimit = currentTemplateKey === 'promo' ? 16 : (isSizeTemplate() ? SIZE_FOOTER_MAX_LENGTH : Infinity);
       if (Array.from(customTextInput.value).length > customTextLimit) {
         customTextInput.value = Array.from(customTextInput.value).slice(0, customTextLimit).join('');
       }
       if (elemCustomText) elemCustomText.innerText = customTextInput.value;
-      if (currentTemplateKey === 'tagliedoppiacifra') {
+      if (isSizeTemplate()) {
         fitSizeFooterText(elemCustomText);
         const footerText = customTextInput.value.trim().toUpperCase();
         elemCustomText?.classList.toggle('is-inverted', SIZE_FOOTER_INVERTED.includes(footerText));
@@ -1297,7 +1366,7 @@
         }
       }
 
-      if (currentTemplateKey === 'tagliedoppiacifra') {
+      if (isSizeTemplate()) {
         for (let i = 1; i <= 6; i++) {
           const sBox = document.getElementById(`lblSize${i}`);
           const sSel = document.getElementById(`sizeSelect${i}`);
@@ -1509,11 +1578,22 @@
       doc.querySelectorAll('.brand-logo-container img').forEach(img => {
         if (!img.naturalWidth) return;
         const canvas = doc.createElement('canvas');
-        canvas.width = img.naturalWidth;
-        canvas.height = img.naturalHeight;
         const ctx = canvas.getContext('2d');
-        ctx.filter = 'brightness(0)';
-        ctx.drawImage(img, 0, 0);
+        if (img.closest('.tpl-tagliebrand')) {
+          // html2canvas ignora object-fit: il logo va gia' inscritto, allineato a destra, in una tela 1200x500 come la sua casella.
+          canvas.width = 1200;
+          canvas.height = 500;
+          const scale = Math.min(1200 / img.naturalWidth, 500 / img.naturalHeight);
+          const w = img.naturalWidth * scale;
+          const h = img.naturalHeight * scale;
+          ctx.filter = 'brightness(0)';
+          ctx.drawImage(img, 1200 - w, (500 - h) / 2, w, h);
+        } else {
+          canvas.width = img.naturalWidth;
+          canvas.height = img.naturalHeight;
+          ctx.filter = 'brightness(0)';
+          ctx.drawImage(img, 0, 0);
+        }
         img.src = canvas.toDataURL('image/png');
       });
 
@@ -1607,8 +1687,8 @@
             .tpl-final.is-made-in-italy .label-top { justify-content: space-between; padding: 0 1.08mm 0 1.25mm; }
             .tpl-outlet.is-made-in-italy .brand-logo-container,
             .tpl-final.is-made-in-italy .brand-logo-container { justify-content: flex-start; width: 30mm; height: 12mm; margin: 1mm 0 0; }
-            .is-made-in-italy .qr-promo-box,
-            .is-made-in-italy .qr-container { display: none; }
+            .tpl-outlet.is-made-in-italy .qr-promo-box,
+            .tpl-final.is-made-in-italy .qr-container { display: none; }
             .is-made-in-italy .made-in-italy-sticker { display: block; flex: 0 0 auto; width: 15mm; height: auto; margin-top: 1mm; }
             /* Promo centrata sull'adesivo: centro a 1,08 + 15/2 = 8,58 mm dal bordo destro, casella a 1 mm dal bordo. */
             .tpl-outlet.is-made-in-italy .promo-label { left: -1.58mm; }
@@ -1667,7 +1747,8 @@
             /* TEMPLATE 6 PRINT (TAGLIE DOPPIA CIFRA CON FONT STAMPA DINAMICO) */
             /* Stesso ingrandimento x1,08 dei layout 1-3 (senza lo spostamento in alto, che faceva tagliare la riga prezzi). Il layout occupa tutta la larghezza utile:
                parte largo 100%/1,08 e centrato, cosi' una volta ingrandito torna esattamente alla larghezza utile senza essere tagliato a destra. */
-            .tpl-tagliedoppiacifra { display: flex; justify-content: space-between; align-items: stretch; height: 29mm; transform: scale(1.08); transform-origin: center center; }
+            /* Spostato in alto di 0,5 mm: le caselle delle taglie arrivavano a 2,2 mm dal fondo, meno degli altri layout. */
+            .tpl-tagliedoppiacifra { display: flex; justify-content: space-between; align-items: stretch; height: 29mm; transform: translate(0, -0.5mm) scale(1.08); transform-origin: center center; }
             .print-wrapper .tpl-tagliedoppiacifra { width: calc(100% / 1.08) !important; align-self: center; }
             .tpl-tagliedoppiacifra .size-section { display: flex; flex-direction: column; justify-content: center; align-items: center; width: 15mm; padding-bottom: 1mm; }
             .tpl-tagliedoppiacifra .size-title { font-size: 5.6pt; font-weight: 400; letter-spacing: 0.2pt; padding-left: 0.2pt; margin-bottom: 1.4mm; text-transform: uppercase; white-space: nowrap; }
@@ -1687,6 +1768,17 @@
             .tpl-tagliedoppiacifra .size-logo img { flex: 0 0 auto; width: 19mm; max-width: none; max-height: none; margin-right: -0.99mm; }
             .tpl-tagliedoppiacifra.is-standard .size-logo { display: flex; }
             .tpl-tagliedoppiacifra.is-standard .top-price-row { display: none; }
+            /* Casella alta quanto l'immagine (niente ritaglio) e 0,9 mm sotto il bordo del layout: il logo piu' alto (HAVEONE) resta a oltre 1 mm dal bordo stampato. */
+            .tpl-tagliebrand .size-logo { width: 21.5mm; height: 8.96mm; margin-top: -0.3mm; align-items: center; }
+            .tpl-tagliebrand .size-logo img { width: 21.5mm; height: 8.96mm; object-fit: contain; object-position: right center; margin-right: 0; }
+            .tpl-tagliebrand .size-logo .brand-text-fallback { font-size: 5pt; text-align: right; }
+            /* DOPPIA CIFRA: logo brand un po' piu' grande in stampa (24 mm invece di 21,5), leggermente piu' in basso per restare lontano dal bordo. */
+            .tpl-tagliebrand:not(.is-standard) .size-logo { display: flex; width: 24mm; height: 10mm; margin-top: -0.3mm; }
+            .tpl-tagliebrand:not(.is-standard) .size-logo img { width: 24mm; height: 10mm; }
+            .tpl-tagliebrand:not(.is-standard) .top-price-row { margin-top: auto; margin-bottom: 1.6mm; }
+            .tpl-tagliebrand:not(.is-standard) .final-price { margin: 0; }
+            .tpl-tagliebrand:not(.is-standard) .price-section { padding-bottom: 1.6mm; }
+            .tpl-tagliebrand:not(.is-standard) .footer-text { display: none; }
             .tpl-tagliedoppiacifra .original-price { font: 300 11.57pt/1 'Bodoni Std', serif; letter-spacing: -0.05em; }
             .tpl-tagliedoppiacifra .discount-tag { font: 300 11.57pt/1 'Bodoni Std', serif; letter-spacing: -0.05em; }
             .tpl-tagliedoppiacifra .final-price { 

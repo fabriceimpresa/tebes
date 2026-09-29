@@ -984,6 +984,8 @@ body.ophilya .lower .wide-card::after{
 body.ophilya .lower{
   pointer-events:none;
 }
+/* Widget presenti solo in TEBE (es. etichetta Taglie Brand, che OPHILYA non ha). */
+body.ophilya .tebe-only{display:none}
 /* OPHILYA: in CREA CARTELLI i cartelli TEBE lasciano il posto a voci "Presto disponibile" non cliccabili. */
 .sidebar-nav-ophilya,
 body.ophilya .sidebar-nav-tebe{display:none}
@@ -1551,6 +1553,26 @@ body.ophilya .cash-tools-coming-soon{
             </div>
             <div class="dymo-card-body">
               <h2>Articolo</h2>
+            </div>
+            <div class="arrow">↗︎</div>
+          </a>
+          <a class="card dymo-card" data-link="etichette.html?label=tagliedoppiacifra" aria-label="Apri etichette DYMO Taglie">
+            <div class="dymo-card-preview">
+              <div class="number">04</div>
+              <div class="card-thumb"><img src="assets/thumbnail/label4thumb.png" data-ophilya-src="assets/thumbnail/label4thumb-ophilya.png" alt="Anteprima etichetta Taglie"></div>
+            </div>
+            <div class="dymo-card-body">
+              <h2>Taglie</h2>
+            </div>
+            <div class="arrow">↗︎</div>
+          </a>
+          <a class="card dymo-card tebe-only" data-link="etichette.html?label=tagliebrand" aria-label="Apri etichette DYMO Taglie Brand">
+            <div class="dymo-card-preview">
+              <div class="number">05</div>
+              <div class="card-thumb"><img src="assets/thumbnail/label5thumb.png" alt="Anteprima etichetta Taglie Brand"></div>
+            </div>
+            <div class="dymo-card-body">
+              <h2>Taglie Brand</h2>
             </div>
             <div class="arrow">↗︎</div>
           </a>

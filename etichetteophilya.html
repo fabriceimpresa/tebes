@@ -129,6 +129,22 @@
     .form-group label { display: block; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--accent); margin-bottom: 0.4rem; font-weight: 600; }
     .form-control { width: 100%; padding: 0.65rem; background: var(--card); border: 1px solid var(--border); color: var(--text); border-radius: 4px; font-size: 0.9rem; outline: none; }
     .form-control:focus { border-color: var(--accent); }
+
+    /* Menu a cascata come nelle pagine dei cartelli: niente freccia di sistema, fascetta beige a destra con ▼ oro. */
+    select.form-control {
+      -webkit-appearance: none;
+      appearance: none;
+      padding-right: 2.2rem;
+      background-color: var(--card);
+      background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 7'%3E%3Cpath d='M0 0h10L5 7z' fill='%23b49a62'/%3E%3C/svg%3E"),
+        linear-gradient(var(--border), var(--border)),
+        linear-gradient(#f3ede0, #f3ede0);
+      background-repeat: no-repeat;
+      background-position: right 0.55rem center, right 1.6rem top, right top;
+      background-size: 0.5rem 0.35rem, 1px 100%, 1.6rem 100%;
+      cursor: pointer;
+    }
     .row { display: flex; gap: 0.8rem; }
 
     .custom-brand-box {
@@ -151,7 +167,7 @@
       gap: 0.4rem;
     }
     .form-control.custom-select {
-      background: var(--card);
+      background-color: var(--card);
       border: 1px solid var(--accent);
       color: #6b4f1f;
       font-weight: 600;
@@ -547,14 +563,7 @@
         <div class="template-card" id="card-tpl-tagliedoppiacifra" onclick="setTemplate('tagliedoppiacifra')">
           <span class="tpl-name">4. Taglie</span>
           <div class="tpl-preview-box">
-            <img src="assets/thumbnail/label4thumbnail.png" alt="Miniatura Taglie">
-          </div>
-        </div>
-
-        <div class="template-card" id="card-tpl-promo5" onclick="setTemplate('promo5')">
-          <span class="tpl-name">5. Promo</span>
-          <div class="tpl-preview-box">
-            <img src="assets/thumbnail/label3thumb.png" alt="Miniatura Promo">
+            <img src="assets/thumbnail/label4thumb-ophilya.png" alt="Miniatura Taglie">
           </div>
         </div>
 
@@ -579,6 +588,15 @@
       </div>
 
       <button class="btn-scan" onclick="checkDymoPresence()">🔄 Ricontrolla stampante DYMO</button>
+
+      <!-- TAGLIE: DOPPIA CIFRA (prezzo originario e sconto) o STANDARD (logo OPHILYA al loro posto) -->
+      <div class="form-group" id="groupSizeMode" style="display:none;">
+        <label>Tipo di etichetta</label>
+        <div class="mode-switch" role="group" aria-label="Tipo di etichetta">
+          <button type="button" data-size-mode="standard" class="active" onclick="setSizeMode('standard')">STANDARD</button>
+          <button type="button" data-size-mode="doppia" onclick="setSizeMode('doppia')">DOPPIA CIFRA</button>
+        </div>
+      </div>
 
       <div class="form-group" id="groupBrand">
         <label for="brandSelect">Brand Ufficiale</label>
@@ -610,15 +628,6 @@
           <option value="SPECIAL DEAL">SPECIAL DEAL</option>
           <option value="VERA PELLE">VERA PELLE</option>
         </select>
-      </div>
-
-      <!-- TAGLIE: DOPPIA CIFRA (prezzo originario e sconto) o STANDARD (logo OPHILYA al loro posto) -->
-      <div class="form-group" id="groupSizeMode" style="display:none;">
-        <label>Tipo di etichetta</label>
-        <div class="mode-switch" role="group" aria-label="Tipo di etichetta">
-          <button type="button" data-size-mode="standard" onclick="setSizeMode('standard')">STANDARD</button>
-          <button type="button" data-size-mode="doppia" class="active" onclick="setSizeMode('doppia')">DOPPIA CIFRA</button>
-        </div>
       </div>
 
       <!-- SELEZIONE TAGLIE GRID (6 DROPDOWN) -->
@@ -777,20 +786,6 @@
         name: '3. Articolo',
         fields: ['groupBrand', 'groupCustomBrand', 'groupCustomText', 'groupOutlet'],
         render: () => renderSimpleTemplate(false)
-      },
-      'promo5': {
-        name: '5. Promo',
-        fields: ['groupOutlet'],
-        render: () => `
-          <div class="tpl-promo">
-            <div class="left-logo-box">
-              <img src="assets/img/lclogobn.png" alt="Last Chance Logo">
-            </div>
-            <div class="price-box">
-              <span class="price-label">Euro</span>
-              <span class="price-val" id="lblOutlet">29,50</span>
-            </div>
-          </div>`
       },
       'luxury': {
         name: '4. Luxury Label',
@@ -1129,7 +1124,7 @@
     }
 
     // Taglie in modalita' STANDARD: niente prezzo originario e sconto, quindi i loro campi spariscono dal pannello.
-    let sizeMode = 'doppia';
+    let sizeMode = 'standard';
 
     // Testo descrittivo delle Taglie: fino a 22 caratteri. Se non sta nella colonna prezzi il corpo si riduce,
     // calcolato a parte per schermo (colonna 296px, corpo 20px) e stampa (colonna 91,5pt, corpo 8,2pt).
@@ -1252,7 +1247,7 @@
           const price = outletValue.trim();
           elemOutlet.innerText = price.startsWith('€') ? price : `€ ${price}`;
         } else {
-          const noSymbol = (currentTemplateKey === 'outlet' || currentTemplateKey === 'final' || currentTemplateKey === 'promo' || currentTemplateKey === 'promo5' || currentTemplateKey === 'luxury' || currentTemplateKey === 'promo50');
+          const noSymbol = (currentTemplateKey === 'outlet' || currentTemplateKey === 'final' || currentTemplateKey === 'promo' || currentTemplateKey === 'luxury' || currentTemplateKey === 'promo50');
           elemOutlet.innerText = outletValue + (noSymbol ? '' : ' €');
         }
       }
