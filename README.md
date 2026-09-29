@@ -78,7 +78,7 @@ Etichette DYMO **11354** (57 × 32 mm, 2,25 × 1,25 in). In modalità OPHILYA la
 
 ### Materiali pronti
 
-- In dashboard, un carosello con le stampe pronte: Taglie Internazionali, Staff Only, Vietato Fumare e No Food & Drinks Indoor. Ogni widget ha miniatura, titolo e tasto Apri / Stampa, e apre il PDF nel visualizzatore.
+- In dashboard, un carosello con le stampe pronte: Taglie Internazionali, Orari, Staff Only, Cercasi Personale, No Food & Drinks e Vietato Fumare. Ogni widget ha miniatura, titolo e tasto Apri / Stampa, e apre il PDF nel visualizzatore.
 - `pdf-viewer.html?file=…`: visualizzatore integrato. Da telefono apre direttamente il PDF.
 
 ### Loghi personalizzati
