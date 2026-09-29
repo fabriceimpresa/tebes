@@ -1079,6 +1079,14 @@ body.ophilya .cash-tools-coming-soon{
 /* Solo cellulari: schermo stretto e puntatore impreciso (dito).
    I tablet restano sulla vista desktop. */
 @media(max-width:720px) and (pointer:coarse){
+  /* Sul telefono non c'e' il passaggio del mouse: le miniature a due immagini
+     partono da sole con la stessa dissolvenza. */
+  .card-thumb.slideshow img{
+    animation-duration:4.2s;
+    animation-iteration-count:infinite;
+  }
+  .card-thumb.slideshow img:first-child{animation-name:thumbnail-fade-first}
+  .card-thumb.slideshow img:nth-child(2){animation-name:thumbnail-fade-second}
   .app{grid-template-columns:1fr}
   .topbar{
     position:sticky;
