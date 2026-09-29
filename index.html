@@ -234,10 +234,6 @@ body.cassiere-mode .content > .section:not(#strumenti-cassa),
 body.cassiere-mode .content > .lower{
   display:none;
 }
-body.creator-mode .content > #strumenti-cassa,
-body.creator-mode .content > #cash-tools-area{
-  display:none;
-}
 .hero{
   display:flex;
   justify-content:space-between;
@@ -1294,7 +1290,7 @@ body.ophilya .cash-tools-coming-soon{
       <button onclick="openPage('albero.html')">Albero Accessori</button>
       <button onclick="openPage('cornici10x15.html')">Cornici 10 x 15</button>
       <button onclick="openPage('cornice21x27.html')">Cornice 21 x 27</button>
-      <button onclick="openPage('paletto.html')">Paletto Ferro 1</button>
+      <button onclick="openPage('paletto.html')">Paletto 15x10</button>
       <button onclick="openPage('paletto18x12.html')">Paletto 18x12</button>
       </nav>
     </div>
@@ -1490,15 +1486,18 @@ body.ophilya .cash-tools-coming-soon{
           <div>
             <div class="number">09</div>
             <div class="card-thumb">
-              <img src="assets/thumbnail/palettothumb.png" alt="Paletto Ferro 1">
+              <img src="assets/thumbnail/palettothumb.png" alt="Paletto 15x10">
             </div>
           </div>
-          <h2>Paletto Ferro 1</h2>
+          <h2>Paletto 15x10</h2>
           <div class="arrow">↗︎</div>
         </a>
         <a class="card" data-link="paletto18x12.html">
           <div>
             <div class="number">10</div>
+            <div class="card-thumb">
+              <img src="assets/thumbnail/palettothumb.png" alt="Paletto 18x12">
+            </div>
           </div>
           <h2>Paletto 18x12</h2>
           <div class="arrow">↗︎</div>
@@ -1654,9 +1653,14 @@ const stores = {
 
 let currentStore = "tebe";
 
+// OPHILYA ha una sua pagina etichette: i link a etichette.html vengono dirottati li'.
+function storePage(page){
+  return currentStore === "ophilya" ? page.replace(/^etichette\.html/, "etichetteophilya.html") : page;
+}
+
 function updateLinks(){
   document.querySelectorAll("[data-link]").forEach(el=>{
-    const url = new URL(el.dataset.link, window.location.href);
+    const url = new URL(storePage(el.dataset.link), window.location.href);
     url.searchParams.set("store", currentStore);
     el.setAttribute("href", url.href);
   });
@@ -1684,7 +1688,7 @@ function goTo(sectionId){
 }
 
 function openPage(page){
-  window.location.href = `${page}?store=${encodeURIComponent(currentStore)}`;
+  window.location.href = `${storePage(page)}?store=${encodeURIComponent(currentStore)}`;
 }
 
 function toggleMobileSidebar(forceOpen){

@@ -35,9 +35,9 @@ Un insieme di strumenti statici per il visual merchandising, pensati per la stam
    - Nei menu brand vengono prima i loghi ufficiali, con i `PRIORITY_BRANDS` (i brand della casa TEBE `269TEBE.PNG`, `Tebe269.png`, `Tebe.png`) in cima e con la stella. I personalizzati sono in un menu separato "Loghi personalizzati", con il prefisso `★`.
    - Selezionarne uno di un tipo azzera l'altro.
    - Il brand predefinito è il primo file che inizia con `269`.
-9. **OPHILYA è un segnaposto.** Il selettore in dashboard esiste, ma in modalità OPHILYA cartelli e galleria PDF sono coperti da "Coming Soon". Gli strumenti cassa invece sono attivi e identici a quelli di TEBE (QR predefinito compreso). Le sottopagine hanno il marchio TEBE e ignorano `?store=`. Non creare varianti OPHILYA se non richiesto.
+9. **OPHILYA è un segnaposto.** Il selettore in dashboard esiste, ma in modalità OPHILYA cartelli e galleria PDF sono coperti da "Coming Soon". Gli strumenti cassa invece sono attivi e identici a quelli di TEBE (QR predefinito compreso). Le etichette DYMO hanno una pagina propria, `etichetteophilya.html`: in modalità OPHILYA `storePage()` in `index.html` dirotta lì ogni link a `etichette.html` (card e menu laterale), mantenendo `?label=`. Le altre sottopagine hanno il marchio TEBE e ignorano `?store=`. Non creare altre varianti OPHILYA se non richiesto.
 10. **Due tipi di utenti in dashboard.**
-    - **CREATOR** (predefinita, non memorizzata) è per chi fa visual merchandising.
+    - **CREATOR** (predefinita, non memorizzata) è per chi fa visual merchandising. Mostra tutti i widget, con gli *Strumenti Cassa* in fondo, dopo *Materiali Pronti*.
     - **CASSIERE** riordina la pagina con `order` CSS e nasconde tutto tranne gli *Strumenti Cassa*.
 11. **La vista cellulare è solo per i cellulari.** Le regole della vista mobile (menu a scomparsa in dashboard, pannello e foglio in colonna negli editor, pulsanti riposizionati, firma STORE // CRAFT in fondo, strumenti cassa già pronti all'uso invece che in popup) stanno in media query gated con `and (pointer: coarse)` e con soglia **massima 760 px** (720 px in dashboard). Così restano fuori sia i tablet, che hanno il puntatore grossolano ma sono più larghi, sia le finestre desktop ristrette, che hanno `pointer: fine` e devono continuare a comportarsi come prima. Non allargare quelle soglie e non togliere il gating. In JS la stessa condizione è in `phoneViewQuery` di `index.html`: tienila allineata alla media query.
 
@@ -117,7 +117,7 @@ Un insieme di strumenti statici per il visual merchandising, pensati per la stam
 | localStorage | `customLogos` | chiave storica, letta solo come ripiego | — | `etichette.html` |
 | file | backup JSON | `{ version: 1, exportedAt, logos: [...] }`; l'importazione verifica che `data` inizi con `data:image/` e **sostituisce** l'intero elenco | `gestisci_lista` | `gestisci_lista` |
 | URL | `?store=tebe\|ophilya` | aggiunto a ogni link della dashboard | `index.html` | solo `index.html` |
-| URL | `?label=` (alias `tpl`, `template`) | `doppioprezzo`/`final`/`finalprice` → Doppio Prezzo, `promo`/`lastchance` → Articolo, `outlet`/`luxury` → Luxury, `promo50`, `tagliedoppiacifra` | card della dashboard | `etichette.html` |
+| URL | `?label=` (alias `tpl`, `template`) | `doppioprezzo`/`final`/`finalprice` → Doppio Prezzo, `promo`/`lastchance` → Articolo, `outlet`/`luxury` → Luxury, `promo50`, `tagliedoppiacifra` | card della dashboard | `etichette.html`, `etichetteophilya.html` |
 | URL | `?file=assets/pdf/…` | percorso del PDF | `galleria-pdf.html` | `pdf-viewer.html` |
 
 ## Procedure
@@ -193,4 +193,7 @@ Non ci sono test automatici né linter. Per verificare:
   - Cornici 10×15: tasto Made in Italy indipendente per ciascuna cornice.
 - **29/09/2026**:
   - Strumenti cassa: sul telefono niente popup, il widget in uso resta evidenziato; attivi anche in OPHILYA.
+  - Paletto Ferro 1 rinominato "Paletto 15x10" in dashboard (widget 9 e menu laterale).
+  - In CREATOR tornano visibili anche gli strumenti cassa, in fondo alla dashboard.
+  - Creata `etichetteophilya.html`, copia di `etichette.html` per le etichette OPHILYA (i layout verranno cambiati), collegata dalla dashboard in modalità OPHILYA.
   - Aggiunto Paletto 18x12 (`paletto18x12.html`), copia di Paletto Ferro 1 con cartelli da 1062,61 × 750,53 px a 150 dpi (179,94 × 127,09 mm) e contenuti riproporzionati di circa 1,25×. Prende il posto del segnaposto "Paletto Ferro 2" in dashboard.

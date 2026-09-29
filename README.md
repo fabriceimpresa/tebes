@@ -35,7 +35,7 @@ Alcune funzioni richiedono la rete o servizi locali:
 ### Dashboard: `index.html`
 
 - **Selettore negozio (TEBE / OPHILYA).** Cambia logo e indirizzo nell'intestazione e aggiunge `?store=` a tutti i link. Per ora OPHILYA è un segnaposto: cartelli e galleria PDF mostrano "Coming Soon". Gli strumenti cassa invece funzionano come in TEBE.
-- **Selettore modalità (CREATOR / CASSIERE).** CREATOR mostra tutti i widget. CASSIERE mostra solo gli *Strumenti Cassa*. La pagina si apre sempre in CREATOR.
+- **Selettore modalità (CREATOR / CASSIERE).** CREATOR mostra tutti i widget, con gli *Strumenti Cassa* in fondo. CASSIERE mostra solo gli *Strumenti Cassa*. La pagina si apre sempre in CREATOR.
 - **Menu laterale.** Sezioni comprimibili; lo stato aperto/chiuso è ricordato nel `localStorage`.
 - **Strumenti cassa** (TEBE e OPHILYA):
   - calcolo sconto
@@ -58,16 +58,16 @@ Alcune funzioni richiedono la rete o servizi locali:
 | `albero.html` | **Albero Accessori**: tre cartellini (160 × 75 mm) per foglio, per l'albero accessori |
 | `cornici10x15.html` | **Cornici 10×15**: due inserti per foglio, sinistro e destro modificabili separatamente. Modalità: Standard / Doppio Articolo / Brand. |
 | `cornice21x27.html` | **Cornice 21×27**: un inserto grande. Modalità: Descrizione / Brand. |
-| `paletto.html` | **Paletto Ferro 1**: due cartelli indipendenti per foglio, con linea di taglio tratteggiata. Modalità: Standard / Doppio Prezzo / Doppio Articolo. |
-| `paletto18x12.html` | **Paletto 18x12**: come Paletto Ferro 1, con cartelli più grandi (179,94 × 127,09 mm). |
+| `paletto.html` | **Paletto 15x10**: due cartelli indipendenti per foglio, con linea di taglio tratteggiata. Modalità: Standard / Doppio Prezzo / Doppio Articolo. |
+| `paletto18x12.html` | **Paletto 18x12**: come Paletto 15x10, con cartelli più grandi (179,94 × 127,09 mm). |
 
 Nei fogli Semplice, Sale, Percentuale, Brand e Multi Articolo lo stesso cartello è stampato due volte. La copia inferiore è ruotata di 180°: si ritaglia la striscia e la si piega lungo il bordo comune, ottenendo un cartello leggibile da entrambi i lati.
 
 Quasi tutte le pagine cartello hanno un pulsante tondo **Made in Italy** (`assets/js/tema-italia.js`). Aggiunge le bandierine italiane al cartello e imposta la descrizione su "Made in Italy". Un secondo clic ripristina esattamente lo stato precedente.
 
-### Etichette: `etichette.html`
+### Etichette: `etichette.html` (TEBE) ed `etichetteophilya.html` (OPHILYA)
 
-Etichette DYMO **11354** (57 × 32 mm, 2,25 × 1,25 in).
+Etichette DYMO **11354** (57 × 32 mm, 2,25 × 1,25 in). In modalità OPHILYA la dashboard apre `etichetteophilya.html`, uguale a quella di TEBE ma con il logo OPHILYA come logo predefinito, centrato e senza QR code.
 
 - **Modelli:** Semplice, Doppio Prezzo, Articolo, Taglie | Doppia Cifra e Promo. Si può aprire direttamente un modello con `?label=` (per esempio `?label=doppioprezzo`).
 - **Stampa:** l'etichetta viene resa in un PNG a 300 dpi e inviata a DYMO Connect. Se DYMO Connect o la stampante non sono disponibili, si passa alla stampa del browser.
@@ -97,7 +97,8 @@ I loghi personalizzati compaiono poi nei menu "Loghi personalizzati" degli edito
 index.html                  Dashboard
 cartelli_*.html, cartellopercentuale.html, albero.html, paletto.html, paletto18x12.html,
 cornici10x15.html, cornice21x27.html      Editor cartelli
-etichette.html              Editor etichette DYMO
+etichette.html              Editor etichette DYMO (TEBE)
+etichetteophilya.html       Editor etichette DYMO (OPHILYA)
 galleria-pdf.html, pdf-viewer.html        Materiali PDF
 genera_loghi.html, gestisci_lista.html    Loghi personalizzati (per browser)
 logoimport.html, logogestione.html        Loghi ufficiali (scrivono nel repo, uso interno)
