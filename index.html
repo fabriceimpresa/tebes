@@ -80,7 +80,7 @@ button{font:inherit;cursor:pointer}
   white-space:nowrap;
 }
 .label{
-  font-size:10px;
+  font-size:9px;
   letter-spacing:.24em;
   color:#8b8175;
   padding:0 9px 10px;
@@ -385,6 +385,15 @@ h1{
   font-size:10px;
   color:var(--gold);
   letter-spacing:.16em;
+}
+/* CREA CARTELLI: numero a sinistra e tipo di supporto a destra, stesso stile. */
+#cartelli-carousel .number{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+}
+.card-type{
+  text-align:right;
 }
 .card-thumb{
   width:100%;
@@ -1434,7 +1443,7 @@ body.ophilya .cash-tools-coming-soon{
         <div class="cards cartelli-carousel" id="cartelli-carousel">
         <a class="card" data-link="cartelli_semplici.html">
           <div>
-            <div class="number">01</div>
+            <div class="number">01<span class="card-type">CARTELLO</span></div>
             <div class="card-thumb slideshow">
               <img src="assets/thumbnail/semplicethumb.png" alt="Semplice">
               <img src="assets/thumbnail/semplicethumb-2.png" alt="" aria-hidden="true">
@@ -1446,7 +1455,7 @@ body.ophilya .cash-tools-coming-soon{
 
         <a class="card" data-link="cartelli_sale.html">
           <div>
-            <div class="number">02</div>
+            <div class="number">02<span class="card-type">CARTELLO</span></div>
             <div class="card-thumb slideshow">
               <img src="assets/thumbnail/salethumb.png" alt="Sale">
               <img src="assets/thumbnail/salethumb-2.png" alt="" aria-hidden="true">
@@ -1458,7 +1467,7 @@ body.ophilya .cash-tools-coming-soon{
 
         <a class="card" data-link="cartellopercentuale.html">
           <div>
-            <div class="number">03</div>
+            <div class="number">03<span class="card-type">CARTELLO</span></div>
             <div class="card-thumb slideshow">
               <img src="assets/thumbnail/percentualethumb.png" alt="Percentuale">
               <img src="assets/thumbnail/percentualethumb-2.png" alt="" aria-hidden="true">
@@ -1470,7 +1479,7 @@ body.ophilya .cash-tools-coming-soon{
 
         <a class="card" data-link="cartelli_brand.html">
           <div>
-            <div class="number">04</div>
+            <div class="number">04<span class="card-type">CARTELLO</span></div>
             <div class="card-thumb slideshow">
               <img src="assets/thumbnail/brandthumb.png" alt="Brand">
               <img src="assets/thumbnail/brandthumb-2.png" alt="" aria-hidden="true">
@@ -1482,7 +1491,7 @@ body.ophilya .cash-tools-coming-soon{
 
         <a class="card" data-link="cartelli_multiarticolo.html">
           <div>
-            <div class="number">05</div>
+            <div class="number">05<span class="card-type">CARTELLO</span></div>
             <div class="card-thumb slideshow">
               <img src="assets/thumbnail/multithumb.png" alt="Multi Articolo">
               <img src="assets/thumbnail/multithumb-2.png" alt="" aria-hidden="true">
@@ -1494,7 +1503,7 @@ body.ophilya .cash-tools-coming-soon{
 
         <a class="card" data-link="albero.html">
           <div>
-            <div class="number">06</div>
+            <div class="number">06<span class="card-type">RASTRELLIERA</span></div>
             <div class="card-thumb slideshow">
               <img src="assets/thumbnail/alberothumb.png" alt="Albero Accessori">
               <img src="assets/thumbnail/alberothumb2.png" alt="" aria-hidden="true">
@@ -1506,7 +1515,7 @@ body.ophilya .cash-tools-coming-soon{
         
         <a class="card" data-link="cornici10x15.html">
           <div>
-            <div class="number">07</div>
+            <div class="number">07<span class="card-type">CORNICE</span></div>
             <div class="card-thumb slideshow">
               <img src="assets/thumbnail/cornicithumb.png" alt="Cornice 10x15">
               <img src="assets/thumbnail/cornicithumb-2.png" alt="" aria-hidden="true">
@@ -1518,7 +1527,7 @@ body.ophilya .cash-tools-coming-soon{
         
         <a class="card" data-link="cornice21x27.html">
           <div>
-            <div class="number">08</div>
+            <div class="number">08<span class="card-type">CORNICE</span></div>
             <div class="card-thumb slideshow">
               <img src="assets/thumbnail/cornice21x27thumb.png" alt="Cornice 21x27">
               <img src="assets/thumbnail/cornice21x27thumb-2.png" alt="" aria-hidden="true">
@@ -1529,9 +1538,10 @@ body.ophilya .cash-tools-coming-soon{
         </a>
         <a class="card" data-link="paletto.html">
           <div>
-            <div class="number">09</div>
-            <div class="card-thumb">
+            <div class="number">09<span class="card-type">PALETTO DA TAVOLO</span></div>
+            <div class="card-thumb slideshow">
               <img src="assets/thumbnail/palettothumb.png" alt="Paletto 15x10">
+              <img src="assets/thumbnail/palettothumb-2.png" alt="" aria-hidden="true">
             </div>
           </div>
           <h2>Paletto 15x10</h2>
@@ -1539,9 +1549,10 @@ body.ophilya .cash-tools-coming-soon{
         </a>
         <a class="card" data-link="paletto18x12.html">
           <div>
-            <div class="number">10</div>
-            <div class="card-thumb">
+            <div class="number">10<span class="card-type">PALETTO DA TAVOLO</span></div>
+            <div class="card-thumb slideshow">
               <img src="assets/thumbnail/palettothumb.png" alt="Paletto 18x12">
+              <img src="assets/thumbnail/palettothumb-2.png" alt="" aria-hidden="true">
             </div>
           </div>
           <h2>Paletto 18x12</h2>
