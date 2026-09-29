@@ -56,7 +56,7 @@ Alcune funzioni richiedono la rete o servizi locali:
 | `cartelli_brand.html` | **Brand**: logo brand in oro + Doppia Cifra o descrizione + prezzo finale |
 | `cartelli_multiarticolo.html` | **Multi Articolo**: 2 articoli affiancati, oppure tabella da 3–4 righe |
 | `albero.html` | **Albero Accessori**: tre cartellini (160 × 75 mm) per foglio, per l'albero accessori |
-| `cornici10x15.html` | **Cornici 10×15**: due inserti per foglio, sinistro e destro modificabili separatamente. Modalità: Standard / Doppio Articolo / Brand. |
+| `cornici10x15.html` | **Cornici 10×15**: due inserti per foglio, sinistro e destro modificabili separatamente. Modalità: Standard / Doppio Articolo / Brand / Percentuale Sconto (percentuale oro con "FINO AL", logo TEBE; sopra, a scelta, niente, una descrizione o un logo brand). |
 | `cornice21x27.html` | **Cornice 21×27**: un inserto grande. Modalità: Descrizione / Brand. |
 | `paletto.html` | **Paletto 15x10**: due cartelli indipendenti per foglio, con linea di taglio tratteggiata. Modalità: Standard / Doppio Prezzo / Doppio Articolo. |
 | `paletto18x12.html` | **Paletto 18x12**: come Paletto 15x10, con cartelli più grandi (179,94 × 127,09 mm). |

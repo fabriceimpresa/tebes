@@ -435,6 +435,94 @@
       font-size: 35pt;
     }
 
+    /* MODALITA' PERCENTUALE SCONTO: gli elementi di cartellopercentuale.html
+       ridotti (circa 0,39x) per stare tra le due decorazioni della cornice.
+       Le misure sono prima dello scale(1.2157) di .frame-inner-scale. */
+    .frame-box.percent-mode .frame-content {
+      transform: none;
+      gap: 0;
+    }
+
+    /* Modalità % Standard: senza descrizione ne' brand, percentuale e logo un po' piu' grandi. */
+    .frame-box.percent-mode.percent-standard .frame-content {
+      transform: scale(1.06);
+    }
+
+    /* Modalità % Brand: il logo piu' grande spinge giu' il blocco, che si alza un poco. */
+    .frame-box.percent-mode.percent-brand .frame-content {
+      transform: translateY(-2.5mm);
+    }
+
+    .pct-desc {
+      max-width: 54mm;
+      margin-bottom: 2mm;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 10pt;
+      line-height: 1.1;
+      letter-spacing: -0.05em;
+      color: #1a1a1a;
+      text-align: center;
+      overflow-wrap: anywhere;
+    }
+
+    .pct-desc.is-long { font-size: 8.5pt; }
+
+    .pct-brand-box {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 33mm;
+      height: 13mm;
+      margin-bottom: 1.8mm;
+    }
+
+    .pct-brand-box .frame-brand-logo { max-height: 13mm; }
+
+    .pct-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2mm;
+    }
+
+    .pct-fino {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.6mm;
+    }
+
+    .pct-fino-label {
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: 700;
+      font-size: 7.1pt;
+      letter-spacing: -0.05em;
+      color: #cc9e25;
+      white-space: nowrap;
+    }
+
+    .pct-minus-bar {
+      width: 8.45mm;
+      height: 1.91mm;
+      background-color: #cc9e25;
+    }
+
+    .pct-text {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 62pt;
+      letter-spacing: -0.05em;
+      line-height: 1;
+      color: #cc9e25;
+      white-space: nowrap;
+    }
+
+    .pct-logo {
+      display: block;
+      width: 17.7mm;
+      height: auto;
+      margin-top: 2.1mm;
+    }
+
     .app-close-btn {
       position: fixed;
       top: 1.5rem;
@@ -513,7 +601,7 @@
         height: 297mm !important;
         max-height: 297mm !important;
       }
-      .frame-box {
+      .frame-box, .pct-fino-label, .pct-minus-bar, .pct-text {
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
       }
@@ -621,6 +709,50 @@
         <button type="button" class="active" id="standardModeBtn" onclick="setFrameMode('standard')">STANDARD</button>
         <button type="button" id="extraArticleModeBtn" onclick="setFrameMode('extra')">DOPPIO<br>ARTICOLO</button>
         <button type="button" id="brandModeBtn" onclick="setFrameMode('brand')">BRAND</button>
+        <button type="button" id="percentModeBtn" onclick="setFrameMode('percent')">PERCENTUALE<br>SCONTO</button>
+      </div>
+
+      <!-- CAMPI MODALITA' PERCENTUALE SCONTO -->
+      <div id="percentFieldsGroup" style="display: none;">
+        <div class="section-label">Modalità %</div>
+        <div class="mode-switch">
+          <button type="button" class="active" id="percentExtraStandardBtn" onclick="setPercentExtra('standard')">STANDARD</button>
+          <button type="button" id="percentExtraDescBtn" onclick="setPercentExtra('descrizione')">DESCRIZIONE</button>
+          <button type="button" id="percentExtraBrandBtn" onclick="setPercentExtra('brand')">BRAND</button>
+        </div>
+
+        <div class="form-group">
+          <label for="percentValue">Percentuale Sconto</label>
+          <div class="percent-input-wrapper">
+            <input type="number" id="percentValue" min="1" max="99" oninput="updatePercentData()">
+            <div class="percent-stepper">
+              <button type="button" aria-label="Aumenta percentuale" onclick="stepPercent(1)">▲</button>
+              <button type="button" aria-label="Diminuisci percentuale" onclick="stepPercent(-1)">▼</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group" id="percentDescGroup">
+          <label for="percentDescPreset">Articolo // Promo</label>
+          <div class="preset-select">
+            <select id="percentDescPreset" onchange="applyPercentDescPreset()">
+              <option value="">-- Seleziona un testo --</option>
+              <option value="Sconto alla Cassa">Sconto alla Cassa</option>
+              <option value="Special Deal">Special Deal</option>
+              <option value="Final Price">Final Price</option>
+              <option value="Summer Sale">Summer Sale</option>
+              <option value="Spring Sale">Spring Sale</option>
+              <option value="Winter Sale">Winter Sale</option>
+              <option value="Black Friday">Black Friday</option>
+              <option value="Made in Italy">Made in Italy</option>
+              <option value="Vera Pelle • Genuine Leather">Vera Pelle • Genuine Leather</option>
+              <option value="Made in Italy • Genuine Leather">Made in Italy • Genuine Leather</option>
+              <option value="Fino ad esaurimento scorte">Fino ad esaurimento scorte</option>
+            </select>
+          </div>
+          <label for="percentDescValue">Testo Libero</label>
+          <input type="text" id="percentDescValue" oninput="updatePercentData()">
+        </div>
       </div>
 
       <div id="brandFieldsGroup" style="display: none;">
@@ -669,6 +801,7 @@
         <textarea id="descFree" placeholder="Testo descrittivo..." oninput="updateData()"></textarea>
       </div>
 
+      <div id="priceFieldsGroup">
       <div class="form-group">
         <label>Prezzo Originario</label>
         <input type="text" id="oldPrice" placeholder="es. 34,90" oninput="updateData()">
@@ -688,6 +821,7 @@
       <div class="form-group">
         <label>Prezzo Finale</label>
         <input type="text" id="newPrice" placeholder="es. 17,90" oninput="updateData()">
+      </div>
       </div>
 
       <button class="btn-print" onclick="printFrames()">Stampa Cartello (A4)</button>
@@ -714,6 +848,8 @@
       left: {
         twoArticlesActive: false,
         brandActive: false,
+        percentActive: false,
+        percent: { discount: '50', extra: 'standard', desc: 'Sconto alla Cassa' },
         brand: { officialFile: '', customLogoId: '' },
         activeRow: 0,
         articles: [
@@ -724,6 +860,8 @@
       right: {
         twoArticlesActive: false,
         brandActive: false,
+        percentActive: false,
+        percent: { discount: '50', extra: 'standard', desc: 'Sconto alla Cassa' },
         brand: { officialFile: '', customLogoId: '' },
         activeRow: 0,
         articles: [
@@ -748,24 +886,61 @@
 
       state.brandActive = mode === 'brand';
       state.twoArticlesActive = mode === 'extra';
+      state.percentActive = mode === 'percent';
       state.activeRow = 0;
 
       if (state.twoArticlesActive) {
         state.articles.forEach(article => {
           article.desc = limitDescriptionLines(article.desc);
         });
-      } else if (!state.brandActive) {
+      } else if (mode === 'standard') {
         state.articles.forEach(article => {
           article.desc = limitDescriptionLines(article.desc, 4);
         });
       }
-      if (state.brandActive) {
-        if (!state.brand.officialFile && !state.brand.customLogoId) {
-          state.brand.officialFile = getDefaultBrandFile();
-        }
-      }
+      if (usesBrandLogo(state)) ensureBrandSelected(state);
       syncSidebarWithState();
       updateAll();
+    }
+
+    // Il logo brand serve in modalità Brand e in Percentuale Sconto con l'opzione Brand.
+    function usesBrandLogo(state) {
+      return state.brandActive || (state.percentActive && state.percent.extra === 'brand');
+    }
+
+    function ensureBrandSelected(state) {
+      if (!state.brand.officialFile && !state.brand.customLogoId) {
+        state.brand.officialFile = getDefaultBrandFile();
+      }
+    }
+
+    function setPercentExtra(extra) {
+      const state = framesState[currentActiveFrame];
+      state.percent.extra = extra;
+      if (usesBrandLogo(state)) ensureBrandSelected(state);
+      syncSidebarWithState();
+      updateAll();
+    }
+
+    function updatePercentData() {
+      const percent = framesState[currentActiveFrame].percent;
+      percent.discount = document.getElementById('percentValue').value;
+      percent.desc = document.getElementById('percentDescValue').value;
+      updateAll();
+    }
+
+    function applyPercentDescPreset() {
+      const preset = document.getElementById('percentDescPreset').value;
+      document.getElementById('percentDescValue').value = preset;
+      updatePercentData();
+    }
+
+    function stepPercent(delta) {
+      const input = document.getElementById('percentValue');
+      let val = parseInt(input.value, 10) || 50;
+      val = Math.min(99, Math.max(1, val + delta));
+      input.value = val;
+      updatePercentData();
     }
 
     function limitDescriptionLines(value, maxLines = 3) {
@@ -782,16 +957,34 @@
       const standardModeBtn = document.getElementById('standardModeBtn');
       const extraArticleModeBtn = document.getElementById('extraArticleModeBtn');
       const brandModeBtn = document.getElementById('brandModeBtn');
+      const percentModeBtn = document.getElementById('percentModeBtn');
       const rowWrapper = document.getElementById('rowSelectorWrapper');
       const descriptionFields = document.getElementById('descriptionFieldsGroup');
       const brandFields = document.getElementById('brandFieldsGroup');
+      const priceFields = document.getElementById('priceFieldsGroup');
+      const percentFields = document.getElementById('percentFieldsGroup');
 
-      standardModeBtn.classList.toggle('active', !state.brandActive && !state.twoArticlesActive);
+      standardModeBtn.classList.toggle('active', !state.brandActive && !state.twoArticlesActive && !state.percentActive);
       extraArticleModeBtn.classList.toggle('active', state.twoArticlesActive);
       brandModeBtn.classList.toggle('active', state.brandActive);
+      percentModeBtn.classList.toggle('active', state.percentActive);
       rowWrapper.style.display = state.twoArticlesActive ? 'block' : 'none';
-      descriptionFields.style.display = state.brandActive ? 'none' : 'block';
-      brandFields.style.display = state.brandActive ? 'block' : 'none';
+      descriptionFields.style.display = state.brandActive || state.percentActive ? 'none' : 'block';
+      priceFields.style.display = state.percentActive ? 'none' : 'block';
+      percentFields.style.display = state.percentActive ? 'block' : 'none';
+      brandFields.style.display = usesBrandLogo(state) ? 'block' : 'none';
+
+      const percentExtra = state.percent.extra;
+      document.getElementById('percentExtraStandardBtn').classList.toggle('active', percentExtra === 'standard');
+      document.getElementById('percentExtraDescBtn').classList.toggle('active', percentExtra === 'descrizione');
+      document.getElementById('percentExtraBrandBtn').classList.toggle('active', percentExtra === 'brand');
+      document.getElementById('percentDescGroup').style.display = percentExtra === 'descrizione' ? 'block' : 'none';
+      document.getElementById('percentValue').value = state.percent.discount;
+      document.getElementById('percentDescValue').value = state.percent.desc;
+      const percentPreset = document.getElementById('percentDescPreset');
+      percentPreset.value = [...percentPreset.options].some(option => option.value === state.percent.desc)
+        ? state.percent.desc
+        : '';
 
       if (state.twoArticlesActive) {
         document.getElementById('btnRow0').classList.toggle('active', state.activeRow === 0);
@@ -884,7 +1077,7 @@
 
     function printFrames() {
       const logoPreparation = ['left', 'right']
-        .filter(side => framesState[side].brandActive)
+        .filter(side => usesBrandLogo(framesState[side]))
         .map(side => {
           const box = document.getElementById(`frame${side.charAt(0).toUpperCase() + side.slice(1)}`);
           const brandImage = box.querySelector('.frame-brand-logo');
@@ -897,7 +1090,7 @@
         });
 
       Promise.all(logoPreparation)
-        .then(() => PrintLogoColors.prepareForPrint('.frame-brand-logo'))
+        .then(() => PrintLogoColors.prepareForPrint('.frame-brand-logo, .pct-logo'))
         .then(() => window.print())
         .catch(error => console.error('Preparazione dei loghi per la stampa fallita.', error));
     }
@@ -957,6 +1150,13 @@
         ? '<div class="desc-title made-in-italy-title"><img class="made-in-italy-flag" src="assets/img/madeinitaly.png" alt="Bandiera italiana">MADE<br>IN ITALY</div>'
         : `<div class="desc-title">${article.desc || ''}</div>`;
 
+      box.classList.toggle('percent-mode', state.percentActive);
+      if (!state.percentActive) box.classList.remove('percent-standard', 'percent-brand');
+      if (state.percentActive) {
+        renderPercentContent(state, box, container);
+        return;
+      }
+
       if (!state.twoArticlesActive) {
         box.classList.remove('layout-2-articles');
         const art = state.articles[0];
@@ -985,16 +1185,7 @@
           <img src="assets/img/decodown.png" alt="Decoro Inferiore" class="deco-img">
         `;
         if (state.brandActive) {
-          const brandImage = container.querySelector('.frame-brand-logo');
-          if (state.brand.customLogoId || state.brand.officialFile) {
-            getBrandLogoSource(state.brand).then(source => {
-              if (brandImage.isConnected) brandImage.src = source;
-            }).catch(error => {
-              console.error('Caricamento del logo brand fallito.', error);
-            });
-            const customLogo = readCustomLogos().find(logo => logo.id === state.brand.customLogoId);
-            brandImage.alt = customLogo?.name || cleanBrandName(state.brand.officialFile);
-          }
+          loadBrandImage(container.querySelector('.frame-brand-logo'), state.brand);
         }
       } else {
         box.classList.add('layout-2-articles');
@@ -1026,6 +1217,72 @@
       }
     }
 
+    // Percentuale Sconto: descrizione o logo brand, "FINO AL" con la barra del meno
+    // e la percentuale, logo TEBE oro; il tutto tra le due decorazioni della cornice.
+    function renderPercentContent(state, box, container) {
+      box.classList.remove('layout-2-articles', 'brand-mode', 'standard-max-lines', 'standard-two-line-desc');
+      box.style.removeProperty('--standard-desc-font-size');
+
+      const element = (tag, className, text) => {
+        const node = document.createElement(tag);
+        node.className = className;
+        if (text !== undefined) node.textContent = text;
+        return node;
+      };
+      const deco = (src, alt) => {
+        const img = element('img', 'deco-img');
+        img.src = src;
+        img.alt = alt;
+        return img;
+      };
+
+      const content = element('div', 'frame-content');
+      // In Standard ci sono solo percentuale e logo TEBE, un po' piu' grandi.
+      box.classList.toggle('percent-standard', state.percent.extra === 'standard');
+      box.classList.toggle('percent-brand', state.percent.extra === 'brand');
+      if (state.percent.extra === 'brand') {
+        const brandBox = element('div', 'pct-brand-box');
+        const brandImage = element('img', 'frame-brand-logo');
+        brandImage.alt = 'Logo brand';
+        brandBox.appendChild(brandImage);
+        content.appendChild(brandBox);
+        loadBrandImage(brandImage, state.brand);
+      } else if (state.percent.extra === 'descrizione' && state.percent.desc.trim()) {
+        const desc = element('div', 'pct-desc', state.percent.desc);
+        desc.classList.toggle('is-long', state.percent.desc.trim().length > 22);
+        content.appendChild(desc);
+      }
+
+      const row = element('div', 'pct-row');
+      const fino = element('div', 'pct-fino');
+      fino.append(element('div', 'pct-fino-label', 'FINO AL'), element('div', 'pct-minus-bar'));
+      const numeric = String(state.percent.discount).replace(/[^0-9]/g, '');
+      row.append(fino, element('div', 'pct-text', `${numeric || '50'}%`));
+      content.appendChild(row);
+
+      const logo = element('img', 'pct-logo');
+      logo.src = 'assets/img/footer_tebe.png';
+      logo.alt = 'TEBE';
+      content.appendChild(logo);
+
+      container.replaceChildren(
+        deco('assets/img/decoup.png', 'Decoro Superiore'),
+        content,
+        deco('assets/img/decodown.png', 'Decoro Inferiore')
+      );
+    }
+
+    function loadBrandImage(brandImage, brand) {
+      if (!brand.customLogoId && !brand.officialFile) return;
+      getBrandLogoSource(brand).then(source => {
+        if (brandImage.isConnected) brandImage.src = source;
+      }).catch(error => {
+        console.error('Caricamento del logo brand fallito.', error);
+      });
+      const customLogo = readCustomLogos().find(logo => logo.id === brand.customLogoId);
+      brandImage.alt = customLogo?.name || cleanBrandName(brand.officialFile);
+    }
+
     function updateAll() {
       renderFrameContent('left');
       renderFrameContent('right');
@@ -1046,6 +1303,7 @@
 
       state.brandActive = false;
       state.twoArticlesActive = false;
+      state.percentActive = false;
       state.activeRow = 0;
       state.articles[0].desc = 'MADE\nIN ITALY';
       document.getElementById('descPreset').value = 'MADE IN ITALY';
