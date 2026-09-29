@@ -98,6 +98,7 @@ I loghi personalizzati compaiono poi nei menu "Loghi personalizzati" degli edito
 
 ```
 index.html                  Dashboard
+favicon.ico, apple-touch-icon.png  Icona della dashboard (logo TEBE 269 su fondo avorio)
 cartelli_*.html, cartellopercentuale.html, albero.html, paletto.html, paletto18x12.html,
 cornici10x15.html, cornice21x27.html      Editor cartelli
 etichette.html              Editor etichette DYMO (TEBE)
