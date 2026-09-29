@@ -979,7 +979,7 @@ nav button .soon-tag{
   letter-spacing:.04em;
   text-transform:uppercase;
 }
-body.ophilya .cards .card,
+body.ophilya .cards .card:not(.print-card),
 body.ophilya .dymo-carousel .dymo-card:not([data-link]),
 body.ophilya .lower .wide-card{
   pointer-events:none;
@@ -987,13 +987,13 @@ body.ophilya .lower .wide-card{
   box-shadow:inset 0 0 0 1px rgba(102,94,84,.04);
   background:var(--cream);
 }
-body.ophilya .cards .card > *,
+body.ophilya .cards .card:not(.print-card) > *,
 body.ophilya .dymo-carousel .dymo-card:not([data-link]) > *,
 body.ophilya .lower .wide-card > *,
 body.ophilya .coming-soon-card h2{
   visibility:hidden;
 }
-body.ophilya .cards .card::before,
+body.ophilya .cards .card:not(.print-card)::before,
 body.ophilya .dymo-carousel .dymo-card:not([data-link])::before,
 body.ophilya .lower .wide-card::before{
   content:"";
@@ -1002,7 +1002,7 @@ body.ophilya .lower .wide-card::before{
   inset:0;
   background:var(--cream);
 }
-body.ophilya .cards .card::after,
+body.ophilya .cards .card:not(.print-card)::after,
 body.ophilya .dymo-carousel .dymo-card:not([data-link])::after,
 body.ophilya .lower .wide-card::after{
   content:"Coming Soon";
@@ -1636,34 +1636,34 @@ body.ophilya .cash-tools-coming-soon{
           <h2>Taglie Internazionali</h2>
           <span class="print-card-btn">Apri / Stampa</span>
         </a>
-        <a class="card print-card" data-link="pdf-viewer.html?file=assets/pdf/orari.pdf">
+        <a class="card print-card" data-link="pdf-viewer.html?file=assets/pdf/orari.pdf" data-ophilya-link="pdf-viewer.html?file=assets/pdf/orari-ophilya.pdf">
           <div>
             <div class="number">02</div>
-            <div class="card-thumb"><img src="assets/thumbnail/orarithumb.png" alt="Orari"></div>
+            <div class="card-thumb"><img src="assets/thumbnail/orarithumb.png" data-ophilya-src="assets/thumbnail/orarithumb-ophilya.png" alt="Orari"></div>
           </div>
           <h2>Orari</h2>
           <span class="print-card-btn">Apri / Stampa</span>
         </a>
-        <a class="card print-card" data-link="pdf-viewer.html?file=assets/pdf/staffonly.pdf">
+        <a class="card print-card" data-link="pdf-viewer.html?file=assets/pdf/staffonly.pdf" data-ophilya-link="pdf-viewer.html?file=assets/pdf/staffonly-ophilya.pdf">
           <div>
             <div class="number">03</div>
-            <div class="card-thumb"><img src="assets/thumbnail/staffthumb.png" alt="Staff Only"></div>
+            <div class="card-thumb"><img src="assets/thumbnail/staffthumb.png" data-ophilya-src="assets/thumbnail/staffthumb-ophilya.png" alt="Staff Only"></div>
           </div>
           <h2>Staff Only</h2>
           <span class="print-card-btn">Apri / Stampa</span>
         </a>
-        <a class="card print-card" data-link="pdf-viewer.html?file=assets/pdf/cercasi.pdf">
+        <a class="card print-card" data-link="pdf-viewer.html?file=assets/pdf/cercasi.pdf" data-ophilya-link="pdf-viewer.html?file=assets/pdf/cercasi-ophilya.pdf">
           <div>
             <div class="number">04</div>
-            <div class="card-thumb"><img src="assets/thumbnail/cercasithumb.png" alt="Cercasi Personale"></div>
+            <div class="card-thumb"><img src="assets/thumbnail/cercasithumb.png" data-ophilya-src="assets/thumbnail/cercasithumb-ophilya.png" alt="Cercasi Personale"></div>
           </div>
           <h2>Cercasi Personale</h2>
           <span class="print-card-btn">Apri / Stampa</span>
         </a>
-        <a class="card print-card" data-link="pdf-viewer.html?file=assets/pdf/nofood_indoor.pdf">
+        <a class="card print-card" data-link="pdf-viewer.html?file=assets/pdf/nofood_indoor.pdf" data-ophilya-link="pdf-viewer.html?file=assets/pdf/nofood_indoor-ophilya.pdf">
           <div>
             <div class="number">05</div>
-            <div class="card-thumb"><img src="assets/thumbnail/nofoodthumb.png" alt="No Food &amp; Drinks"></div>
+            <div class="card-thumb"><img src="assets/thumbnail/nofoodthumb.png" data-ophilya-src="assets/thumbnail/nofoodthumb-ophilya.png" alt="No Food &amp; Drinks"></div>
           </div>
           <h2>No Food &amp; Drinks</h2>
           <span class="print-card-btn">Apri / Stampa</span>
@@ -1782,7 +1782,9 @@ function storePage(page){
 
 function updateLinks(){
   document.querySelectorAll("[data-link]").forEach(el=>{
-    const url = new URL(storePage(el.dataset.link), window.location.href);
+    // Alcuni widget hanno un file diverso per OPHILYA (es. stampe pronte col logo OPHILYA).
+    const link = currentStore === "ophilya" && el.dataset.ophilyaLink ? el.dataset.ophilyaLink : el.dataset.link;
+    const url = new URL(storePage(link), window.location.href);
     url.searchParams.set("store", currentStore);
     el.setAttribute("href", url.href);
   });

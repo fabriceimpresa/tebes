@@ -168,6 +168,11 @@
     const title = document.getElementById('document-title');
     const errorMessage = document.getElementById('error-message');
 
+    // Chi arriva dalla dashboard OPHILYA torna in OPHILYA alla chiusura.
+    if (params.get('store') === 'ophilya') {
+      document.querySelector('.app-close-btn').href = 'index.html?store=ophilya';
+    }
+
     const isMobile = window.matchMedia('(max-width: 700px)').matches;
 
     if (filePath && isMobile) {
