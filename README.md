@@ -76,13 +76,15 @@ Etichette DYMO **11354** (57 × 32 mm, 2,25 × 1,25 in). In modalità OPHILYA la
 - **Numero di copie:** il campo sopra "Stampa etichetta" fa stampare più copie con un solo invio alla DYMO.
 - **QR code:** nelle etichette TEBE il QR punta all'Instagram di TEBE.
 
-### Cartellini: `cartellinivetrina.html` e `cartellinitebe.html`, A4 orizzontale
+### Cartellini: `cartellinitebe.html`, `cartellinilxry.html` e `cartellinivetrina.html`
 
-Otto cartellini prezzo per vetrina su un foglio A4 orizzontale, ciascuno modificabile separatamente (linguette #1–#8, con casella per escluderlo dalla stampa). Per ogni cartellino si sceglie la modalità **Promo** (testo promozionale oro + prezzo finale) o **Doppio Prezzo** (prezzo barrato, −% e prezzo finale), il logo brand in oro (ufficiale o personalizzato) e la descrizione, anche dal menu Articoli pronti. Il footer è il logo TEBE oro.
+**Cartellini LXRY** (`cartellinilxry.html`, A4 orizzontale): otto cartellini prezzo per vetrina su un foglio A4 orizzontale, ciascuno modificabile separatamente (linguette #1–#8, con casella per escluderlo dalla stampa). Per ogni cartellino si sceglie la modalità **Promo** (testo promozionale oro + prezzo finale) o **Doppio Prezzo** (prezzo barrato, −% e prezzo finale), il logo brand in oro (ufficiale o personalizzato) e la descrizione, anche dal menu Articoli pronti. Il footer è il logo TEBE oro.
 
 **Cartellini TEBE** (`cartellinitebe.html`): dodici cartellini quadrati da 60 mm con cornice oro sottile, ciascuno in modalità **Descrizione** (testo in Arial, anche da Testi pronti), **Doppio Prezzo** (prezzo barrato con barra oro e −%) o **Brand** (logo brand oro, ufficiale o personalizzato, sopra il doppio prezzo). Il prezzo finale è in Bodoni e si riduce con prezzi a 3–4 cifre; sotto c'è il logo TEBE oro. Il pulsante rosso **Sale** sotto la ✕ aggiunge la scritta SALE oro in alto a tutti i cartellini.
 
-In dashboard i due editor stanno nella sezione *Cartellini*, sotto le Etichette.
+**Prezzi Vetrina** (`cartellinivetrina.html`, A4 verticale): 24 cartellini da 60 × 30 mm (3 colonne × 8 righe) con bordo marrone sottile e, in basso a destra, il prezzo in Nevis Bold e sotto il testo descrittivo in Bodoni Bold Italic, scelto dal menu Testo Descrittivo o scritto a mano. Si lavora per colonne: si sceglie la colonna (un triangolo rosso la indica nell'anteprima) e se ne impostano prezzo e testo, oppure la si esclude dalla stampa con la sua casella. Il menu Fasce prezzo, nel riquadro *Modifica Pagina*, cambia il prezzo di tutte le colonne insieme.
+
+In dashboard i tre editor stanno nella sezione *Cartellini*, tra Crea Cartelli e le Etichette.
 
 ### Materiali pronti
 
@@ -94,7 +96,7 @@ In dashboard i due editor stanno nella sezione *Cartellini*, sotto le Etichette.
 - `genera_loghi.html` (**Importa Loghi**): carica un logo su sfondo bianco o nero. Lo sfondo viene reso trasparente in automatico e il logo viene salvato con un nome brand.
 - `gestisci_lista.html` (**Gestisci Loghi**): rinomina, riordina con trascinamento, elimina, esporta/importa un backup JSON (`storecraft-loghi-personalizzati.json`).
 
-I loghi personalizzati compaiono poi nei menu "Loghi personalizzati" degli editor Brand, Percentuale, Cornici, Cartellini Vetrina, Cartellini TEBE ed Etichette.
+I loghi personalizzati compaiono poi nei menu "Loghi personalizzati" degli editor Brand, Percentuale, Cornici, Cartellini LXRY, Cartellini TEBE ed Etichette.
 
 ### Pagine interne e non collegate
 

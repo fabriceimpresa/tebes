@@ -402,6 +402,31 @@
     }
     .a4-landscape.sale-theme .cartellino.is-brand .brand-box.open { height: 9mm; margin: 0; }
 
+    /* Triangolo rosso (come il pulsante Sale) sopra il cartellino che si sta modificando,
+       con ombra netta; la posizione la calcola updateCardMarker(). Non si stampa. */
+    .sheet-wrap { position: relative; flex-shrink: 0; }
+
+    .card-marker {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 36px;
+      height: 24px;
+      transform: translateX(-50%);
+      filter: drop-shadow(1.2px 2.5px 0 rgba(40, 34, 28, 0.33));
+      transition: left 0.3s ease, top 0.3s ease;
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    .card-marker::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: #96382b;
+      clip-path: polygon(0 0, 100% 0, 50% 100%);
+    }
+
     /* NAVIGAZIONE */
     .app-close-btn {
       position: fixed;
@@ -526,7 +551,7 @@
         print-color-adjust: exact;
       }
       .cartellino.disabled { visibility: hidden; opacity: 0; }
-      .app-close-btn, .floating-nav-box, .sale-theme-btn { display: none !important; }
+      .app-close-btn, .floating-nav-box, .sale-theme-btn, .card-marker { display: none !important; }
       @page {
         size: A4 landscape;
         margin: 4mm;
@@ -563,16 +588,16 @@
         justify-content: center;
       }
 
-      .a4-landscape { zoom: 0.66; margin: 0 auto; }
+      .sheet-wrap { zoom: 0.66; margin: 0 auto; }
       .app-close-btn { top: 10px; right: 10px; width: 44px; height: 44px; }
       .sale-theme-btn { top: calc(10px + 44px + 8px); right: 10px; }
       .floating-nav-box { display: none; }
       .btn-print, .tab-item, .mode-switch button { min-height: 44px; }
     }
 
-    @media screen and (max-width: 600px) and (pointer: coarse) { .a4-landscape { zoom: 0.52; } }
-    @media screen and (max-width: 430px) and (pointer: coarse) { .a4-landscape { zoom: 0.32; } }
-    @media screen and (max-width: 360px) and (pointer: coarse) { .a4-landscape { zoom: 0.27; } }
+    @media screen and (max-width: 600px) and (pointer: coarse) { .sheet-wrap { zoom: 0.52; } }
+    @media screen and (max-width: 430px) and (pointer: coarse) { .sheet-wrap { zoom: 0.32; } }
+    @media screen and (max-width: 360px) and (pointer: coarse) { .sheet-wrap { zoom: 0.27; } }
 
   </style>
 </head>
@@ -706,7 +731,10 @@
   </aside>
 
   <main>
-    <div class="a4-landscape" id="printable-grid"></div>
+    <div class="sheet-wrap">
+      <div class="card-marker" id="cardMarker" aria-hidden="true"></div>
+      <div class="a4-landscape" id="printable-grid"></div>
+    </div>
   </main>
 
   <script>
@@ -873,6 +901,7 @@
 
       brandOpeningCardId = null;
       fitAllCards();
+      updateCardMarker();
     }
 
     // Tema Sale: aggiunge la scritta SALE oro in alto su tutti i cartellini (in Brand il logo brand scende al posto di TEBE).
@@ -881,6 +910,18 @@
       const button = document.getElementById('saleThemeBtn');
       button.classList.toggle('is-active', active);
       button.setAttribute('aria-pressed', String(active));
+    }
+
+    // Porta il triangolo sopra il cartellino selezionato, con la punta a 1 mm dal suo bordo.
+    // Si usano offsetLeft/offsetTop (coordinate di layout), che non risentono dello zoom del telefono.
+    const MARKER_GAP_PX = 96 / 25.4;
+
+    function updateCardMarker() {
+      const marker = document.getElementById('cardMarker');
+      const card = document.getElementById(`card-view-${cardsData[currentCardIdx].id}`);
+      if (!marker || !card) return;
+      marker.style.left = `${card.offsetLeft + card.offsetWidth / 2}px`;
+      marker.style.top = `${card.offsetTop - marker.offsetHeight - MARKER_GAP_PX}px`;
     }
 
     function loadBrandSelect() {

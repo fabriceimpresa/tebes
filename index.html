@@ -123,6 +123,33 @@ nav button:hover{
 nav button:disabled{
   opacity:1;
 }
+/* Titoli delle sezioni del menu: stesso evidenziamento delle voci al passaggio del mouse;
+   il clic sul titolo apre o chiude la sezione come la freccia.
+   L'area illuminata è un livello sotto il testo con 12 px sopra e sotto (come le voci),
+   così la spaziatura del titolo non cambia. */
+.sidebar-section:not([data-sidebar-section="credits"]) > .label{
+  position:relative;
+  z-index:0;
+  cursor:pointer;
+  transition:color .18s ease;
+}
+.sidebar-section:not([data-sidebar-section="credits"]) > .label::before{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  left:0;
+  right:0;
+  top:-12px;
+  bottom:-2px;
+  transition:background .18s ease, box-shadow .18s ease;
+}
+.sidebar-section:not([data-sidebar-section="credits"]) > .label:hover{
+  color:var(--ink);
+}
+.sidebar-section:not([data-sidebar-section="credits"]) > .label:hover::before{
+  background:rgba(255,253,250,.7);
+  box-shadow:inset 2px 0 var(--gold);
+}
 main{min-width:0}
 .topbar{
   height:80px;
@@ -1142,6 +1169,7 @@ body.ophilya .cash-tools-coming-soon{
   .logo{padding:0 4px 29px}
   .logo-name{font-size:15px}
   .sidebar-section .label{margin-top:12px !important;padding:0 6px 6px}
+  .sidebar-section:not([data-sidebar-section="credits"]) > .label::before{top:-9px;bottom:-3px}
   nav{gap:1px}
   nav button{padding:9px 8px;font-size:13px}
   .bottom{margin-bottom:0;padding:18px 4px 0}
@@ -1379,6 +1407,23 @@ body.ophilya .cash-tools-coming-soon{
       </nav>
     </div>
 
+    <div class="sidebar-section is-collapsed" data-sidebar-section="cartellini">
+      <div class="label" style="margin-top:28px">
+        <span>CARTELLINI</span>
+        <button class="section-toggle" type="button" aria-label="Espandi CARTELLINI" aria-expanded="false" onclick="toggleSidebarSection('cartellini')">⌄</button>
+      </div>
+      <nav class="sidebar-nav-tebe">
+        <button onclick="openPage('cartellinitebe.html')">Cartellini TEBE</button>
+        <button onclick="openPage('cartellinilxry.html')">Cartellini LXRY</button>
+        <button onclick="openPage('cartellinivetrina.html')">Prezzi Vetrina</button>
+      </nav>
+      <nav class="sidebar-nav-ophilya" aria-label="Cartellini OPHILYA">
+        <button class="soon" type="button" disabled>Presto disponibile</button>
+        <button class="soon" type="button" disabled>Presto disponibile</button>
+        <button class="soon" type="button" disabled>Presto disponibile</button>
+      </nav>
+    </div>
+
     <div class="sidebar-section is-collapsed" data-sidebar-section="labels">
       <div class="label" style="margin-top:28px">
         <span>ETICHETTE</span>
@@ -1386,21 +1431,6 @@ body.ophilya .cash-tools-coming-soon{
       </div>
       <nav>
         <button onclick="openPage('etichette.html')">Etichette DYMO</button>
-      </nav>
-    </div>
-
-    <div class="sidebar-section is-collapsed" data-sidebar-section="cartellini">
-      <div class="label" style="margin-top:28px">
-        <span>CARTELLINI</span>
-        <button class="section-toggle" type="button" aria-label="Espandi CARTELLINI" aria-expanded="false" onclick="toggleSidebarSection('cartellini')">⌄</button>
-      </div>
-      <nav class="sidebar-nav-tebe">
-        <button onclick="openPage('cartellinivetrina.html')">Cartellini Vetrina</button>
-        <button onclick="openPage('cartellinitebe.html')">Cartellini TEBE</button>
-      </nav>
-      <nav class="sidebar-nav-ophilya" aria-label="Cartellini OPHILYA">
-        <button class="soon" type="button" disabled>Presto disponibile</button>
-        <button class="soon" type="button" disabled>Presto disponibile</button>
       </nav>
     </div>
 
@@ -1572,7 +1602,7 @@ body.ophilya .cash-tools-coming-soon{
         </a>
         <a class="card" data-link="paletto.html">
           <div>
-            <div class="number">09<span class="card-type">PALETTO DA TAVOLO</span></div>
+            <div class="number">09<span class="card-type">PALETTO METALLO</span></div>
             <div class="card-thumb slideshow">
               <img src="assets/thumbnail/palettothumb.png" alt="Paletto 15x10">
               <img src="assets/thumbnail/palettothumb-2.png" alt="" aria-hidden="true">
@@ -1583,7 +1613,7 @@ body.ophilya .cash-tools-coming-soon{
         </a>
         <a class="card" data-link="paletto18x12.html">
           <div>
-            <div class="number">10<span class="card-type">PALETTO DA TAVOLO</span></div>
+            <div class="number">10<span class="card-type">PALETTO METALLO</span></div>
             <div class="card-thumb slideshow">
               <img src="assets/thumbnail/palettothumb.png" alt="Paletto 18x12">
               <img src="assets/thumbnail/palettothumb-2.png" alt="" aria-hidden="true">
@@ -1594,6 +1624,48 @@ body.ophilya .cash-tools-coming-soon{
         </a>
         </div>
         <button class="carousel-control next" id="cartelli-next" type="button" aria-label="Cartelli successivi" onclick="scrollCartelliCarousel(1)">›</button>
+      </div>
+
+      <div class="section" id="cartellini">CARTELLINI</div>
+
+      <div class="cartellini-carousel-shell">
+        <button class="carousel-control previous" id="cartellini-previous" type="button" aria-label="Cartellini precedenti" onclick="scrollCartelliniCarousel(-1)">‹</button>
+        <div class="cards cartelli-carousel cartellini-carousel" id="cartellini-carousel">
+        <a class="card" data-link="cartellinitebe.html">
+          <div>
+            <div class="number">01</div>
+            <div class="card-thumb slideshow">
+              <img src="assets/thumbnail/cartellinitebethumb.png?v=20260930" alt="Cartellini TEBE">
+              <img src="assets/thumbnail/cartellinitebethumb-2.png?v=20260930" alt="" aria-hidden="true">
+            </div>
+          </div>
+          <h2>Cartellini TEBE</h2>
+          <div class="arrow">↗︎</div>
+        </a>
+        <a class="card" data-link="cartellinilxry.html">
+          <div>
+            <div class="number">02</div>
+            <div class="card-thumb slideshow">
+              <img src="assets/thumbnail/cartellinithumb.png?v=20260930b" alt="Cartellini LXRY">
+              <img src="assets/thumbnail/cartellinithumb-2.png?v=20260930b" alt="" aria-hidden="true">
+            </div>
+          </div>
+          <h2>Cartellini LXRY</h2>
+          <div class="arrow">↗︎</div>
+        </a>
+        <a class="card" data-link="cartellinivetrina.html">
+          <div>
+            <div class="number">03</div>
+            <div class="card-thumb slideshow">
+              <img src="assets/thumbnail/prezzivetrinathumb.png?v=20260930" alt="Prezzi Vetrina">
+              <img src="assets/thumbnail/prezzivetrinathumb-2.png?v=20260930" alt="" aria-hidden="true">
+            </div>
+          </div>
+          <h2>Prezzi Vetrina</h2>
+          <div class="arrow">↗︎</div>
+        </a>
+        </div>
+        <button class="carousel-control next" id="cartellini-next" type="button" aria-label="Cartellini successivi" onclick="scrollCartelliniCarousel(1)">›</button>
       </div>
 
       <div class="section" id="etichette">ETICHETTE</div>
@@ -1655,37 +1727,6 @@ body.ophilya .cash-tools-coming-soon{
 
         </div>
         <button class="carousel-control next" id="dymo-next" type="button" aria-label="Etichette successive" onclick="scrollDymoCarousel(1)">›</button>
-      </div>
-
-      <div class="section" id="cartellini">CARTELLINI</div>
-
-      <div class="cartellini-carousel-shell">
-        <button class="carousel-control previous" id="cartellini-previous" type="button" aria-label="Cartellini precedenti" onclick="scrollCartelliniCarousel(-1)">‹</button>
-        <div class="cards cartelli-carousel cartellini-carousel" id="cartellini-carousel">
-        <a class="card" data-link="cartellinivetrina.html">
-          <div>
-            <div class="number">01</div>
-            <div class="card-thumb slideshow">
-              <img src="assets/thumbnail/cartellinithumb.png" alt="Cartellini Vetrina">
-              <img src="assets/thumbnail/cartellinithumb-2.png" alt="" aria-hidden="true">
-            </div>
-          </div>
-          <h2>Cartellini Vetrina</h2>
-          <div class="arrow">↗︎</div>
-        </a>
-        <a class="card" data-link="cartellinitebe.html">
-          <div>
-            <div class="number">02</div>
-            <div class="card-thumb slideshow">
-              <img src="assets/thumbnail/cartellinitebethumb.png?v=20260930" alt="Cartellini TEBE">
-              <img src="assets/thumbnail/cartellinitebethumb-2.png?v=20260930" alt="" aria-hidden="true">
-            </div>
-          </div>
-          <h2>Cartellini TEBE</h2>
-          <div class="arrow">↗︎</div>
-        </a>
-        </div>
-        <button class="carousel-control next" id="cartellini-next" type="button" aria-label="Cartellini successivi" onclick="scrollCartelliniCarousel(1)">›</button>
       </div>
 
       <div class="section">MATERIALI PRONTI</div>
@@ -2268,6 +2309,17 @@ function toggleSidebarSection(sectionId){
   localStorage.setItem("collapsed_sidebar_sections", JSON.stringify(collapsedSections));
 }
 
+// Il clic sul titolo di una sezione (non solo sulla freccia) la apre o la chiude.
+function enableSidebarLabelToggle(){
+  document.querySelectorAll('.sidebar-section:not([data-sidebar-section="credits"]) > .label').forEach(label => {
+    const sectionId = label.parentElement.dataset.sidebarSection;
+    label.addEventListener("click", event => {
+      if(event.target.closest(".section-toggle")) return;
+      toggleSidebarSection(sectionId);
+    });
+  });
+}
+
 function restoreSidebarSections(){
   const savedSections = localStorage.getItem("collapsed_sidebar_sections");
   const defaultCollapsedSections = ["custom-logos", "tools", "credits"];
@@ -2299,6 +2351,7 @@ function restoreSidebarSections(){
   if(store === "ophilya"){ changeStore("ophilya"); }
   else { updateLinks(); }
   restoreSidebarSections();
+  enableSidebarLabelToggle();
   setLayoutMode("creator");
   window.addEventListener("scroll", () => {
     document.body.classList.toggle("is-scrolled", window.scrollY > 80);
