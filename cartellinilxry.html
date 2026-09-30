@@ -209,8 +209,10 @@
       box-shadow: 0 1px 3px rgba(0,0,0,0.08);
     }
 
-    .btn-print { width: 100%; padding: 0.75rem; background: var(--gold); color: #fffdfa; font-weight: 700; border: none; border-radius: 4px; cursor: pointer; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.6px; transition: all 0.2s; margin-bottom: 1.2rem; }
-    .btn-print:hover { background: var(--accent-hover); }
+    .btn-print { width: 100%; padding: 0.75rem; background: #96382b; color: #fffdfa; font-weight: 700; border: none; border-radius: 4px; cursor: pointer; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.6px; transition: all 0.2s; margin-bottom: 1.2rem; }
+    .btn-print:hover { background: #7a2d22; }
+    /* Tasto di stampa dentro il riquadro di modifica, come nei cartelli */
+    .editor-section .btn-print { margin: 0.3rem 0 0; }
 
     /* --- PREVIEW MAIN --- */
     main { flex: 1; min-width: 0; padding: 1.5rem; overflow: auto; display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--border); -webkit-overflow-scrolling: touch; }
@@ -305,30 +307,8 @@
     .card-footer-logo { height: 22mm; display: flex; align-items: center; justify-content: center; width: 100%; padding-bottom: 0.5mm; flex-shrink: 0; }
     .card-footer-logo img { width: 36mm; max-width: 90%; height: auto; object-fit: contain; }
 
-    /* Triangolo rosso (come il pulsante Sale) sopra il cartellino che si sta modificando,
-       con ombra netta; la posizione la calcola updateCardMarker(). Non si stampa. */
+    /* Contenitore del foglio (lo zoom della vista telefono sta qui, non sul foglio) */
     .sheet-wrap { position: relative; flex-shrink: 0; }
-
-    .card-marker {
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 36px;
-      height: 24px;
-      transform: translateX(-50%);
-      filter: drop-shadow(1.2px 2.5px 0 rgba(40, 34, 28, 0.33));
-      transition: left 0.3s ease, top 0.3s ease;
-      pointer-events: none;
-      z-index: 5;
-    }
-
-    .card-marker::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: #96382b;
-      clip-path: polygon(0 0, 100% 0, 50% 100%);
-    }
 
     /* NAVIGAZIONE */
     .app-close-btn {
@@ -418,7 +398,7 @@
         print-color-adjust: exact;
       }
       .cartellino.disabled { visibility: hidden; opacity: 0; }
-      .app-close-btn, .floating-nav-box, .card-marker { display: none !important; }
+      .app-close-btn, .floating-nav-box { display: none !important; }
       @page { 
         size: A4 landscape; 
         margin: 4mm;
@@ -469,6 +449,8 @@
     @media screen and (max-width: 360px) and (pointer: coarse) { .sheet-wrap { zoom: 0.27; } }
 
   </style>
+  <link rel="stylesheet" href="assets/css/strumenti-stampa.css">
+  <link rel="stylesheet" href="assets/css/cursore.css">
 </head>
 <body>
   <a href="index.html?store=tebe" class="app-close-btn" title="Chiudi">✕</a>
@@ -483,7 +465,7 @@
 
     <div class="tabs-grid" id="tabs-container"></div>
 
-    <div class="editor-section">
+    <div class="editor-section" id="editorPanel">
       <div class="editor-title" id="editor-header">Modifica Cartellino #1</div>
 
       <div class="mode-switch">
@@ -593,14 +575,14 @@
           <input type="text" id="inp-final" class="form-control" placeholder="198,00" oninput="updateCurrentCard()">
         </div>
       </div>
+
+      <button class="btn-print" onclick="printCards()">Stampa Foglio A4</button>
     </div>
 
-    <button class="btn-print" onclick="printCards()">Stampa Foglio A4</button>
   </aside>
 
   <main>
     <div class="sheet-wrap">
-      <div class="card-marker" id="cardMarker" aria-hidden="true"></div>
       <div class="a4-landscape" id="printable-grid"></div>
     </div>
   </main>
@@ -717,20 +699,6 @@
         grid.appendChild(el);
         loadBrandImage(el.querySelector('.brand-box'), card.brand);
       });
-
-      updateCardMarker();
-    }
-
-    // Porta il triangolo sopra il cartellino selezionato, con la punta a 1 mm dal suo bordo.
-    // Si usano offsetLeft/offsetTop (coordinate di layout), che non risentono dello zoom del telefono.
-    const MARKER_GAP_PX = 96 / 25.4;
-
-    function updateCardMarker() {
-      const marker = document.getElementById('cardMarker');
-      const card = document.getElementById(`card-view-${cardsData[currentCardIdx].id}`);
-      if (!marker || !card) return;
-      marker.style.left = `${card.offsetLeft + card.offsetWidth / 2}px`;
-      marker.style.top = `${card.offsetTop - marker.offsetHeight - MARKER_GAP_PX}px`;
     }
 
     function loadBrandSelect() {
@@ -943,5 +911,33 @@
     init();
     applySafariPrintFix();
   </script>
+  <script src="assets/js/cursore.js"></script>
+  <script>
+    // Cursore: sopra il cartellino selezionato quando si sceglie una linguetta, sopra (o di lato)
+    // all'elemento del cartellino legato al campo in uso quando si lavora sul pannello.
+    const currentCardView = () => document.getElementById(`card-view-${cardsData[currentCardIdx].id}`);
+    const inCurrentCard = selector => () => currentCardView()?.querySelector(selector);
+
+    Cursore.create({
+      panel: 'aside',
+      watch: '#printable-grid',
+      clip: 'main',
+      sideGap: 96 / 25.4 + 5,   // nei cartellini di lato basta 1 mm + 5 px
+      // di lato il cursore può uscire dal cartellino (restando sul foglio), purché non copra testi e loghi
+      scope: '#printable-grid',
+      obstacles: '#printable-grid .brand-box img, #printable-grid .desc-box, #printable-grid .orig-discount .strike, #printable-grid .orig-discount .badge-sconto, #printable-grid .preset-label, #printable-grid .final-price, #printable-grid .card-footer-logo img',
+      rules: [
+        { controls: '.tab-item', target: currentCardView, placement: 'above' },
+        { controls: '#modePromo, #inp-preset', target: inCurrentCard('.preset-label') },
+        { controls: '#modeDoppioPrezzo', target: inCurrentCard('.orig-discount') },
+        { controls: '#brandSelect, #customBrandSelect', target: inCurrentCard('.brand-box img') },
+        { controls: '#descPreset, #inp-desc', target: inCurrentCard('.desc-box') },
+        { controls: '#inp-orig', target: inCurrentCard('.orig-discount .strike') },
+        { controls: '#discountValue, .percent-stepper', target: inCurrentCard('.orig-discount .badge-sconto') },
+        { controls: '#inp-final', target: inCurrentCard('.final-price') }
+      ]
+    }).point({ target: currentCardView, placement: 'above' });
+  </script>
+  <script src="assets/js/strumenti-stampa.js" data-panel="#editorPanel" data-sheet="#printable-grid"></script>
 </body>
 </html>

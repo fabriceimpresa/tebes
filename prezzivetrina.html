@@ -154,40 +154,17 @@
       line-height: 1.2;
     }
 
-    .btn-print { width: 100%; padding: 0.75rem; background: var(--gold); color: #fffdfa; font-weight: 700; border: none; border-radius: 4px; cursor: pointer; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.6px; transition: all 0.2s; margin-bottom: 1.2rem; }
-    .btn-print:hover { background: var(--accent-hover); }
+    .btn-print { width: 100%; padding: 0.75rem; background: #96382b; color: #fffdfa; font-weight: 700; border: none; border-radius: 4px; cursor: pointer; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.6px; transition: all 0.2s; margin-bottom: 1.2rem; }
+    .btn-print:hover { background: #7a2d22; }
+    /* Tasto di stampa dentro il riquadro di modifica, come nei cartelli */
+    .editor-section .btn-print { margin: 0.3rem 0 0; }
 
 
     /* --- PREVIEW MAIN --- */
     main { flex: 1; min-width: 0; padding: 1.5rem; overflow: auto; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; background: var(--border); -webkit-overflow-scrolling: touch; }
 
-    /* Contenitore del foglio: serve da riferimento per il triangolo della colonna selezionata */
+    /* Contenitore del foglio (lo zoom della vista telefono sta qui, non sul foglio) */
     .sheet-wrap { position: relative; flex-shrink: 0; margin-top: 12px; }
-
-    /* Triangolo rosso (come il pulsante Sale di Cartellini TEBE) sopra la colonna che si sta modificando, sul margine bianco del foglio
-       con un'ombra netta, senza sfumatura; non si stampa.
-       Centro colonna = margine griglia (10,045 mm) + mezza colonna (30,015 mm) + colonna × (60,03 + 4,91 mm). */
-    .column-marker {
-      position: absolute;
-      /* Tutto sul foglio, con la punta a 3,2 mm dal bordo superiore dei cartellini (margine griglia 11,435 mm) */
-      top: calc(11.435mm - 24px - 3.2mm);
-      left: calc(10.045mm + 30.015mm + var(--column, 0) * 64.94mm);
-      width: 36px;
-      height: 24px;
-      transform: translateX(-50%);
-      filter: drop-shadow(1.2px 2.5px 0 rgba(40, 34, 28, 0.33));
-      transition: left 0.3s ease;
-      pointer-events: none;
-      z-index: 2;
-    }
-
-    .column-marker::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: #96382b;
-      clip-path: polygon(0 0, 100% 0, 50% 100%);
-    }
 
     /* Foglio A4 verticale: 3 colonne × 8 righe di cartellini da 709 × 354 px a 300 dpi
        (60,03 × 29,97 mm), distanziati di 58 px (4,91 mm), come nel layout di riferimento. */
@@ -339,7 +316,7 @@
         print-color-adjust: exact;
       }
       .cartellino.disabled { visibility: hidden; opacity: 0; }
-      .app-close-btn, .floating-nav-box, .column-marker { display: none !important; }
+      .app-close-btn, .floating-nav-box { display: none !important; }
       .sheet-wrap { margin: 0; }
     }
 
@@ -379,6 +356,8 @@
     @media screen and (max-width: 360px) and (pointer: coarse) { .sheet-wrap { zoom: 0.38; } }
 
   </style>
+  <link rel="stylesheet" href="assets/css/strumenti-stampa.css">
+  <link rel="stylesheet" href="assets/css/cursore.css">
 </head>
 <body>
   <a href="index.html?store=tebe" class="app-close-btn" title="Chiudi">✕</a>
@@ -428,7 +407,7 @@
 
     <div class="tabs-grid" id="tabs-container"></div>
 
-    <div class="editor-section">
+    <div class="editor-section" id="editorPanel">
       <div class="editor-title" id="editor-header">Modifica Colonna 1</div>
 
       <div class="form-group">
@@ -461,14 +440,14 @@
       <div class="form-group">
         <input type="text" id="inp-desc" class="form-control" placeholder="-- Testo Libero --" oninput="updateCurrentColumn()">
       </div>
+
+      <button class="btn-print" onclick="printCards()">Stampa Foglio A4</button>
     </div>
 
-    <button class="btn-print" onclick="printCards()">Stampa Foglio A4</button>
   </aside>
 
   <main>
     <div class="sheet-wrap">
-      <div class="column-marker" id="columnMarker" aria-hidden="true"></div>
       <div class="a4-portrait" id="printable-grid"></div>
     </div>
   </main>
@@ -522,7 +501,6 @@
         item.append(name, checkbox);
         container.appendChild(item);
       });
-      document.getElementById('columnMarker').style.setProperty('--column', currentColumnIdx);
     }
 
     function createElement(tag, className, text) {
@@ -656,5 +634,29 @@
 
     init();
   </script>
+  <script src="assets/js/cursore.js"></script>
+  <script>
+    // Cursore: sopra la colonna selezionata (sul suo primo cartellino) quando si sceglie una linguetta,
+    // sopra o di lato a prezzo e testo del primo cartellino della colonna quando si usano i campi.
+    const firstCardOfColumn = () => document.querySelectorAll('#printable-grid .cartellino')[currentColumnIdx];
+    const inFirstCard = selector => () => firstCardOfColumn()?.querySelector(selector);
+
+    Cursore.create({
+      panel: 'aside',
+      watch: '#printable-grid',
+      clip: 'main',
+      // ogni triangolo resta nel suo cartellino e non copre prezzo e testo
+      scope: target => target?.closest('.cartellino'),
+      obstacles: target => target?.closest('.cartellino')?.querySelectorAll('.price, .desc') || [],
+      rules: [
+        { controls: '.tab-item', target: firstCardOfColumn, placement: 'above', gap: 3.2 * 96 / 25.4 },
+        // Fasce prezzo cambia tutte le colonne: un triangolo sopra ciascuna colonna, come per le linguette
+        { controls: '#pricePreset', target: () => [...document.querySelectorAll('#printable-grid .cartellino')].slice(0, COLUMN_COUNT), placement: 'above', gap: 3.2 * 96 / 25.4 },
+        { controls: '#inp-price', target: inFirstCard('.price') },
+        { controls: '#descriptionPreset, #inp-desc', target: inFirstCard('.desc') }
+      ]
+    }).point({ target: firstCardOfColumn, placement: 'above', gap: 3.2 * 96 / 25.4 });
+  </script>
+  <script src="assets/js/strumenti-stampa.js" data-panel="#editorPanel" data-sheet="#printable-grid"></script>
 </body>
 </html>

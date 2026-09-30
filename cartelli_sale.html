@@ -611,6 +611,8 @@
     }
   </style>
   <link rel="stylesheet" href="assets/css/tema-italia.css">
+  <link rel="stylesheet" href="assets/css/strumenti-stampa.css">
+  <link rel="stylesheet" href="assets/css/cursore.css">
 </head>
 <body>
 
@@ -816,5 +818,23 @@
 
     switchMode('doppia');
   </script>
+  <script src="assets/js/cursore.js"></script>
+  <script>
+    // Cursore: indica sulla metà superiore del cartello l'elemento legato al campo in uso.
+    Cursore.create({
+      panel: '.controls',
+      watch: '#printSheet',
+      scope: '#cardTop',
+      obstacles: '#cardTop .sale-label, #cardTop .price-old, #cardTop .price-percent, #cardTop .desc-text, #cardTop .price-final',
+      rules: [
+        { controls: '#modeDoppia, #modeDescrizione', target: '#middleRowTop > *' },
+        { controls: '#oldPrice', target: '#middleRowTop .price-old' },
+        { controls: '#discountValue, .percent-stepper', target: '#middleRowTop .price-percent' },
+        { controls: '#descPreset, #descFree', target: '#middleRowTop .desc-text' },
+        { controls: '#priceRange, #newPrice', target: '#finalPriceTop' }
+      ]
+    });
+  </script>
+  <script src="assets/js/strumenti-stampa.js"></script>
 </body>
 </html>

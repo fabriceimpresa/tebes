@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>STORE // CRAFT — Visual Merchandising Studio</title>
-<link rel="icon" href="favicon.ico" sizes="any">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="favicon.ico?v=20260930c" sizes="any">
+<link rel="apple-touch-icon" href="apple-touch-icon.png?v=20260930c">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600&family=Fraunces:opsz,wght@9..144,400;9..144,500&display=swap" rel="stylesheet">
@@ -1268,12 +1268,28 @@ body.ophilya .cash-tools-coming-soon{
 }
 
 .storecraft-mark{
+  position:relative;
   width:158px;
   height:76px;
   margin:12px auto 5px;
   display:flex;
   align-items:center;
   justify-content:center;
+}
+/* Triangolino rosso come il cursore delle pagine cartellini, sopra la "O" di STORE:
+   centro della O al 49,7% della larghezza del logo, sommità al 12,3% dell'altezza. */
+.storecraft-mark::before{
+  content:"";
+  position:absolute;
+  left:49.7%;
+  top:calc(12.3% - 18px);
+  width:14px;
+  height:10px;
+  background:#96382b;
+  clip-path:polygon(0 0, 100% 0, 50% 100%);
+  transform:translateX(-50%);
+  filter:drop-shadow(1px 1.5px 0 rgba(40, 34, 28, 0.33));
+  z-index:1;
 }
 
 .storecraft-mark img{
@@ -1415,7 +1431,7 @@ body.ophilya .cash-tools-coming-soon{
       <nav class="sidebar-nav-tebe">
         <button onclick="openPage('cartellinitebe.html')">Cartellini TEBE</button>
         <button onclick="openPage('cartellinilxry.html')">Cartellini LXRY</button>
-        <button onclick="openPage('cartellinivetrina.html')">Prezzi Vetrina</button>
+        <button onclick="openPage('prezzivetrina.html')">Prezzi Vetrina</button>
       </nav>
       <nav class="sidebar-nav-ophilya" aria-label="Cartellini OPHILYA">
         <button class="soon" type="button" disabled>Presto disponibile</button>
@@ -1653,12 +1669,12 @@ body.ophilya .cash-tools-coming-soon{
           <h2>Cartellini LXRY</h2>
           <div class="arrow">↗︎</div>
         </a>
-        <a class="card" data-link="cartellinivetrina.html">
+        <a class="card" data-link="prezzivetrina.html">
           <div>
             <div class="number">03</div>
             <div class="card-thumb slideshow">
-              <img src="assets/thumbnail/prezzivetrinathumb.png?v=20260930" alt="Prezzi Vetrina">
-              <img src="assets/thumbnail/prezzivetrinathumb-2.png?v=20260930" alt="" aria-hidden="true">
+              <img src="assets/thumbnail/prezzivetrinathumb.png?v=20260930b" alt="Prezzi Vetrina">
+              <img src="assets/thumbnail/prezzivetrinathumb-2.png?v=20260930b" alt="" aria-hidden="true">
             </div>
           </div>
           <h2>Prezzi Vetrina</h2>

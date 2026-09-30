@@ -383,6 +383,8 @@
     }
   </style>
   <link rel="stylesheet" href="assets/css/tema-italia.css">
+  <link rel="stylesheet" href="assets/css/strumenti-stampa.css">
+  <link rel="stylesheet" href="assets/css/cursore.css">
 </head>
 <body>
   <a href="index.html?store=tebe" class="app-close-btn" title="Chiudi e torna all'index">✕</a>
@@ -515,5 +517,20 @@
 
     updateCards();
   </script>
+  <script src="assets/js/cursore.js"></script>
+  <script>
+    // Cursore: indica sulla metà superiore del cartello l'elemento legato al campo in uso.
+    Cursore.create({
+      panel: '.controls',
+      watch: '#printSheet',
+      scope: '#cardTop',
+      obstacles: '#cardTop .card-title, #cardTop .card-price, #cardTop .card-logo',
+      rules: [
+        { controls: '#descPreset, #descFree', target: '#titleTop' },
+        { controls: '#pricePreset, #priceFree', target: '#priceTop' }
+      ]
+    });
+  </script>
+  <script src="assets/js/strumenti-stampa.js"></script>
 </body>
 </html>
