@@ -586,6 +586,7 @@
   </style>
   <link rel="stylesheet" href="assets/css/tema-italia.css">
   <link rel="stylesheet" href="assets/css/strumenti-stampa.css">
+  <link rel="stylesheet" href="assets/css/cursore.css">
 </head>
 <body>
 
@@ -923,6 +924,21 @@
     updateCard();
     loadBrandSelect();
     loadCustomBrandSelect();
+  </script>
+  <script src="assets/js/cursore.js"></script>
+  <script>
+    // Cursore: indica sulla metà superiore del cartello l'elemento legato al campo in uso.
+    Cursore.create({
+      panel: '.controls',
+      watch: '#printSheet',
+      scope: '#cardTop',
+      obstacles: '#cardTop .card-desc, #cardTop .card-brand-logo, #cardTop .fino-al-label, #cardTop .percent-text, #cardTop .card-logo',
+      rules: [
+        { controls: '#modeStandard, #discountValue, button[onclick^="stepDiscount"]', target: '#percentDispTop' },
+        { controls: '#modeDescrizione, #descPreset, #descValue', target: '#descDisp' },
+        { controls: '#modeBrand, #brandSelect, #customBrandSelect', target: '#brandLogoTop' }
+      ]
+    });
   </script>
   <script src="assets/js/strumenti-stampa.js"></script>
 </body>

@@ -683,6 +683,7 @@
   </style>
   <link rel="stylesheet" href="assets/css/tema-italia.css">
   <link rel="stylesheet" href="assets/css/strumenti-stampa.css">
+  <link rel="stylesheet" href="assets/css/cursore.css">
 </head>
 <body>
 
@@ -1328,6 +1329,36 @@
     loadCustomBrandSelect();
     syncSidebarWithState();
     updateAll();
+  </script>
+  <script src="assets/js/cursore.js"></script>
+  <script>
+    // Cursore: sopra la cornice scelta (sinistra/destra) e sugli elementi della cornice legati al campo in uso.
+    const activeFrameBox = () => document.getElementById(currentActiveFrame === 'left' ? 'frameLeft' : 'frameRight');
+    const activeFrameArticle = () => {
+      const state = framesState[currentActiveFrame];
+      return activeFrameBox()?.querySelectorAll('.frame-content')[state.twoArticlesActive ? state.activeRow : 0];
+    };
+    const inFrame = selector => () => activeFrameBox()?.querySelector(selector);
+    const inFrameArticle = selector => () => activeFrameArticle()?.querySelector(selector);
+
+    Cursore.create({
+      panel: '.controls',
+      watch: '#printSheet',
+      // di lato il cursore può uscire dalla cornice (restando sul foglio), purché non copra testi e decori
+      scope: '#printSheet',
+      obstacles: '#printSheet .deco-img, #printSheet .desc-title, #printSheet .frame-brand-logo, #printSheet .price-old-frame, #printSheet .price-percent-frame, #printSheet .price-final-frame, #printSheet .pct-desc, #printSheet .pct-fino-label, #printSheet .pct-text, #printSheet .pct-logo',
+      rules: [
+        { controls: '#btnLeft, #btnRight, #standardModeBtn, #extraArticleModeBtn, #brandModeBtn, #percentModeBtn', target: activeFrameBox, placement: 'above' },
+        { controls: '#brandSelect, #customBrandSelect, #percentExtraBrandBtn', target: inFrame('.frame-brand-logo') },
+        { controls: '#percentExtraStandardBtn, #percentValue, button[onclick^="stepPercent"]', target: inFrame('.pct-row') },
+        { controls: '#percentExtraDescBtn, #percentDescPreset, #percentDescValue', target: inFrame('.pct-desc') },
+        { controls: '#rowSelectorContainer', target: activeFrameArticle },
+        { controls: '#descPreset, #descFree', target: inFrameArticle('.desc-title') },
+        { controls: '#oldPrice', target: inFrameArticle('.price-old-frame') },
+        { controls: '#discountValue, button[onclick^="stepDiscount"]', target: inFrameArticle('.price-percent-frame') },
+        { controls: '#newPrice', target: inFrameArticle('.price-final-frame') }
+      ]
+    });
   </script>
   <script src="assets/js/strumenti-stampa.js"></script>
 </body>

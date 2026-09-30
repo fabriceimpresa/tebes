@@ -353,6 +353,7 @@
     }
   </style>
   <link rel="stylesheet" href="assets/css/strumenti-stampa.css">
+  <link rel="stylesheet" href="assets/css/cursore.css">
 </head>
 <body>
   <a href="index.html?store=tebe" class="app-close-btn" title="Chiudi e torna al menu principale">✕</a>
@@ -434,6 +435,23 @@
       document.getElementById('descriptionInput').value = signs[index].description;
       document.getElementById('priceInput').value = signs[index].price;
     }
+  </script>
+  <script src="assets/js/cursore.js"></script>
+  <script>
+    // Cursore: sopra il cartellino scelto con i pulsanti 1-2-3, sopra o di lato a testo e prezzo quando si usano i campi.
+    const activeTreeSign = () => document.querySelectorAll('.tree-sign')[activeSign];
+
+    Cursore.create({
+      panel: '.controls',
+      watch: '.print-sheet',
+      scope: activeTreeSign,
+      obstacles: () => activeTreeSign()?.querySelectorAll('.sign-description, .sign-price, .sign-logo') || [],
+      rules: [
+        { controls: '.card-selector', target: activeTreeSign, placement: 'above' },
+        { controls: '#descriptionInput', target: () => document.getElementById(`descriptionPreview${activeSign}`) },
+        { controls: '#priceInput', target: () => document.getElementById(`pricePreview${activeSign}`) }
+      ]
+    });
   </script>
   <script src="assets/js/strumenti-stampa.js"></script>
 </body>

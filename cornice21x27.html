@@ -517,6 +517,7 @@
   </style>
   <link rel="stylesheet" href="assets/css/tema-italia.css">
   <link rel="stylesheet" href="assets/css/strumenti-stampa.css">
+  <link rel="stylesheet" href="assets/css/cursore.css">
 </head>
 <body>
   <a href="index.html?store=tebe" class="app-close-btn" title="Chiudi e torna all'index">✕</a>
@@ -827,6 +828,25 @@ CACHEMIRE</textarea>
     renderCard();
   </script>
   <script src="assets/js/tema-italia.js"></script>
+  <script src="assets/js/cursore.js"></script>
+  <script>
+    // Cursore: indica sulla cornice l'elemento legato al campo in uso.
+    Cursore.create({
+      panel: '.controls',
+      watch: '#printSheet',
+      scope: '#printSheet',
+      obstacles: '#frameBox .deco-img, #frameBox .desc-title, #frameBox .frame-brand-logo, #frameBox .price-old-frame, #frameBox .price-percent-frame, #frameBox .price-final-frame',
+      rules: [
+        // primo selettore (Descrizione Articolo / Modalità Brand): dall'alto, sopra la cornice intera
+        { controls: '#modeDescription, #modeBrand', target: '#frameBox', placement: 'above' },
+        { controls: '#descFree', target: '#frameContent .desc-title' },
+        { controls: '#brandSelect, #customBrandSelect', target: '#frameContent .frame-brand-logo' },
+        { controls: '#oldPrice', target: '#frameContent .price-old-frame' },
+        { controls: '#discountValue, button[onclick^="stepDiscount"]', target: '#frameContent .price-percent-frame' },
+        { controls: '#newPrice', target: '#frameContent .price-final-frame' }
+      ]
+    });
+  </script>
   <script src="assets/js/strumenti-stampa.js"></script>
 </body>
 </html>

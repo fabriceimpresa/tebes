@@ -637,6 +637,7 @@
     }
   </style>
   <link rel="stylesheet" href="assets/css/strumenti-stampa.css">
+  <link rel="stylesheet" href="assets/css/cursore.css">
 </head>
 <body>
 
@@ -915,6 +916,31 @@
     renderRowSelector();
     loadActiveRowIntoForm();
     updateCards();
+  </script>
+  <script src="assets/js/cursore.js"></script>
+  <script>
+    // Cursore: indica sulla metà superiore del cartello l'articolo (riga) in modifica e i suoi valori.
+    // Con 2 articoli ogni articolo è una colonna, con 3-4 una riga della tabella.
+    const activeArticle = () => numArticles === 2
+      ? document.querySelectorAll('#itemsContainerTop .item-column')[activeRowIndex]
+      : document.querySelectorAll('#itemsContainerTop tr')[activeRowIndex];
+    const inArticle = (twoSelector, tableSelector) => () => activeArticle()?.querySelector(numArticles === 2 ? twoSelector : tableSelector);
+
+    Cursore.create({
+      panel: '.controls',
+      watch: '#printSheet',
+      scope: '#cardTop',
+      obstacles: '#cardTop .sale-label, #cardTop .card-logo, #itemsContainerTop td, #itemsContainerTop .item-title, #itemsContainerTop .price-original, #itemsContainerTop .discount-tag, #itemsContainerTop .price-final',
+      rules: [
+        // numero di articoli: dall'alto, sopra il cartello intero (sopra la tabella coprirebbe "Sale")
+        { controls: '#btnNum2, #btnNum3, #btnNum4', target: '#cardTop', placement: 'above' },
+        { controls: '#rowSelectorContainer', target: inArticle('.item-title', '.col-desc'), placement: 'side' },
+        { controls: '#descPreset, #descFree', target: inArticle('.item-title', '.col-desc') },
+        { controls: '#oldPrice', target: inArticle('.price-original', '.col-old-price') },
+        { controls: '#discountValue, button[onclick^="stepDiscount"]', target: inArticle('.discount-tag', '.col-discount') },
+        { controls: '#newPrice', target: inArticle('.price-final', '.col-new-price') }
+      ]
+    });
   </script>
   <script src="assets/js/strumenti-stampa.js"></script>
 </body>

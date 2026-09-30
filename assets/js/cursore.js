@@ -17,6 +17,7 @@
  *     sideGap: 9                      // facoltativo: distanza in px della punta quando il cursore sta di lato
  *   });
  *   cursore.point({ target, scope, obstacles, placement: 'above', gap });  // puntamento da codice
+ * placement: 'above' = sempre sopra; 'side' = solo di lato (prima sinistra, poi destra).
  * Ogni regola (e point) accetta anche gap: distanza in px della punta quando il cursore sta sopra.
  * target, scope e obstacles possono essere selettori, elementi o funzioni che li restituiscono.
  * Se target restituisce più elementi compare un triangolo per ciascuno (modifiche su più colonne);
@@ -160,7 +161,8 @@
         const outside = scopeRect && !inside(r, scopeRect) ? box.width * box.height : 0;
         return covered + outside;
       };
-      const order = [options.above, options.left, options.right];
+      // placement 'side': solo di lato (es. le righe di Multi Articolo, indicate sempre accanto al testo)
+      const order = request.placement === 'side' ? [options.left, options.right] : [options.above, options.left, options.right];
       // la prima posizione libera nell'ordine sopra, sinistra, destra; se nessuna è libera, quella che copre meno
       return order.find(box => cost(box) === 0) || order.reduce((best, box) => (cost(box) < cost(best) ? box : best));
     }
@@ -195,15 +197,23 @@
       schedule(true);
     }
 
-    function ruleFor(control) {
-      return (config.rules || []).find(rule => control.closest(rule.controls));
+    // Si usa il percorso dell'evento (registrato al momento del clic) e non closest():
+    // alcune pagine ricostruiscono i pulsanti appena cliccati (es. i selettori riga di Multi Articolo),
+    // che quindi non sono più nella pagina quando l'evento arriva al pannello.
+    function ruleFor(event) {
+      const path = event.composedPath().filter(node => node instanceof Element);
+      for (const node of path) {
+        const rule = (config.rules || []).find(candidate => node.matches(candidate.controls));
+        if (rule) return rule;
+      }
+      return null;
     }
 
     const panel = resolveOne(config.panel);
     if (panel) {
       ['focusin', 'input', 'change', 'click'].forEach(type => {
         panel.addEventListener(type, event => {
-          const rule = ruleFor(event.target);
+          const rule = ruleFor(event);
           if (rule) point({ target: rule.target, placement: rule.placement, gap: rule.gap, scope: rule.scope ?? config.scope, obstacles: rule.obstacles ?? config.obstacles });
         });
       });

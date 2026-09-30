@@ -679,6 +679,7 @@
   </style>
   <link rel="stylesheet" href="assets/css/tema-italia.css">
   <link rel="stylesheet" href="assets/css/strumenti-stampa.css">
+  <link rel="stylesheet" href="assets/css/cursore.css">
 </head>
 <body>
   <a href="index.html?store=tebe" class="app-close-btn" title="Chiudi e torna all'indice">✕</a>
@@ -1113,6 +1114,39 @@
     syncControls();
     updateCards();
     renderCard('bottom');
+  </script>
+  <script src="assets/js/cursore.js"></script>
+  <script>
+    // Cursore: sopra il cartello scelto (superiore/inferiore) e sugli elementi legati al campo in uso.
+    const activePalettoCard = () => document.getElementById(activeCard === 'bottom' ? 'cardBottom' : 'cardTop');
+    const inPaletto = selector => () => activePalettoCard()?.querySelector(selector);
+
+    // doppio prezzo: sopra prezzo originale e sconto il cursore sta un po' più in alto (punta a 2 mm)
+    const DOUBLE_PRICE_GAP = 2 * 96 / 25.4;
+    Cursore.create({
+      panel: '.controls',
+      watch: '.print-sheet',
+      scope: activePalettoCard,
+      obstacles: () => activePalettoCard()?.querySelectorAll('.card-title, .price-old, .price-percent, .card-price, .dual-item-price, .card-logo, .paletto-made-in-italy-flag') || [],
+      rules: [
+        { controls: '#selectTop, #selectBottom', target: activePalettoCard, placement: 'above' },
+        { controls: '#standardMode, #price', target: inPaletto('.card-price') },
+        { controls: '#doublePriceMode', target: inPaletto('.card-price-row'), gap: DOUBLE_PRICE_GAP },
+        { controls: '#doubleArticleMode, #articleStandardMode, #articleDoublePriceMode', target: inPaletto('.dual-items') },
+        { controls: '#descriptionPreset, #description', target: inPaletto('.card-content > .card-title') },
+        { controls: '#oldPrice', target: inPaletto('.card-price-row .price-old'), gap: DOUBLE_PRICE_GAP },
+        { controls: '#discount', target: inPaletto('.card-price-row .price-percent'), gap: DOUBLE_PRICE_GAP },
+        { controls: '#finalPrice', target: inPaletto('.card-price') },
+        { controls: '#firstDescriptionPreset, #firstDescription', target: inPaletto('.dual-item:nth-child(1) .dual-item-title') },
+        { controls: '#firstPrice, #firstFinalPrice', target: inPaletto('.dual-item:nth-child(1) .dual-item-price') },
+        { controls: '#firstOldPrice', target: inPaletto('.dual-item:nth-child(1) .price-old'), gap: DOUBLE_PRICE_GAP },
+        { controls: '#firstDiscount', target: inPaletto('.dual-item:nth-child(1) .price-percent'), gap: DOUBLE_PRICE_GAP },
+        { controls: '#secondDescriptionPreset, #secondDescription', target: inPaletto('.dual-item:nth-child(2) .dual-item-title') },
+        { controls: '#secondPrice, #secondFinalPrice', target: inPaletto('.dual-item:nth-child(2) .dual-item-price') },
+        { controls: '#secondOldPrice', target: inPaletto('.dual-item:nth-child(2) .price-old'), gap: DOUBLE_PRICE_GAP },
+        { controls: '#secondDiscount', target: inPaletto('.dual-item:nth-child(2) .price-percent'), gap: DOUBLE_PRICE_GAP }
+      ]
+    });
   </script>
   <script src="assets/js/strumenti-stampa.js"></script>
 </body>
