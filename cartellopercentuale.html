@@ -221,6 +221,10 @@
       border-radius: 4px;
       cursor: pointer;
       transition: all 0.2s ease;
+      min-width: 0;
+      line-height: 1.2;
+      text-align: center;
+      font-family: system-ui, -apple-system, sans-serif;
     }
 
     .mode-switch button.active {
@@ -228,33 +232,6 @@
       color: #282522;
       box-shadow: 0 1px 3px rgba(0,0,0,0.08);
     }
-
-    /* PULSANTE "+ AGGIUNGI UN BRAND" (dorato -> verde inglese quando attivo) */
-    .btn-add-brand {
-      width: 100%;
-      background-color: #cc9e25;
-      color: #fffdfa;
-      border: 1px solid #b8891a;
-      padding: 10px;
-      font-size: 0.78rem;
-      font-weight: 700;
-      letter-spacing: 0.6px;
-      text-transform: uppercase;
-      border-radius: 4px;
-      cursor: pointer;
-      margin-bottom: 0.8rem;
-      transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
-    }
-
-    .btn-add-brand:hover { background-color: #b8891a; }
-
-    .btn-add-brand.active {
-      background-color: #4b685c;
-      color: #fffdfa;
-      border-color: #4b685c;
-    }
-
-    .btn-add-brand.active:hover { background-color: #425d52; }
 
     /* PULSANTE STAMPA */
     .btn-print {
@@ -626,11 +603,10 @@
       <h2>Cartello Percentuale</h2>
 
       <div class="mode-switch">
-        <button type="button" class="active" id="modeStandard" onclick="switchMode('standard')">Standard</button>
-        <button type="button" id="modeDescrizione" onclick="switchMode('descrizione')">Descrizione Articolo</button>
+        <button type="button" class="active" id="modeStandard" onclick="switchMode('standard')">STANDARD</button>
+        <button type="button" id="modeDescrizione" onclick="switchMode('descrizione')">DESCRIZIONE<br>ARTICOLO</button>
+        <button type="button" id="modeBrand" onclick="switchMode('brand')">AGGIUNGI<br>BRAND</button>
       </div>
-
-      <button type="button" class="btn-add-brand" id="brandToggleBtn" onclick="toggleBrandSection()">+ AGGIUNGI UN BRAND</button>
 
       <div id="brandFieldsGroup" style="display: none;">
         <div class="form-group">
@@ -787,30 +763,47 @@
       cardBottom.classList.toggle('standard-mode', !descriptionVisible);
     }
 
-    function toggleDescription() {
-      isDescriptionActive = !isDescriptionActive;
-      const modeStandard = document.getElementById('modeStandard');
-      const modeDescrizione = document.getElementById('modeDescrizione');
-      const descGroup = document.getElementById('descGroup');
-
-      if (isDescriptionActive) {
-        modeStandard.classList.remove('active');
-        modeDescrizione.classList.add('active');
-        descGroup.style.display = "block";
-      } else {
-        modeDescrizione.classList.remove('active');
-        modeStandard.classList.add('active');
-        descGroup.style.display = "none";
-      }
-      updateFieldsMode();
-    }
-
+    // Tre modalità esclusive: Standard, Descrizione Articolo, Aggiungi Brand.
     function switchMode(mode) {
-      const wantsDescription = mode === 'descrizione';
-      if (wantsDescription !== isDescriptionActive) {
-        toggleDescription();
+      isDescriptionActive = mode === 'descrizione';
+      brandSectionActive = mode === 'brand';
+
+      document.getElementById('modeStandard').classList.toggle('active', mode === 'standard');
+      document.getElementById('modeDescrizione').classList.toggle('active', isDescriptionActive);
+      document.getElementById('modeBrand').classList.toggle('active', brandSectionActive);
+      document.getElementById('descGroup').style.display = isDescriptionActive ? 'block' : 'none';
+      document.getElementById('brandFieldsGroup').style.display = brandSectionActive ? 'block' : 'none';
+
+      if (!brandSectionActive) {
+        updateLogoElements('', '');
+        return;
+      }
+
+      const brandSelect = document.getElementById('brandSelect');
+      const customBrandSelect = document.getElementById('customBrandSelect');
+      if (!brandSelect.value && !customBrandSelect.value) {
+        brandSelect.value = getDefaultBrandFile();
+      }
+      if (customBrandSelect.value) {
+        updateCustomBrand();
+      } else {
+        updateBrand();
       }
     }
+
+    function getCurrentMode() {
+      if (brandSectionActive) return 'brand';
+      return isDescriptionActive ? 'descrizione' : 'standard';
+    }
+
+    // Hook del tema Made in Italy: alla disattivazione torna la modalità precedente, brand compreso.
+    window.captureTemaItaliaState = function captureTemaItaliaState() {
+      return { mode: getCurrentMode() };
+    };
+
+    window.restoreTemaItaliaState = function restoreTemaItaliaState(state) {
+      switchMode(state.mode);
+    };
 
     // ----- BRAND (ufficiale o personalizzato), sempre in colore oro -----
 
@@ -918,41 +911,6 @@
       }).catch(error => {
         console.error('Caricamento del logo personalizzato fallito.', error);
       });
-    }
-
-    function toggleBrandSection() {
-      brandSectionActive = !brandSectionActive;
-      const btn = document.getElementById('brandToggleBtn');
-      const group = document.getElementById('brandFieldsGroup');
-      const brandSelect = document.getElementById('brandSelect');
-      const customBrandSelect = document.getElementById('customBrandSelect');
-
-      if (brandSectionActive) {
-        btn.classList.add('active');
-        btn.textContent = '✓ BRAND ATTIVATO';
-        group.style.display = 'block';
-        if (!brandSelect.value && !customBrandSelect.value) {
-          brandSelect.value = getDefaultBrandFile();
-        }
-      } else {
-        btn.classList.remove('active');
-        btn.textContent = '+ AGGIUNGI UN BRAND';
-        group.style.display = 'none';
-        brandSelect.value = '';
-        customBrandSelect.value = '';
-        updateLogoElements('', '');
-      }
-
-      updateFieldsMode();
-
-      if (brandSectionActive) {
-        const customLogoId = customBrandSelect.value;
-        if (customLogoId) {
-          updateCustomBrand();
-        } else {
-          updateBrand();
-        }
-      }
     }
 
     function printCards() {

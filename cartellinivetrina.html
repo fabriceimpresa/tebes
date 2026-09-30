@@ -65,26 +65,152 @@
     .form-control { width: 100%; padding: 0.5rem; background: var(--card); border: 1px solid var(--border); color: var(--text); border-radius: 4px; font-size: 0.82rem; outline: none; }
     .form-control:focus { border-color: var(--gold); }
 
-    /* EVIDENZIA LE VOCI STAGIONALI PRIORITARIE (SPRING/SUMMER/WINTER SALE) NEL MENU A CASCATA */
+    /* MENU A DISCESA CON FRECCIA */
+    .preset-select {
+      position: relative;
+      border: 1px solid #e3dacb;
+      border-radius: 4px;
+      background-color: var(--card);
+      overflow: hidden;
+    }
+
+    .preset-select:focus-within {
+      border-color: #b49a62;
+      box-shadow: 0 0 4px rgba(180, 154, 98, 0.35);
+    }
+
+    .preset-select select.form-control {
+      appearance: none;
+      -webkit-appearance: none;
+      padding-right: 2rem;
+      border: none;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+      cursor: pointer;
+    }
+
+    .preset-select::after {
+      content: '▼';
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 1.6rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-left: 1px solid #e3dacb;
+      background: #f3ede0;
+      color: #b49a62;
+      font-size: 0.6rem;
+      line-height: 1;
+      pointer-events: none;
+    }
+
+    /* CAMPO PERCENTUALE CON FRECCE */
+    .percent-input-wrapper {
+      display: flex;
+      align-items: stretch;
+      border: 1px solid #e3dacb;
+      border-radius: 4px;
+      background-color: var(--card);
+      overflow: hidden;
+    }
+
+    .percent-input-wrapper:focus-within {
+      border-color: #b49a62;
+      box-shadow: 0 0 4px rgba(180, 154, 98, 0.35);
+    }
+
+    .percent-input-wrapper input#discountValue {
+      flex: 1 1 auto;
+      width: auto;
+      min-width: 0;
+      border: none;
+      border-radius: 0;
+      background: transparent;
+      -moz-appearance: textfield;
+    }
+
+    .percent-input-wrapper input#discountValue::-webkit-outer-spin-button,
+    .percent-input-wrapper input#discountValue::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    .percent-input-wrapper .percent-stepper {
+      flex: 0 0 1.6rem;
+      display: flex;
+      flex-direction: column;
+      border-left: 1px solid #e3dacb;
+      overflow: hidden;
+    }
+
+    .percent-input-wrapper .percent-stepper button {
+      flex: 1;
+      border: none;
+      border-bottom: 1px solid #e3dacb;
+      background: #f3ede0;
+      color: #b49a62;
+      cursor: pointer;
+      font-size: 0.6rem;
+      line-height: 1;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .percent-input-wrapper .percent-stepper button:last-child { border-bottom: none; }
+
+    .percent-input-wrapper .percent-stepper button:hover {
+      background: #e3dacb;
+      color: #8a6a35;
+    }
+
+    /* Evidenzia i brand della casa TEBE (PRIORITY_BRANDS) in cima al menu brand */
     select option.priority-brand-option {
       background-color: #2e2b27;
       color: #e5ba73;
       font-weight: bold;
     }
     
-    .toggle-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.8rem; background: var(--card); padding: 0.5rem; border-radius: 4px; border: 1px solid var(--border); }
-    .toggle-row span { font-size: 0.75rem; color: var(--text); }
+    .mode-switch {
+      display: flex;
+      gap: 4px;
+      padding: 4px;
+      background: #f3ede0;
+      border: 1px solid #e3dacb;
+      border-radius: 6px;
+      margin-bottom: 1.2rem;
+    }
+
+    .mode-switch button {
+      flex: 1;
+      border: 0;
+      background: transparent;
+      padding: 9px 8px;
+      font-size: 0.68rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #8a7f6e;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      line-height: 1.2;
+      text-align: center;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+
+    .mode-switch button.active {
+      background: #fffdfa;
+      color: #282522;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
 
     .btn-print { width: 100%; padding: 0.75rem; background: var(--gold); color: #fffdfa; font-weight: 700; border: none; border-radius: 4px; cursor: pointer; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.6px; transition: all 0.2s; margin-bottom: 1.2rem; }
     .btn-print:hover { background: var(--accent-hover); }
-
-    .custom-logos-box { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; margin-bottom: 1.2rem; }
-    .custom-logos-title { font-size: 0.75rem; text-transform: uppercase; color: var(--gold); margin-bottom: 0.8rem; letter-spacing: 1px; font-weight: 700; border-bottom: 1px solid var(--border); padding-bottom: 0.4rem; }
-    .custom-logo-row { margin-bottom: 0.7rem; }
-    .custom-logo-row:last-child { margin-bottom: 0; }
-    .custom-logo-row label { display: block; font-size: 0.72rem; color: var(--gold); margin-bottom: 0.3rem; }
-    .custom-logo-select { width: 100%; padding: 0.5rem; background: var(--card); border: 1px solid var(--gold); color: #6b5628; border-radius: 4px; font-size: 0.82rem; outline: none; }
-    .custom-logo-select:focus { box-shadow: 0 0 4px rgba(180, 139, 55, 0.5); }
 
     /* --- PREVIEW MAIN --- */
     main { flex: 1; min-width: 0; padding: 1.5rem; overflow: auto; display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--border); -webkit-overflow-scrolling: touch; }
@@ -126,7 +252,6 @@
     /* Brand Logo in alto */
     .brand-box { height: 21mm; display: flex; align-items: center; justify-content: center; width: 100%; margin-top: 0.5mm; flex-shrink: 0; }
     .brand-box img { max-height: 100%; max-width: 90%; object-fit: contain; }
-    .brand-box .brand-text-fallback { font-family: 'Bodoni Std', serif; font-size: 16pt; font-weight: bold; color: var(--gold); text-transform: uppercase; letter-spacing: 0.8px; }
 
     /* Blocco centrale */
     .card-body-center {
@@ -178,7 +303,7 @@
 
     /* Logo Aziendale in basso */
     .card-footer-logo { height: 22mm; display: flex; align-items: center; justify-content: center; width: 100%; padding-bottom: 0.5mm; flex-shrink: 0; }
-    .card-footer-logo img { max-height: 100%; max-width: 98%; object-fit: contain; }
+    .card-footer-logo img { width: 36mm; max-width: 90%; height: auto; object-fit: contain; }
 
     /* NAVIGAZIONE */
     .app-close-btn {
@@ -308,7 +433,7 @@
       .a4-landscape { zoom: 1; margin: 0 auto; }
       .app-close-btn { top: 10px; right: 10px; width: 44px; height: 44px; }
       .floating-nav-box { display: none; }
-      .btn-print, .tab-item { min-height: 44px; }
+      .btn-print, .tab-item, .mode-switch button { min-height: 44px; }
     }
 
     @media screen and (max-width: 760px) and (pointer: coarse) { .a4-landscape { zoom: 0.92; } }
@@ -335,20 +460,66 @@
 
     <div class="editor-section">
       <div class="editor-title" id="editor-header">Modifica Cartellino #1</div>
-      
+
+      <div class="mode-switch">
+        <button type="button" id="modePromo" onclick="setCardMode(true)">MODALITÀ<br>PROMO</button>
+        <button type="button" id="modeDoppioPrezzo" class="active" onclick="setCardMode(false)">DOPPIO<br>PREZZO</button>
+      </div>
+
       <div class="form-group">
-        <label>Brand / Logo</label>
-        <select id="inp-brand" class="form-control" onchange="updateCurrentCard()"></select>
+        <label for="brandSelect">Brand</label>
+        <div class="preset-select">
+          <select id="brandSelect" class="form-control" onchange="updateBrandSelection()">
+            <option value="">-- Seleziona Brand --</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="customBrandSelect">Loghi personalizzati</label>
+        <div class="preset-select">
+          <select id="customBrandSelect" class="form-control" onchange="updateCustomBrandSelection()">
+            <option value="">-- Nessun logo personalizzato --</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="descPreset">Articoli pronti</label>
+        <div class="preset-select">
+          <select id="descPreset" class="form-control" onchange="applyDescPreset()">
+            <option value="">-- Seleziona un articolo --</option>
+            <option value="Abito">Abito</option>
+            <option value="Bermuda">Bermuda</option>
+            <option value="Blusa">Blusa</option>
+            <option value="Borsa">Borsa</option>
+            <option value="Borsa Vera Pelle">Borsa Vera Pelle</option>
+            <option value="Camicia">Camicia</option>
+            <option value="Cappello">Cappello</option>
+            <option value="Cappotto">Cappotto</option>
+            <option value="Cardigan">Cardigan</option>
+            <option value="Cintura">Cintura</option>
+            <option value="Coprispalle">Coprispalle</option>
+            <option value="Foulard">Foulard</option>
+            <option value="Giacca">Giacca</option>
+            <option value="Gilet">Gilet</option>
+            <option value="Gonna">Gonna</option>
+            <option value="Jeans">Jeans</option>
+            <option value="Maglia">Maglia</option>
+            <option value="Occhiali">Occhiali</option>
+            <option value="Pantaloncino">Pantaloncino</option>
+            <option value="Pantalone">Pantalone</option>
+            <option value="Shorts">Shorts</option>
+            <option value="T-Shirt">T-Shirt</option>
+            <option value="Top">Top</option>
+            <option value="Tutina">Tutina</option>
+          </select>
+        </div>
       </div>
 
       <div class="form-group">
         <label>Descrizione Articolo</label>
         <input type="text" id="inp-desc" class="form-control" placeholder="es. Giubbino" oninput="updateCurrentCard()">
-      </div>
-
-      <div class="toggle-row">
-        <span>Modalità Promo / Doppio Prezzo</span>
-        <input type="checkbox" id="inp-toggle-preset" style="accent-color: var(--gold);" onchange="toggleMode()">
       </div>
 
       <div id="group-discount">
@@ -361,24 +532,32 @@
         </div>
         <div class="form-group">
           <label>Aliquota Sconto</label>
-          <input type="text" id="inp-sconto" class="form-control" placeholder="-50%" oninput="formatDiscountInput(this); updateCurrentCard()">
+          <div class="percent-input-wrapper">
+            <input type="number" id="discountValue" class="form-control" value="50" min="1" max="99" oninput="updateCurrentCard()">
+            <div class="percent-stepper">
+              <button type="button" aria-label="Aumenta percentuale" onclick="stepDiscount(1)">▲</button>
+              <button type="button" aria-label="Diminuisci percentuale" onclick="stepDiscount(-1)">▼</button>
+            </div>
+          </div>
         </div>
       </div>
 
       <div id="group-preset" style="display: none;">
         <div class="form-group">
           <label>Testo Promozionale</label>
-          <select id="inp-preset" class="form-control" onchange="updateCurrentCard()">
-            <option value="FINAL PRICE">FINAL PRICE</option>
-            <option value="GENUINE LEATHER">GENUINE LEATHER</option>
-            <option value="LAST WEEK">LAST WEEK</option>
-            <option value="MADE IN ITALY">MADE IN ITALY</option>
-            <option value="SPECIAL DEAL">SPECIAL DEAL</option>
-            <option value="SPRING SALE">SPRING SALE</option>
-            <option value="SUMMER SALE">SUMMER SALE</option>
-            <option value="VERA PELLE">VERA PELLE</option>
-            <option value="WINTER SALE">WINTER SALE</option>
-          </select>
+          <div class="preset-select">
+            <select id="inp-preset" class="form-control" onchange="updateCurrentCard()">
+              <option value="FINAL PRICE">FINAL PRICE</option>
+              <option value="GENUINE LEATHER">GENUINE LEATHER</option>
+              <option value="LAST WEEK">LAST WEEK</option>
+              <option value="MADE IN ITALY">MADE IN ITALY</option>
+              <option value="SPECIAL DEAL">SPECIAL DEAL</option>
+              <option value="SPRING SALE">SPRING SALE</option>
+              <option value="SUMMER SALE">SUMMER SALE</option>
+              <option value="VERA PELLE">VERA PELLE</option>
+              <option value="WINTER SALE">WINTER SALE</option>
+            </select>
+          </div>
         </div>
       </div>
 
@@ -391,15 +570,7 @@
       </div>
     </div>
 
-    <div class="custom-logos-box">
-      <div class="custom-logos-title">Loghi Personalizzati</div>
-      <div class="custom-logo-row">
-        <label for="inp-custom-logo" id="custom-logo-label">Logo Personalizzato Cartellino #1</label>
-        <select id="inp-custom-logo" class="custom-logo-select" onchange="applyCustomLogo()"></select>
-      </div>
-    </div>
-
-    <button class="btn-print" onclick="window.print()">Stampa Foglio A4</button>
+    <button class="btn-print" onclick="printCards()">Stampa Foglio A4</button>
   </aside>
 
   <main>
@@ -407,38 +578,54 @@
   </main>
 
   <script>
-    function cleanBrandName(filename) {
-      if (!filename) return '';
-      return filename.replace(/\.(png|jpg|jpeg|webp|svg)$/i, '').replace(/[-_]/g, ' ');
+    const CUSTOM_LOGOS_STORAGE_KEY = 'custom_brand_logos';
+
+    function cleanBrandName(fileName) {
+      return fileName.replace(/\.[^.]+$/, '').replace(/([a-z])([A-Z])/g, '$1 $2');
     }
 
-    function getLogoFilename(brand) {
-      if (!brand) return '';
-      if (typeof LOGO_FILES !== 'undefined' && Array.isArray(LOGO_FILES)) {
-        const found = LOGO_FILES.find(f => 
-          f.toLowerCase() === brand.toLowerCase() || 
-          cleanBrandName(f).toLowerCase() === brand.toLowerCase().replace(/[-_]/g, ' ')
-        );
-        if (found) return found;
+    function readCustomLogos() {
+      try {
+        const logos = JSON.parse(localStorage.getItem(CUSTOM_LOGOS_STORAGE_KEY) || '[]');
+        return Array.isArray(logos) ? logos.filter(logo => logo && logo.id && logo.name && logo.data) : [];
+      } catch (error) {
+        console.error('Lettura dei loghi personalizzati fallita.', error);
+        return [];
       }
-      return brand.includes('.') ? brand : `${brand}.png`;
     }
 
+    function getDefaultBrandFile() {
+      const orderedFiles = getOrderedLogoFiles();
+      return orderedFiles.find(fileName => fileName.toLowerCase().startsWith('269')) || orderedFiles[0] || '';
+    }
+
+    // All'apertura i cartellini alternano i brand: il primo ha il brand predefinito,
+    // gli altri scorrono i brand ufficiali non della casa TEBE, ricominciando se finiscono.
+    function getDefaultCardBrandFile(index) {
+      const defaultFile = getDefaultBrandFile();
+      const otherFiles = getSortedLogoFiles().remainingFiles;
+      const rotation = [defaultFile].concat(otherFiles).filter(Boolean);
+      return rotation.length ? rotation[index % rotation.length] : '';
+    }
+
+    // Ogni cartellino ha il proprio brand: file ufficiale oppure id di un logo personalizzato.
+    // Modalità alternate a scacchiera sulla griglia 4×2: Doppio Prezzo e Promo non stanno mai affiancati.
     const cardsData = [
-      { id: 1, enabled: true, brand: 'SKYWARD.png', customLogoUrl: '', desc: 'Giubbino', usePreset: false, priceOrig: '396,00', sconto: '-50%', presetText: '', priceFinal: '198,00' },
-      { id: 2, enabled: true, brand: 'PINKO.png', customLogoUrl: '', desc: 'Pantalone', usePreset: true, priceOrig: '', sconto: '', presetText: 'SPECIAL DEAL', priceFinal: '40,00' },
-      { id: 3, enabled: true, brand: 'PINKO.png', customLogoUrl: '', desc: 'Gonna', usePreset: true, priceOrig: '', sconto: '', presetText: 'WINTER SALE', priceFinal: '30,00' },
-      { id: 4, enabled: true, brand: 'FELEPPA.png', customLogoUrl: '', desc: 'Giubbino', usePreset: false, priceOrig: '310,00', sconto: '-55%', presetText: '', priceFinal: '139,50' },
-      { id: 5, enabled: true, brand: 'WEILIZHENG.png', customLogoUrl: '', desc: 'Top', usePreset: true, priceOrig: '', sconto: '', presetText: 'SPECIAL DEAL', priceFinal: '30,00' },
-      { id: 6, enabled: true, brand: 'HAVEONE.png', customLogoUrl: '', desc: 'Abito', usePreset: true, priceOrig: '', sconto: '', presetText: 'SPECIAL DEAL', priceFinal: '30,00' },
-      { id: 7, enabled: true, brand: 'MEIMEIJ.png', customLogoUrl: '', desc: 'Pantalone', usePreset: true, priceOrig: '', sconto: '', presetText: 'WINTER SALE', priceFinal: '30,00' },
-      { id: 8, enabled: true, brand: 'FELEPPA.png', customLogoUrl: '', desc: 'Giubbino', usePreset: false, priceOrig: '310,00', sconto: '-55%', presetText: '', priceFinal: '139,50' }
-    ];
+      { id: 1, enabled: true, desc: 'Giubbino', usePreset: false, priceOrig: '396,00', sconto: '50', presetText: '', priceFinal: '198,00' },
+      { id: 2, enabled: true, desc: 'Pantalone', usePreset: true, priceOrig: '', sconto: '', presetText: 'SPECIAL DEAL', priceFinal: '40,00' },
+      { id: 3, enabled: true, desc: 'Gonna', usePreset: false, priceOrig: '120,00', sconto: '30', presetText: '', priceFinal: '84,00' },
+      { id: 4, enabled: true, desc: 'Top', usePreset: true, priceOrig: '', sconto: '', presetText: 'WINTER SALE', priceFinal: '30,00' },
+      { id: 5, enabled: true, desc: 'Abito', usePreset: true, priceOrig: '', sconto: '', presetText: 'SPECIAL DEAL', priceFinal: '30,00' },
+      { id: 6, enabled: true, desc: 'Giubbino', usePreset: false, priceOrig: '310,00', sconto: '55', presetText: '', priceFinal: '139,50' },
+      { id: 7, enabled: true, desc: 'Pantalone', usePreset: true, priceOrig: '', sconto: '', presetText: 'WINTER SALE', priceFinal: '30,00' },
+      { id: 8, enabled: true, desc: 'Abito', usePreset: false, priceOrig: '180,00', sconto: '40', presetText: '', priceFinal: '108,00' }
+    ].map((card, index) => ({ ...card, brand: { officialFile: getDefaultCardBrandFile(index), customLogoId: '' } }));
 
     let currentCardIdx = 0;
 
     function init() {
-      populateLogoDropdowns();
+      loadBrandSelect();
+      loadCustomBrandSelect();
       renderTabs();
       renderGrid();
       loadEditorData();
@@ -475,17 +662,6 @@
         el.className = `cartellino ${!card.enabled ? 'disabled' : ''}`;
         el.id = `card-view-${card.id}`;
 
-        const brandDisplayName = cleanBrandName(card.brand);
-        let logoContent = `<div class="brand-text-fallback">${brandDisplayName}</div>`;
-
-        if (card.customLogoUrl) {
-          logoContent = `<img src="${card.customLogoUrl}" alt="${brandDisplayName}">`;
-        } else if (card.brand) {
-          const logoFile = getLogoFilename(card.brand);
-          const logoSrc = getLogoSource(logoFile);
-          logoContent = `<img src="${logoSrc}" onerror="this.outerHTML='<div class=\\'brand-text-fallback\\'>${brandDisplayName}</div>'" alt="${brandDisplayName}">`;
-        }
-
         let subRowContent = '';
         if (card.usePreset) {
           subRowContent = `<div class="preset-label">${card.presetText}</div>`;
@@ -493,79 +669,143 @@
           subRowContent = `
             <div class="orig-discount">
               ${card.priceOrig ? `<span class="strike"><span class="currency">€</span> ${card.priceOrig}</span>` : ''}
-              ${card.sconto ? `<span class="badge-sconto">${card.sconto}</span>` : ''}
+              ${card.sconto ? `<span class="badge-sconto">-${card.sconto}%</span>` : ''}
             </div>
           `;
         }
 
         el.innerHTML = `
-          <div class="brand-box">${logoContent}</div>
+          <div class="brand-box"></div>
           <div class="card-body-center">
             <div class="desc-box">${card.desc}</div>
             <div class="price-details-row">${subRowContent}</div>
             <div class="final-price"><span class="currency">€</span> ${card.priceFinal}</div>
           </div>
           <div class="card-footer-logo">
-            <img src="assets/img/logocartellini.png" onerror="this.style.display='none'" alt="Luxury Outlet">
+            <img src="assets/img/footer_tebe.png" onerror="this.style.display='none'" alt="TEBE">
           </div>
         `;
 
         grid.appendChild(el);
-
-        // Ricolora il logo brand via canvas (oro), indipendente dal browser.
-        if (card.customLogoUrl || card.brand) {
-          const officialFile = card.customLogoUrl ? '' : getLogoFilename(card.brand);
-          PrintLogoColors.getBrandLogoSrc(card.customLogoUrl, officialFile, '', 'gold').then(src => {
-            const imgEl = el.querySelector('.brand-box img');
-            if (imgEl && src) imgEl.src = src;
-          });
-        }
+        loadBrandImage(el.querySelector('.brand-box'), card.brand);
       });
     }
 
-    function populateLogoDropdowns() {
-      const brandSelect = document.getElementById('inp-brand');
+    function loadBrandSelect() {
+      const select = document.getElementById('brandSelect');
+      const { priorityFiles, remainingFiles } = getSortedLogoFiles();
+      [...priorityFiles, ...remainingFiles].forEach(fileName => {
+        appendBrandOption(select, fileName, cleanBrandName(fileName), priorityFiles.includes(fileName));
+      });
+    }
 
-      if (typeof LOGO_FILES !== 'undefined' && Array.isArray(LOGO_FILES)) {
-        // Brand prioritari (stagionali) mostrati per primi ed evidenziati, poi il resto in ordine alfabetico
-        const { priorityFiles, remainingFiles } = getSortedLogoFiles();
-        brandSelect.innerHTML = [...priorityFiles, ...remainingFiles].map(file => {
-          const displayName = cleanBrandName(file);
-          return priorityFiles.includes(file)
-            ? `<option value="${file}" class="priority-brand-option">⭐ ${displayName}</option>`
-            : `<option value="${file}">${displayName}</option>`;
-        }).join('');
-      } else {
-        brandSelect.innerHTML = '<option value="">nessun logo caricato</option>';
+    function loadCustomBrandSelect() {
+      const select = document.getElementById('customBrandSelect');
+      readCustomLogos()
+        .slice()
+        .sort((first, second) => first.name.localeCompare(second.name, 'it', { sensitivity: 'base' }))
+        .forEach(logo => {
+          const option = document.createElement('option');
+          option.value = logo.id;
+          option.textContent = `★ ${logo.name}`;
+          select.appendChild(option);
+        });
+    }
+
+    function updateBrandSelection() {
+      const card = cardsData[currentCardIdx];
+      card.brand.officialFile = document.getElementById('brandSelect').value;
+      card.brand.customLogoId = '';
+      document.getElementById('customBrandSelect').value = '';
+      renderGrid();
+    }
+
+    function updateCustomBrandSelection() {
+      const card = cardsData[currentCardIdx];
+      card.brand.customLogoId = document.getElementById('customBrandSelect').value;
+      card.brand.officialFile = '';
+      document.getElementById('brandSelect').value = '';
+
+      // Deselezionando il logo personalizzato si torna al brand predefinito, mai a un cartellino senza logo.
+      if (!card.brand.customLogoId) {
+        card.brand.officialFile = getDefaultBrandFile();
+        document.getElementById('brandSelect').value = card.brand.officialFile;
+      }
+      renderGrid();
+    }
+
+    function getBrandLogoSource(brand) {
+      const customLogo = readCustomLogos().find(logo => logo.id === brand.customLogoId);
+      if (brand.customLogoId && !customLogo) {
+        return Promise.reject(new Error(`Logo personalizzato non trovato: ${brand.customLogoId}`));
       }
 
-      const savedLogos = JSON.parse(localStorage.getItem('custom_brand_logos') || '[]');
-      const customOptions = '<option value="">-- Nessun Logo Personalizzato --</option>' +
-        savedLogos.map((logo, index) => `<option value="${logo.data}">★ ${logo.name || 'Logo Custom #' + (index + 1)}</option>`).join('');
-      document.getElementById('inp-custom-logo').innerHTML = customOptions;
+      return PrintLogoColors.getBrandLogoSrc(
+        customLogo?.data || '',
+        brand.customLogoId ? '' : brand.officialFile,
+        '',
+        'gold'
+      );
+    }
+
+    // Logo brand in oro: file pregenerato per i loghi ufficiali, ricolorato via canvas per i personalizzati.
+    function loadBrandImage(brandBox, brand) {
+      if (!brand.customLogoId && !brand.officialFile) return;
+      const brandImage = document.createElement('img');
+      const customLogo = readCustomLogos().find(logo => logo.id === brand.customLogoId);
+      brandImage.alt = customLogo?.name || cleanBrandName(brand.officialFile);
+      brandBox.appendChild(brandImage);
+      getBrandLogoSource(brand).then(source => {
+        if (brandImage.isConnected) brandImage.src = source;
+      }).catch(error => {
+        console.error('Caricamento del logo brand fallito.', error);
+      });
+    }
+
+    function printCards() {
+      const logoPreparation = cardsData
+        .filter(card => card.enabled)
+        .map(card => {
+          const brandImage = document.querySelector(`#card-view-${card.id} .brand-box img`);
+          if (!brandImage) return Promise.resolve();
+          return getBrandLogoSource(card.brand).then(source => {
+            if (source) brandImage.src = source;
+          });
+        });
+
+      Promise.all(logoPreparation)
+        .then(() => PrintLogoColors.prepareForPrint('.brand-box img, .card-footer-logo img'))
+        .then(() => window.print())
+        .catch(error => console.error('Preparazione dei loghi per la stampa fallita.', error));
     }
 
     function loadEditorData() {
       const card = cardsData[currentCardIdx];
       document.getElementById('editor-header').innerText = `Modifica Cartellino #${card.id}`;
-      document.getElementById('custom-logo-label').innerText = `Logo Personalizzato Cartellino #${card.id}`;
-      
-      const matchedFile = getLogoFilename(card.brand);
-      document.getElementById('inp-brand').value = matchedFile;
+
+      document.getElementById('brandSelect').value = card.brand.officialFile;
+      document.getElementById('customBrandSelect').value = card.brand.customLogoId;
 
       document.getElementById('inp-desc').value = card.desc;
-      document.getElementById('inp-toggle-preset').checked = card.usePreset;
+      document.getElementById('descPreset').value = '';
       document.getElementById('inp-orig').value = card.priceOrig;
-      document.getElementById('inp-sconto').value = card.sconto;
+      document.getElementById('discountValue').value = card.sconto;
       document.getElementById('inp-preset').value = card.presetText || 'SPECIAL DEAL';
       document.getElementById('inp-final').value = card.priceFinal;
-      document.getElementById('inp-custom-logo').value = card.customLogoUrl || '';
 
       toggleMode();
     }
 
+    function setCardMode(usePreset) {
+      cardsData[currentCardIdx].usePreset = usePreset;
+      toggleMode();
+    }
+
+    // Mostra i campi della modalità del cartellino corrente (Promo o Doppio Prezzo).
     function toggleMode() {
-      const usePreset = document.getElementById('inp-toggle-preset').checked;
+      const usePreset = cardsData[currentCardIdx].usePreset;
+      document.getElementById('modePromo').classList.toggle('active', usePreset);
+      document.getElementById('modeDoppioPrezzo').classList.toggle('active', !usePreset);
       document.getElementById('group-discount').style.display = usePreset ? 'none' : 'block';
       document.getElementById('group-preset').style.display = usePreset ? 'block' : 'none';
 
@@ -580,13 +820,13 @@
         }
       } else {
         const origInput = document.getElementById('inp-orig');
-        const scontoInput = document.getElementById('inp-sconto');
+        const scontoInput = document.getElementById('discountValue');
         const finalPriceInput = document.getElementById('inp-final');
         if (!origInput.value) {
           origInput.value = '100,00';
         }
         if (!scontoInput.value) {
-          scontoInput.value = '-50%';
+          scontoInput.value = '50';
         }
         if (!finalPriceInput.value) {
           finalPriceInput.value = '50,00';
@@ -598,30 +838,33 @@
 
     function updateCurrentCard() {
       const card = cardsData[currentCardIdx];
-      card.brand = document.getElementById('inp-brand').value;
       card.desc = document.getElementById('inp-desc').value;
-      card.usePreset = document.getElementById('inp-toggle-preset').checked;
       card.priceOrig = document.getElementById('inp-orig').value;
-      card.sconto = document.getElementById('inp-sconto').value;
+      card.sconto = document.getElementById('discountValue').value;
       card.presetText = document.getElementById('inp-preset').value;
       card.priceFinal = document.getElementById('inp-final').value;
 
       renderGrid();
     }
 
-    function formatDiscountInput(input) {
-      const value = input.value.replace(/[^\d,.-]/g, '');
-      if (!value) {
-        return;
+    // L'articolo scelto riempie la descrizione, che resta modificabile a mano.
+    function applyDescPreset() {
+      const preset = document.getElementById('descPreset').value;
+      if (preset) {
+        document.getElementById('inp-desc').value = preset;
+        updateCurrentCard();
       }
-      input.value = `${value}%`;
-      input.setSelectionRange(value.length, value.length);
     }
 
-    function applyCustomLogo() {
-      const customUrl = document.getElementById('inp-custom-logo').value;
-      cardsData[currentCardIdx].customLogoUrl = customUrl;
-      renderGrid();
+    function stepDiscount(delta) {
+      const input = document.getElementById('discountValue');
+      const min = Number.parseInt(input.min, 10) || 1;
+      const max = Number.parseInt(input.max, 10) || 99;
+      let val = Number.parseInt(input.value, 10);
+      if (Number.isNaN(val)) val = min;
+      val = Math.min(max, Math.max(min, val + delta));
+      input.value = val;
+      updateCurrentCard();
     }
 
     function toggleCardEnabled(index, enabled) {

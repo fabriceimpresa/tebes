@@ -76,6 +76,14 @@ Etichette DYMO **11354** (57 × 32 mm, 2,25 × 1,25 in). In modalità OPHILYA la
 - **Numero di copie:** il campo sopra "Stampa etichetta" fa stampare più copie con un solo invio alla DYMO.
 - **QR code:** nelle etichette TEBE il QR punta all'Instagram di TEBE.
 
+### Cartellini: `cartellinivetrina.html` e `cartellinitebe.html`, A4 orizzontale
+
+Otto cartellini prezzo per vetrina su un foglio A4 orizzontale, ciascuno modificabile separatamente (linguette #1–#8, con casella per escluderlo dalla stampa). Per ogni cartellino si sceglie la modalità **Promo** (testo promozionale oro + prezzo finale) o **Doppio Prezzo** (prezzo barrato, −% e prezzo finale), il logo brand in oro (ufficiale o personalizzato) e la descrizione, anche dal menu Articoli pronti. Il footer è il logo TEBE oro.
+
+**Cartellini TEBE** (`cartellinitebe.html`): dodici cartellini quadrati da 60 mm con cornice oro sottile, ciascuno in modalità **Descrizione** (testo in Arial, anche da Testi pronti), **Doppio Prezzo** (prezzo barrato con barra oro e −%) o **Brand** (logo brand oro, ufficiale o personalizzato, sopra il doppio prezzo). Il prezzo finale è in Bodoni e si riduce con prezzi a 3–4 cifre; sotto c'è il logo TEBE oro. Il pulsante rosso **Sale** sotto la ✕ aggiunge la scritta SALE oro in alto a tutti i cartellini.
+
+In dashboard i due editor stanno nella sezione *Cartellini*, sotto le Etichette.
+
 ### Materiali pronti
 
 - In dashboard, un carosello con le stampe pronte: Taglie Internazionali, Orari, Staff Only, Cercasi Personale, No Food & Drinks e Vietato Fumare. Ogni widget ha miniatura, titolo e tasto Apri / Stampa, e apre il PDF nel visualizzatore.
@@ -86,13 +94,12 @@ Etichette DYMO **11354** (57 × 32 mm, 2,25 × 1,25 in). In modalità OPHILYA la
 - `genera_loghi.html` (**Importa Loghi**): carica un logo su sfondo bianco o nero. Lo sfondo viene reso trasparente in automatico e il logo viene salvato con un nome brand.
 - `gestisci_lista.html` (**Gestisci Loghi**): rinomina, riordina con trascinamento, elimina, esporta/importa un backup JSON (`storecraft-loghi-personalizzati.json`).
 
-I loghi personalizzati compaiono poi nei menu "Loghi personalizzati" degli editor Brand, Percentuale, Cornici ed Etichette.
+I loghi personalizzati compaiono poi nei menu "Loghi personalizzati" degli editor Brand, Percentuale, Cornici, Cartellini Vetrina, Cartellini TEBE ed Etichette.
 
 ### Pagine interne e non collegate
 
 - `logoimport.html`: aggiunge un logo brand **ufficiale** al progetto. Scrive in `assets/logos/`, genera le quattro varianti colore in `assets/img/printlogos/` e aggiorna `assets/js/logos.js`.
 - `logogestione.html`: rimuove un logo ufficiale da tutti e tre i punti.
-- `cartellinivetrina.html`: cartellini prezzo per vetrina su A4 orizzontale. Non è collegata dalla dashboard.
 
 ## Struttura del repository
 

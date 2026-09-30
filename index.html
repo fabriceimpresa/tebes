@@ -235,6 +235,7 @@ body.cassiere-mode .content > .cartelli-carousel-shell,
 body.cassiere-mode .content > #etichette,
 body.cassiere-mode .content > .dymo-carousel-shell,
 body.cassiere-mode .content > .prints-carousel-shell,
+body.cassiere-mode .content > .cartellini-carousel-shell,
 body.cassiere-mode .content > .section:not(#strumenti-cassa),
 body.cassiere-mode .content > .lower{
   display:none;
@@ -389,7 +390,8 @@ h1{
   letter-spacing:.16em;
 }
 /* CREA CARTELLI: numero a sinistra e tipo di supporto a destra, stesso stile. */
-#cartelli-carousel .number{
+#cartelli-carousel .number,
+#cartellini-carousel .number{
   display:flex;
   justify-content:space-between;
   gap:10px;
@@ -506,6 +508,13 @@ h1{
 }
 .lower-single{
   grid-template-columns:1fr;
+}
+/* Cartellini: carosello a una riga che riusa le regole di .cartelli-carousel. */
+.cartellini-carousel-shell{
+  position:relative;
+}
+.cartellini-carousel{
+  grid-template-rows:minmax(220px, auto);
 }
 /* Stampe pronte: carosello a una riga che riusa le regole di .cartelli-carousel;
    solo titolo e tasto Apri / Stampa, il PDF si apre in pdf-viewer.html. */
@@ -1380,6 +1389,21 @@ body.ophilya .cash-tools-coming-soon{
       </nav>
     </div>
 
+    <div class="sidebar-section is-collapsed" data-sidebar-section="cartellini">
+      <div class="label" style="margin-top:28px">
+        <span>CARTELLINI</span>
+        <button class="section-toggle" type="button" aria-label="Espandi CARTELLINI" aria-expanded="false" onclick="toggleSidebarSection('cartellini')">⌄</button>
+      </div>
+      <nav class="sidebar-nav-tebe">
+        <button onclick="openPage('cartellinivetrina.html')">Cartellini Vetrina</button>
+        <button onclick="openPage('cartellinitebe.html')">Cartellini TEBE</button>
+      </nav>
+      <nav class="sidebar-nav-ophilya" aria-label="Cartellini OPHILYA">
+        <button class="soon" type="button" disabled>Presto disponibile</button>
+        <button class="soon" type="button" disabled>Presto disponibile</button>
+      </nav>
+    </div>
+
     <div class="sidebar-section is-collapsed" data-sidebar-section="tools">
       <div class="label" style="margin-top:28px">
         <span>STRUMENTI</span>
@@ -1631,6 +1655,37 @@ body.ophilya .cash-tools-coming-soon{
 
         </div>
         <button class="carousel-control next" id="dymo-next" type="button" aria-label="Etichette successive" onclick="scrollDymoCarousel(1)">›</button>
+      </div>
+
+      <div class="section" id="cartellini">CARTELLINI</div>
+
+      <div class="cartellini-carousel-shell">
+        <button class="carousel-control previous" id="cartellini-previous" type="button" aria-label="Cartellini precedenti" onclick="scrollCartelliniCarousel(-1)">‹</button>
+        <div class="cards cartelli-carousel cartellini-carousel" id="cartellini-carousel">
+        <a class="card" data-link="cartellinivetrina.html">
+          <div>
+            <div class="number">01</div>
+            <div class="card-thumb slideshow">
+              <img src="assets/thumbnail/cartellinithumb.png" alt="Cartellini Vetrina">
+              <img src="assets/thumbnail/cartellinithumb-2.png" alt="" aria-hidden="true">
+            </div>
+          </div>
+          <h2>Cartellini Vetrina</h2>
+          <div class="arrow">↗︎</div>
+        </a>
+        <a class="card" data-link="cartellinitebe.html">
+          <div>
+            <div class="number">02</div>
+            <div class="card-thumb slideshow">
+              <img src="assets/thumbnail/cartellinitebethumb.png?v=20260930" alt="Cartellini TEBE">
+              <img src="assets/thumbnail/cartellinitebethumb-2.png?v=20260930" alt="" aria-hidden="true">
+            </div>
+          </div>
+          <h2>Cartellini TEBE</h2>
+          <div class="arrow">↗︎</div>
+        </a>
+        </div>
+        <button class="carousel-control next" id="cartellini-next" type="button" aria-label="Cartellini successivi" onclick="scrollCartelliniCarousel(1)">›</button>
       </div>
 
       <div class="section">MATERIALI PRONTI</div>
@@ -2175,6 +2230,25 @@ function scrollPrintsCarousel(direction){
   scrollCarouselByStep(carousel, direction);
 }
 
+function updateCartelliniCarouselControls(){
+  const carousel = document.getElementById("cartellini-carousel");
+  if(!carousel) return;
+
+  const previous = document.getElementById("cartellini-previous");
+  const next = document.getElementById("cartellini-next");
+  if(!previous || !next) return;
+  const maxScrollLeft = carousel.scrollWidth - carousel.clientWidth;
+
+  previous.disabled = carousel.scrollLeft <= 1;
+  next.disabled = carousel.scrollLeft >= maxScrollLeft - 1;
+}
+
+function scrollCartelliniCarousel(direction){
+  const carousel = document.getElementById("cartellini-carousel");
+  if(!carousel) return;
+  scrollCarouselByStep(carousel, direction);
+}
+
 function toggleSidebarSection(sectionId){
   const section = document.querySelector(`[data-sidebar-section="${sectionId}"]`);
   if(!section) return;
@@ -2242,6 +2316,10 @@ function restoreSidebarSections(){
   updateDymoCarouselControls();
   updateCartelliCarouselControls();
   updatePrintsCarouselControls();
+  const cartelliniCarousel = document.getElementById("cartellini-carousel");
+  cartelliniCarousel?.addEventListener("scroll", updateCartelliniCarouselControls, { passive:true });
+  window.addEventListener("resize", updateCartelliniCarouselControls);
+  updateCartelliniCarouselControls();
   generateQrCode();
   loadExchangeRates();
 })();
