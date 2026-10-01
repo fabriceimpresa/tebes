@@ -20,6 +20,7 @@
     'cartelli_brand.html': [{ src: 'assets/foto/morsabrand.jpg' }],
     'cartellopercentuale.html': [{ src: 'assets/foto/morsapercentuale.jpg' }],
     'cartelli_multiarticolo.html': [{ src: 'assets/foto/morsamultiarticolo.jpg' }],
+    'albero.html': [{ src: 'assets/foto/albero.jpg' }],
     'cornici10x15.html': [{ src: 'assets/foto/cornice10x15.jpg' }],
     'paletto.html': [{ src: 'assets/foto/paletto.jpg' }],
     'paletto18x12.html': [{ src: 'assets/foto/paletto.jpg' }]

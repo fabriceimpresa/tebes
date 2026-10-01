@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="assets/css/font-arial.css">
-  <title>Albero Accessori · TEBE · OPHILYA</title>
+  <title>Albero Accessori · OPHILYA</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -196,20 +196,21 @@
       box-shadow: 0 20px 60px rgba(40, 34, 28, 0.18);
     }
 
-    /* Due cartellini, ciascuno centrato nella sua metà dell'A4, con la linea di taglio tratteggiata a metà foglio (come nei Paletti) */
+    /* Cartellini OPHILYA: misure da Photoshop a 300 dpi (1971,53 × 990,16 px). Due cartellini, ciascuno centrato
+       nella sua metà dell'A4, con la linea di taglio tratteggiata a metà foglio (come nei Paletti) */
     .tree-sign {
       position: absolute;
-      left: 24.99mm;
-      width: 160.02mm;
-      height: 74.98mm;
+      left: 21.54mm;
+      width: 166.92mm;
+      height: 83.83mm;
       overflow: hidden;
       border: 0.25mm solid #8f8983;
       background: #fff;
       text-align: center;
     }
 
-    .tree-sign:nth-child(1) { top: 36.76mm; }
-    .tree-sign:nth-child(2) { top: 185.26mm; }
+    .tree-sign:nth-child(1) { top: 32.34mm; }
+    .tree-sign:nth-child(2) { top: 180.84mm; }
 
     .cut-line {
       position: absolute;
@@ -221,7 +222,7 @@
 
     .sign-description {
       position: absolute;
-      top: 10.5mm;
+      top: 14.92mm;
       right: 3mm;
       left: 3mm;
       overflow: hidden;
@@ -234,7 +235,7 @@
 
     .sign-price {
       position: absolute;
-      top: 23.2mm;
+      top: 27.62mm;
       right: 2mm;
       left: 2mm;
       overflow: hidden;
@@ -246,9 +247,10 @@
 
     .sign-logo {
       position: absolute;
-      bottom: 16.3mm;
+      bottom: 20.72mm;
       left: 50%;
-      width: 34mm;
+      /* logo OPHILYA oro, un poco più grande del logo TEBE di Albero Accessori */
+      width: 31mm;
       height: auto;
       object-fit: contain;
       transform: translateX(-50%);
@@ -422,11 +424,11 @@
   <link rel="stylesheet" href="assets/css/cursore.css">
 </head>
 <body>
-  <a href="index.html?store=tebe" class="app-close-btn" title="Chiudi e torna al menu principale">✕</a>
+  <a href="index.html?store=ophilya" class="app-close-btn" title="Chiudi e torna al menu principale">✕</a>
 
   <div class="floating-nav-box">
     <div class="floating-nav-title">TEBE · OPHILYA</div>
-    <a href="index.html?store=tebe" class="floating-nav-btn">← Torna al Menu Principale</a>
+    <a href="index.html?store=ophilya" class="floating-nav-btn">← Torna al Menu Principale</a>
   </div>
 
   <aside class="sidebar">
@@ -501,12 +503,12 @@
       <section class="tree-sign" aria-label="Cartello 1">
         <div class="sign-description" id="descriptionPreview0">Foulard</div>
         <div class="sign-price" id="pricePreview0">€ 10,00</div>
-        <img class="sign-logo" src="assets/img/tebeoro.png" alt="TEBE">
+        <img class="sign-logo" src="assets/img/footerophilya.png" alt="OPHILYA">
       </section>
       <section class="tree-sign" aria-label="Cartello 2">
         <div class="sign-description" id="descriptionPreview1">Foulard</div>
         <div class="sign-price" id="pricePreview1">€ 10,00</div>
-        <img class="sign-logo" src="assets/img/tebeoro.png" alt="TEBE">
+        <img class="sign-logo" src="assets/img/footerophilya.png" alt="OPHILYA">
       </section>
       <div class="cut-line" aria-hidden="true"></div>
     </div>

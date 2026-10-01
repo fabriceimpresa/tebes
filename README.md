@@ -55,7 +55,8 @@ Alcune funzioni richiedono la rete o servizi locali:
 | `cartellopercentuale.html` | **Percentuale**: "FINO AL −XX%", con descrizione o logo brand facoltativi |
 | `cartelli_brand.html` | **Brand**: logo brand in oro + Doppia Cifra o descrizione + prezzo finale |
 | `cartelli_multiarticolo.html` | **Multi Articolo**: 2 articoli affiancati, oppure tabella da 3–4 righe |
-| `albero.html` | **Albero Accessori**: tre cartellini (160 × 75 mm) per foglio, per l'albero accessori |
+| `albero.html` | **Albero Accessori**: due cartellini (160 × 75 mm) per foglio, uno per metà con la linea di taglio tratteggiata, per l'albero accessori |
+| `albero-ophilya.html` | **Albero Accessori OPHILYA**: come Albero Accessori, con due cartellini da 166,92 × 83,83 mm (uno per metà foglio, con la linea di taglio tratteggiata) e il logo OPHILYA oro; primo widget di Crea Cartelli in modalità OPHILYA |
 | `cornici10x15.html` | **Cornici 10×15**: due inserti per foglio, sinistro e destro modificabili separatamente. Modalità: Standard / Doppio Articolo / Brand / Percentuale Sconto (percentuale oro con "FINO AL", logo TEBE; sopra, a scelta, niente, una descrizione o un logo brand). |
 | `cornice21x27.html` | **Cornice 21×27**: un inserto grande. Modalità: Descrizione / Brand. |
 | `paletto.html` | **Paletto 15x10**: due cartelli indipendenti per foglio, con linea di taglio tratteggiata. Modalità: Standard / Doppio Prezzo / Doppio Articolo. |
@@ -110,7 +111,7 @@ I loghi personalizzati compaiono poi nei menu "Loghi personalizzati" degli edito
 ```
 index.html                  Dashboard
 favicon.ico, apple-touch-icon.png  Icona della dashboard (logo TEBE 269 su fondo avorio)
-cartelli_*.html, cartellopercentuale.html, albero.html, paletto.html, paletto18x12.html,
+cartelli_*.html, cartellopercentuale.html, albero.html, albero-ophilya.html, paletto.html, paletto18x12.html,
 cornici10x15.html, cornice21x27.html      Editor cartelli
 etichette.html              Editor etichette DYMO (TEBE)
 etichetteophilya.html       Editor etichette DYMO (OPHILYA)

@@ -1018,7 +1018,7 @@ nav button .soon-tag{
   letter-spacing:.04em;
   text-transform:uppercase;
 }
-body.ophilya .cards .card:not(.print-card),
+body.ophilya .cards .card:not(.print-card):not(.ophilya-only),
 body.ophilya .dymo-carousel .dymo-card:not([data-link]),
 body.ophilya .lower .wide-card{
   pointer-events:none;
@@ -1026,13 +1026,13 @@ body.ophilya .lower .wide-card{
   box-shadow:inset 0 0 0 1px rgba(102,94,84,.04);
   background:var(--cream);
 }
-body.ophilya .cards .card:not(.print-card) > *,
+body.ophilya .cards .card:not(.print-card):not(.ophilya-only) > *,
 body.ophilya .dymo-carousel .dymo-card:not([data-link]) > *,
 body.ophilya .lower .wide-card > *,
 body.ophilya .coming-soon-card h2{
   visibility:hidden;
 }
-body.ophilya .cards .card:not(.print-card)::before,
+body.ophilya .cards .card:not(.print-card):not(.ophilya-only)::before,
 body.ophilya .dymo-carousel .dymo-card:not([data-link])::before,
 body.ophilya .lower .wide-card::before{
   content:"";
@@ -1041,7 +1041,7 @@ body.ophilya .lower .wide-card::before{
   inset:0;
   background:var(--cream);
 }
-body.ophilya .cards .card:not(.print-card)::after,
+body.ophilya .cards .card:not(.print-card):not(.ophilya-only)::after,
 body.ophilya .dymo-carousel .dymo-card:not([data-link])::after,
 body.ophilya .lower .wide-card::after{
   content:"Coming Soon";
@@ -1068,6 +1068,8 @@ body.ophilya .lower{
 }
 /* Widget presenti solo in TEBE (es. etichetta Taglie Brand, che OPHILYA non ha). */
 body.ophilya .tebe-only{display:none}
+/* Widget presenti solo in OPHILYA (es. Albero Accessori OPHILYA, primo di CREA CARTELLI). */
+body:not(.ophilya) .ophilya-only{display:none}
 /* OPHILYA: in CREA CARTELLI i cartelli TEBE lasciano il posto a voci "Presto disponibile" non cliccabili. */
 .sidebar-nav-ophilya,
 body.ophilya .sidebar-nav-tebe{display:none}
@@ -1401,7 +1403,7 @@ body.ophilya .cash-tools-coming-soon{
       <button onclick="openPage('paletto18x12.html')">Paletto 18x12</button>
       </nav>
       <nav class="sidebar-nav-ophilya" aria-label="Cartelli OPHILYA">
-      <button class="soon" type="button" disabled>Presto disponibile</button>
+      <button onclick="openPage('albero-ophilya.html')">Albero Accessori</button>
       <button class="soon" type="button" disabled>Presto disponibile</button>
       <button class="soon" type="button" disabled>Presto disponibile</button>
       <button class="soon" type="button" disabled>Presto disponibile</button>
@@ -1518,6 +1520,18 @@ body.ophilya .cash-tools-coming-soon{
       <div class="cartelli-carousel-shell">
         <button class="carousel-control previous" id="cartelli-previous" type="button" aria-label="Cartelli precedenti" onclick="scrollCartelliCarousel(-1)">‹</button>
         <div class="cards cartelli-carousel" id="cartelli-carousel">
+        <a class="card ophilya-only" data-link="albero-ophilya.html">
+          <div>
+            <div class="number">01<span class="card-type">RASTRELLIERA</span></div>
+            <div class="card-thumb slideshow">
+              <img src="assets/thumbnail/alberoophilyathumb.png" alt="Albero Accessori OPHILYA">
+              <img src="assets/thumbnail/alberoophilyathumb2.png" alt="" aria-hidden="true">
+            </div>
+          </div>
+          <h2>Albero Accessori</h2>
+          <div class="arrow">↗︎</div>
+        </a>
+
         <a class="card" data-link="cartelli_semplici.html">
           <div>
             <div class="number">01<span class="card-type">CARTELLO</span></div>
