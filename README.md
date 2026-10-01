@@ -61,6 +61,8 @@ Alcune funzioni richiedono la rete o servizi locali:
 | `cornice21x27.html` | **Cornice 21×27**: un inserto grande. Modalità: Descrizione / Brand. |
 | `paletto.html` | **Paletto 15x10**: due cartelli indipendenti per foglio, con linea di taglio tratteggiata. Modalità: Standard / Doppio Prezzo / Doppio Articolo. |
 | `paletto18x12.html` | **Paletto 18x12**: come Paletto 15x10, con cartelli più grandi (179,94 × 127,09 mm). |
+| `paletto-ophilya.html`, `paletto18x12-ophilya.html` | **Paletto 15x10 e 18x12 OPHILYA**: identici alle pagine TEBE, con il logo OPHILYA oro nel footer dei cartelli. |
+| `lista-stampa.html` | **Lista di stampa**: i fogli aggiunti con "Aggiungi a lista stampa" dalle pagine dei cartelli e dei cartellini, da stampare tutti insieme come `lista.pdf`; si apre con "Gestisci lista di stampa". |
 
 Nei fogli Semplice, Sale, Percentuale, Brand e Multi Articolo lo stesso cartello è stampato due volte. La copia inferiore è ruotata di 180°: si ritaglia la striscia e la si piega lungo il bordo comune, ottenendo un cartello leggibile da entrambi i lati.
 
@@ -111,7 +113,7 @@ I loghi personalizzati compaiono poi nei menu "Loghi personalizzati" degli edito
 ```
 index.html                  Dashboard
 favicon.ico, apple-touch-icon.png  Icona della dashboard (logo TEBE 269 su fondo avorio)
-cartelli_*.html, cartellopercentuale.html, albero.html, albero-ophilya.html, paletto.html, paletto18x12.html,
+cartelli_*.html, cartellopercentuale.html, albero.html, albero-ophilya.html, paletto.html, paletto18x12.html, paletto-ophilya.html, paletto18x12-ophilya.html,
 cornici10x15.html, cornice21x27.html      Editor cartelli
 etichette.html              Editor etichette DYMO (TEBE)
 etichetteophilya.html       Editor etichette DYMO (OPHILYA)
