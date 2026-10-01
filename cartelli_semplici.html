@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="assets/css/font-arial.css">
   <title>Cartello Semplice</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -513,6 +514,8 @@
     }
 
     updateCards();
+    // L'Arial arriva da assets/fonts: a caricamento finito si rimisura il testo (getTitleFontSize usa measureText).
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(updateCards);
   </script>
   <script src="assets/js/cursore.js"></script>
   <script>

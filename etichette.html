@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="assets/css/font-arial.css">
   <title>Etichette DYMO · TEBE · OPHILYA</title>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/tema-italia.css">
@@ -18,7 +19,6 @@
     @font-face {
       font-family: 'Bodoni Std';
       src: url('assets/fonts/BodoniStd.otf') format('opentype');
-      font-display: swap;
     }
 
     :root {
@@ -1620,8 +1620,11 @@
             @font-face {
               font-family: 'Bodoni Std';
               src: url('assets/fonts/BodoniStd.otf') format('opentype');
-              font-display: swap;
             }
+            @font-face { font-family: 'Arial'; src: url('assets/fonts/Arial.ttf') format('truetype'); font-weight: 400; font-style: normal; }
+            @font-face { font-family: 'Arial'; src: url('assets/fonts/Arial%20Italic.ttf') format('truetype'); font-weight: 400; font-style: italic; }
+            @font-face { font-family: 'Arial'; src: url('assets/fonts/Arial%20Bold.ttf') format('truetype'); font-weight: 700; font-style: normal; }
+            @font-face { font-family: 'Arial'; src: url('assets/fonts/Arial%20Bold%20Italic.ttf') format('truetype'); font-weight: 700; font-style: italic; }
             @page {
               size: 2.25in 1.25in;
               margin: 0 !important;
@@ -1810,7 +1813,11 @@
       `;
     }
 
-    window.onload = init;
+    window.onload = () => {
+      init();
+      // Arial e Bodoni arrivano da assets/fonts: a caricamento finito si rimisurano i testi dell'etichetta.
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(updateLabel);
+    };
   </script>
   <script src="assets/js/cursore.js"></script>
   <script>
