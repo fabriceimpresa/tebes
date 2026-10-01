@@ -110,8 +110,11 @@
 /* Guida al montaggio */
 .guide-text { margin: 0 0 14px; font-size: 0.85rem; color: #665e54; }
 .guide-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+/* Una sola foto: il riquadro si stringe sulla foto, che sta intera nella finestra */
+.guide-grid:has(> .guide-item:only-child) { grid-template-columns: auto; justify-content: center; }
 .guide-item { margin: 0; background: #fffdfa; border: 1px solid #e3dacb; border-radius: 8px; overflow: hidden; }
 .guide-item img { width: 100%; display: block; }
+.guide-item:only-child img { width: auto; max-width: 100%; max-height: calc(100vh - 230px); }
 .guide-item figcaption { padding: 8px 10px; font-size: 0.78rem; color: #282522; }
 .guide-placeholder {
   aspect-ratio: 4 / 3;

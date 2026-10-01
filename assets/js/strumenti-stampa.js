@@ -12,8 +12,16 @@
 
   // Foto guida per capire dove montare la stampa, per pagina: { src, caption }.
   // Finché l'elenco di una pagina è vuoto il popup mostra dei riquadri segnaposto.
+  // Le foto stanno in assets/foto/.
+  const MORSA_SALE = [{ src: 'assets/foto/morsasale.jpg' }];
   const GUIDE_PHOTOS = {
-    // 'cartelli_semplici.html': [{ src: 'assets/guide/semplice-1.jpg', caption: 'Vetrina principale' }]
+    'cartelli_semplici.html': MORSA_SALE,
+    'cartelli_sale.html': MORSA_SALE,
+    'cartelli_brand.html': MORSA_SALE,
+    'cartellopercentuale.html': MORSA_SALE,
+    'cornici10x15.html': [{ src: 'assets/foto/cornice10x15.jpg' }],
+    'paletto.html': [{ src: 'assets/foto/paletto.jpg' }],
+    'paletto18x12.html': [{ src: 'assets/foto/paletto.jpg' }]
   };
 
   const panel = document.querySelector(panelSelector);
@@ -149,9 +157,11 @@
       } else {
         item.appendChild(placeholder);
       }
-      const caption = document.createElement('figcaption');
-      caption.textContent = photo.caption || '';
-      item.appendChild(caption);
+      if (photo.caption) {
+        const caption = document.createElement('figcaption');
+        caption.textContent = photo.caption;
+        item.appendChild(caption);
+      }
       grid.appendChild(item);
     });
 
