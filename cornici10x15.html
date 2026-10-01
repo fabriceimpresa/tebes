@@ -1412,7 +1412,7 @@
     const inFrame = selector => () => activeFrameBox()?.querySelector(selector);
     const inFrameArticle = selector => () => activeFrameArticle()?.querySelector(selector);
 
-    Cursore.create({
+    const cursore = Cursore.create({
       panel: '.controls',
       watch: '#printSheet',
       // di lato il cursore può uscire dalla cornice (restando sul foglio), purché non copra testi e decori
@@ -1429,6 +1429,15 @@
         { controls: '#discountValue, button[onclick^="stepDiscount"]', target: inFrameArticle('.price-percent-frame') },
         { controls: '#newPrice', target: inFrameArticle('.price-final-frame') }
       ]
+    });
+
+    // Pulsante Made in Italy (fuori dal pannello): acceso indica di lato il testo "MADE IN ITALY" (sopra c'è la bandierina),
+    // spento torna sopra la cornice, come i pulsanti di modalità (la modalità di prima viene ripristinata).
+    document.addEventListener('click', event => {
+      const button = event.target.closest('.tema-italia-btn');
+      if (!button) return;
+      if (button.classList.contains('is-active')) cursore.point({ target: () => activeFrameBox()?.querySelector('.desc-title'), placement: 'side' });
+      else cursore.point({ target: activeFrameBox, placement: 'above' });
     });
   </script>
   <script src="assets/js/strumenti-stampa.js"></script>

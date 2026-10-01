@@ -1111,6 +1111,17 @@ CACHEMIRE</textarea>
       if (percent.extra === 'brand') loadBrandImage(content.querySelector('.frame-brand-logo'));
     }
 
+    // Made in Italy (come una cornice di Cornici 10x15): modalità Standard, Testo Pronto "MADE IN ITALY"
+    // e bandierina sopra il testo. Lo stato di prima lo salvano captureTemaItaliaState / restoreTemaItaliaState.
+    window.applyTemaItaliaDescription = () => {
+      cardState.mode = 'description';
+      cardState.description = 'MADE\nIN ITALY';
+      document.getElementById('descPreset').value = 'MADE IN ITALY';
+      document.getElementById('descFree').value = cardState.description;
+      syncPanel();
+      renderCard();
+    };
+
     window.captureTemaItaliaState = () => JSON.parse(JSON.stringify(cardState));
 
     window.restoreTemaItaliaState = savedState => {
@@ -1162,7 +1173,7 @@ CACHEMIRE</textarea>
   <script src="assets/js/cursore.js"></script>
   <script>
     // Cursore: indica sulla cornice l'elemento legato al campo in uso.
-    Cursore.create({
+    const cursore = Cursore.create({
       panel: '.controls',
       watch: '#printSheet',
       scope: '#printSheet',
@@ -1178,6 +1189,15 @@ CACHEMIRE</textarea>
         { controls: '#discountValue, button[onclick^="stepDiscount"]', target: '#frameContent .price-percent-frame' },
         { controls: '#newPrice', target: '#frameContent .price-final-frame' }
       ]
+    });
+
+    // Pulsante Made in Italy (fuori dal pannello): acceso indica di lato il testo "MADE IN ITALY" (sopra c'è la bandierina),
+    // spento torna sopra la cornice, come i pulsanti di modalità (la modalità di prima viene ripristinata).
+    document.addEventListener('click', event => {
+      const button = event.target.closest('.tema-italia-btn');
+      if (!button) return;
+      if (button.classList.contains('is-active')) cursore.point({ target: '#frameContent .desc-title', placement: 'side' });
+      else cursore.point({ target: '#frameBox', placement: 'above' });
     });
   </script>
   <script src="assets/js/strumenti-stampa.js"></script>

@@ -35,9 +35,9 @@ Alcune funzioni richiedono la rete o servizi locali:
 ### Dashboard: `index.html`
 
 - **Selettore negozio (TEBE / OPHILYA).** Cambia logo e indirizzo nell'intestazione e aggiunge `?store=` a tutti i link. Per ora OPHILYA è in parte un segnaposto: i cartelli mostrano "Coming Soon", mentre i materiali pronti hanno le loro versioni col logo OPHILYA. Gli strumenti cassa invece funzionano come in TEBE.
-- **Selettore modalità (CREATOR / CASSIERE).** CREATOR mostra tutti i widget, con gli *Strumenti Cassa* in fondo. CASSIERE mostra solo gli *Strumenti Cassa*. La pagina si apre sempre in CREATOR.
+- **Selettore modalità (CREATOR / CASSIERE).** CREATOR mostra tutti i widget, con le *Utilità di Cassa* in fondo. CASSIERE mostra solo le *Utilità di Cassa*. La pagina si apre sempre in CREATOR.
 - **Menu laterale.** Sezioni comprimibili; lo stato aperto/chiuso è ricordato nel `localStorage`.
-- **Strumenti cassa** (TEBE e OPHILYA):
+- **Utilità di cassa** (sezione "UTILITA' DI CASSA", nel menu laterale "UTILITA' CASSA"; TEBE e OPHILYA):
   - calcolo sconto
   - calcolo aliquota di sconto
   - cambio valuta (USD, GBP, RUB, ILS, CNY, JPY)

@@ -67,13 +67,26 @@
   // tight: stringe il riquadro sull'inchiostro dei caratteri (serve per centrare il cursore sull'elemento indicato)
   function inkRect(node, tight = false) {
     if (!node || !isShown(node)) return null;
-    const onlyText = [...node.children].every(child => INLINE_TAGS.includes(child.tagName));
+    // gli elementi posizionati in assoluto (es. la bandierina sopra "MADE IN ITALY") non contano
+    const floating = [...node.children].filter(child => getComputedStyle(child).position === 'absolute');
+    const onlyText = [...node.children].every(child => INLINE_TAGS.includes(child.tagName) || floating.includes(child));
     // un testo dentro un riquadro con il bordo (es. le caselle delle taglie) conta come riquadro
     const style = getComputedStyle(node);
     const boxed = parseFloat(style.borderTopWidth) > 0 && style.borderTopStyle !== 'none';
     if (node.tagName !== 'IMG' && !boxed && onlyText && node.textContent.trim()) {
       const range = document.createRange();
       range.selectNodeContents(node);
+      if (floating.length) {
+        // riquadro delle sole righe di testo, senza gli elementi in assoluto
+        const rects = [...range.getClientRects()].filter(r => r.width > 0.5 && r.height > 0.5
+          && !floating.some(f => { const b = f.getBoundingClientRect(); return r.left >= b.left - 0.5 && r.right <= b.right + 0.5 && r.top >= b.top - 0.5 && r.bottom <= b.bottom + 0.5; }));
+        if (rects.length) {
+          return {
+            left: Math.min(...rects.map(r => r.left)), right: Math.max(...rects.map(r => r.right)),
+            top: Math.min(...rects.map(r => r.top)), bottom: Math.max(...rects.map(r => r.bottom))
+          };
+        }
+      }
       const rect = range.getBoundingClientRect();
       if (rect.width > 0.5 && rect.height > 0.5) return tight ? glyphBounds(node, rect, range) : rect;
     }
