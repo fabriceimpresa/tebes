@@ -6,6 +6,7 @@
   <title>Etichette DYMO · OPHILYA</title>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/tema-italia.css">
+  <link rel="stylesheet" href="assets/css/cursore.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <!-- COLLEGAMENTO AL FILE CENTRALIZZATO LOGHI -->
   <script src="assets/js/logos.js?v=20260927"></script>
@@ -1705,6 +1706,40 @@
     }
 
     window.onload = init;
+  </script>
+  <script src="assets/js/cursore.js"></script>
+  <script>
+    // Cursore legato ai campi (assets/js/cursore.js): indica sull'anteprima dell'etichetta
+    // l'elemento che si sta modificando. Di lato può uscire dall'etichetta, restando nel riquadro dell'anteprima.
+    Cursore.create({
+      panel: 'body',
+      watch: '#labelPreview',
+      clip: '.preview-section',
+      scope: '.preview-section',
+      obstacles: '#labelPreview .brand-logo-container img, #labelPreview .qr-container, #labelPreview .made-in-italy-sticker, #labelPreview .promo-description, #labelPreview .price-box, #labelPreview .promo-label, #labelPreview .discount-val, #labelPreview .size-title, #labelPreview .size-box, #labelPreview .original-price, #labelPreview .discount-tag, #labelPreview .final-price, #labelPreview .footer-text',
+      rules: [
+        // scelta del layout: dall'alto, sopra l'etichetta intera
+        { controls: '.template-card', target: '#labelPreview', placement: 'above' },
+        { controls: '#madeInItalyBtn', target: '#labelPreview .made-in-italy-sticker' },
+        // Taglie, STANDARD / DOPPIA CIFRA: il logo o la riga prezzo originario e sconto (quello visibile)
+        { controls: '#groupSizeMode', target: '#labelPreview .size-logo, #labelPreview .top-price-row' },
+        { controls: '#brandSelect, #customLogoSelect', target: '#labelLogo' },
+        { controls: '#promoSelect', target: '#lblPromo' },
+        // taglie: di lato, tra una casella e l'altra non c'è spazio
+        { controls: '#sizeSelect1', target: '#lblSize1', placement: 'side' },
+        { controls: '#sizeSelect2', target: '#lblSize2', placement: 'side' },
+        { controls: '#sizeSelect3', target: '#lblSize3', placement: 'side' },
+        { controls: '#sizeSelect4', target: '#lblSize4', placement: 'side' },
+        { controls: '#sizeSelect5', target: '#lblSize5', placement: 'side' },
+        { controls: '#sizeSelect6', target: '#lblSize6', placement: 'side' },
+        { controls: '#sizePresetSelect', target: '#labelPreview .size-grid' },
+        { controls: '#inputCustomText', target: '#lblCustomText' },
+        { controls: '#inputOrig', target: '#lblOrig' },
+        { controls: '#inputDiscount', target: '#lblDiscount' },
+        { controls: '#inputDiscounted', target: '#lblDiscounted' },
+        { controls: '#inputOutlet', target: '#lblOutlet' }
+      ]
+    });
   </script>
 </body>
 </html>

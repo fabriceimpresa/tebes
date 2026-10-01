@@ -544,7 +544,7 @@ h1{
   grid-template-rows:minmax(220px, auto);
 }
 /* Stampe pronte: carosello a una riga che riusa le regole di .cartelli-carousel;
-   solo titolo e tasto Apri / Stampa, il PDF si apre in pdf-viewer.html. */
+   solo titolo e tasto Apri & Stampa, il PDF si apre in pdf-viewer.html. */
 .prints-carousel-shell{
   position:relative;
 }
@@ -1177,7 +1177,7 @@ body.ophilya .cash-tools-coming-soon{
   .storecraft-mark img{max-height:56px}
   .bottom .sidebar-section{margin-top:12px;padding-top:10px}
   .bottom .sidebar-section[data-sidebar-section="credits"] .label{display:none}
-  .bottom .sidebar-section[data-sidebar-section="credits"].is-collapsed nav{display:grid}
+  .bottom .sidebar-section[data-sidebar-section="credits"].is-collapsed nav{display:grid;grid-template-rows:1fr}
   .sidebar-disclaimer{font-size:10px;line-height:1.45}
   .sidebar-disclaimer > span{font-size:9px}
   .sidebar-overlay{
@@ -1250,7 +1250,8 @@ body.ophilya .cash-tools-coming-soon{
 
 .bottom{
   margin-top:auto;
-  margin-bottom:32px;
+  /* la base di CREDITS // CONTACTS sta dal fondo della finestra quanto STORE // CRAFT dal bordo in alto (~37 px) */
+  margin-bottom:-9px;
   width:100%;
   padding:34px 8px 2px;
   text-align:center;
@@ -1276,22 +1277,6 @@ body.ophilya .cash-tools-coming-soon{
   align-items:center;
   justify-content:center;
 }
-/* Triangolino rosso come il cursore delle pagine cartellini, sopra la "O" di STORE:
-   centro della O al 49,7% della larghezza del logo, sommità al 12,3% dell'altezza. */
-.storecraft-mark::before{
-  content:"";
-  position:absolute;
-  left:49.7%;
-  top:calc(12.3% - 20px);
-  width:14px;
-  height:10px;
-  background:#96382b;
-  clip-path:polygon(0 0, 100% 0, 50% 100%);
-  transform:translateX(-50%);
-  filter:drop-shadow(1px 1.5px 0 rgba(40, 34, 28, 0.33));
-  z-index:1;
-}
-
 .storecraft-mark img{
   display:block;
   width:100%;
@@ -1366,6 +1351,17 @@ body.ophilya .cash-tools-coming-soon{
   text-align:center;
   transition:border-color .18s ease, box-shadow .18s ease, transform .18s ease, background .18s ease;
 }
+
+/* Credits: il blocco logo, divisorio e scritte sta in fondo alla colonna; al clic su CREDITS // CONTACTS
+   i contatti si aprono sotto con un'animazione e spingono il blocco verso l'alto. */
+.bottom .sidebar-section[data-sidebar-section="credits"] nav{
+  display:grid;
+  grid-template-rows:1fr;
+  transition:grid-template-rows .3s ease;
+}
+.bottom .sidebar-section[data-sidebar-section="credits"].is-collapsed nav{grid-template-rows:0fr}
+/* taglia solo in verticale: la riga "Developed by…" può sbordare di lato come prima */
+.bottom .sidebar-section[data-sidebar-section="credits"] nav > *{min-height:0;clip-path:inset(0 -60px)}
 
 .bottom .sidebar-section[data-sidebar-section="credits"] .label:hover{
   border-color:var(--gold);
@@ -1756,7 +1752,7 @@ body.ophilya .cash-tools-coming-soon{
             <div class="card-thumb"><img src="assets/thumbnail/taglieinternazionalithumb.png" alt="Taglie Internazionali"></div>
           </div>
           <h2>Taglie Internazionali</h2>
-          <span class="print-card-btn">Apri / Stampa</span>
+          <span class="print-card-btn">Apri &amp; Stampa</span>
         </a>
         <a class="card print-card" data-link="pdf-viewer.html?file=assets/pdf/orari.pdf" data-ophilya-link="pdf-viewer.html?file=assets/pdf/orari-ophilya.pdf">
           <div>
@@ -1764,7 +1760,7 @@ body.ophilya .cash-tools-coming-soon{
             <div class="card-thumb"><img src="assets/thumbnail/orarithumb.png" data-ophilya-src="assets/thumbnail/orarithumb-ophilya.png" alt="Orari"></div>
           </div>
           <h2>Orari</h2>
-          <span class="print-card-btn">Apri / Stampa</span>
+          <span class="print-card-btn">Apri &amp; Stampa</span>
         </a>
         <a class="card print-card" data-link="pdf-viewer.html?file=assets/pdf/staffonly.pdf" data-ophilya-link="pdf-viewer.html?file=assets/pdf/staffonly-ophilya.pdf">
           <div>
@@ -1772,7 +1768,7 @@ body.ophilya .cash-tools-coming-soon{
             <div class="card-thumb"><img src="assets/thumbnail/staffthumb.png" data-ophilya-src="assets/thumbnail/staffthumb-ophilya.png" alt="Staff Only"></div>
           </div>
           <h2>Staff Only</h2>
-          <span class="print-card-btn">Apri / Stampa</span>
+          <span class="print-card-btn">Apri &amp; Stampa</span>
         </a>
         <a class="card print-card" data-link="pdf-viewer.html?file=assets/pdf/cercasi.pdf" data-ophilya-link="pdf-viewer.html?file=assets/pdf/cercasi-ophilya.pdf">
           <div>
@@ -1780,7 +1776,7 @@ body.ophilya .cash-tools-coming-soon{
             <div class="card-thumb"><img src="assets/thumbnail/cercasithumb.png" data-ophilya-src="assets/thumbnail/cercasithumb-ophilya.png" alt="Cercasi Personale"></div>
           </div>
           <h2>Cercasi Personale</h2>
-          <span class="print-card-btn">Apri / Stampa</span>
+          <span class="print-card-btn">Apri &amp; Stampa</span>
         </a>
         <a class="card print-card" data-link="pdf-viewer.html?file=assets/pdf/nofood_indoor.pdf" data-ophilya-link="pdf-viewer.html?file=assets/pdf/nofood_indoor-ophilya.pdf">
           <div>
@@ -1788,7 +1784,7 @@ body.ophilya .cash-tools-coming-soon{
             <div class="card-thumb"><img src="assets/thumbnail/nofoodthumb.png" data-ophilya-src="assets/thumbnail/nofoodthumb-ophilya.png" alt="No Food &amp; Drinks"></div>
           </div>
           <h2>No Food &amp; Drinks</h2>
-          <span class="print-card-btn">Apri / Stampa</span>
+          <span class="print-card-btn">Apri &amp; Stampa</span>
         </a>
         <a class="card print-card" data-link="pdf-viewer.html?file=assets/pdf/vietatofumare.pdf">
           <div>
@@ -1796,7 +1792,7 @@ body.ophilya .cash-tools-coming-soon{
             <div class="card-thumb"><img src="assets/thumbnail/fumothumb.png" alt="Vietato Fumare"></div>
           </div>
           <h2>Vietato Fumare</h2>
-          <span class="print-card-btn">Apri / Stampa</span>
+          <span class="print-card-btn">Apri &amp; Stampa</span>
         </a>
         </div>
         <button class="carousel-control next" id="prints-next" type="button" aria-label="Stampe successive" onclick="scrollPrintsCarousel(1)">›</button>

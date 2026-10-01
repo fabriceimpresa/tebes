@@ -90,7 +90,7 @@ In dashboard i tre editor stanno nella sezione *Cartellini*, tra Crea Cartelli e
 
 ### Materiali pronti
 
-- In dashboard, un carosello con le stampe pronte: Taglie Internazionali, Orari, Staff Only, Cercasi Personale, No Food & Drinks e Vietato Fumare. Ogni widget ha miniatura, titolo e tasto Apri / Stampa, e apre il PDF nel visualizzatore.
+- In dashboard, un carosello con le stampe pronte: Taglie Internazionali, Orari, Staff Only, Cercasi Personale, No Food & Drinks e Vietato Fumare. Ogni widget ha miniatura, titolo e tasto Apri & Stampa, e apre il PDF nel visualizzatore.
 - `pdf-viewer.html?file=…`: visualizzatore integrato. Da telefono apre direttamente il PDF.
 
 ### Loghi personalizzati

@@ -62,13 +62,16 @@
   }
 
   // Riquadro dell'inchiostro: per i testi quello delle righe di testo, non del blocco intero.
-  // Gli elementi che contengono altri blocchi (un cartellino intero) usano il loro riquadro.
+  // Gli elementi che contengono altri blocchi (un cartellino intero) o con un bordo usano il loro riquadro.
   const INLINE_TAGS = ['SPAN', 'B', 'STRONG', 'I', 'EM', 'BR', 'SUP', 'SUB'];
   // tight: stringe il riquadro sull'inchiostro dei caratteri (serve per centrare il cursore sull'elemento indicato)
   function inkRect(node, tight = false) {
     if (!node || !isShown(node)) return null;
     const onlyText = [...node.children].every(child => INLINE_TAGS.includes(child.tagName));
-    if (node.tagName !== 'IMG' && onlyText && node.textContent.trim()) {
+    // un testo dentro un riquadro con il bordo (es. le caselle delle taglie) conta come riquadro
+    const style = getComputedStyle(node);
+    const boxed = parseFloat(style.borderTopWidth) > 0 && style.borderTopStyle !== 'none';
+    if (node.tagName !== 'IMG' && !boxed && onlyText && node.textContent.trim()) {
       const range = document.createRange();
       range.selectNodeContents(node);
       const rect = range.getBoundingClientRect();
@@ -223,6 +226,8 @@
     const watched = resolveOne(config.watch);
     if (watched) {
       new MutationObserver(() => schedule(true)).observe(watched, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: ['class', 'style'] });
+      // un'immagine appena caricata (es. un logo) cambia misure senza modificare la pagina
+      watched.addEventListener('load', () => schedule(true), true);
     }
     document.addEventListener('transitionend', event => {
       if (!markers.includes(event.target)) schedule(true);
