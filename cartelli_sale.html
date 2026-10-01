@@ -46,7 +46,7 @@
       color: #b49a62;
       border-bottom: 1px solid #e3dacb;
       padding-bottom: 0.6rem;
-      margin-bottom: 1.2rem;
+      margin-bottom: 0.8rem;
       letter-spacing: 1.5px;
       text-align: center;
       text-transform: uppercase;
@@ -60,7 +60,7 @@
       background: #f3ede0;
       border: 1px solid #e3dacb;
       border-radius: 6px;
-      margin-bottom: 1.6rem;
+      margin-bottom: 0.8rem;
     }
 
     .mode-switch button {
@@ -83,15 +83,24 @@
       box-shadow: 0 1px 3px rgba(0,0,0,0.08);
     }
 
+    /* Pannello che comincia con un selettore: un poco di spazio in più sopra il selettore
+       (i margini si sommano a quello del titolo: vale il maggiore) */
+    .controls h2 + .mode-switch, .controls h2 + .card-selector { margin-top: 1rem; }
+
+    /* Spazi regolari nel pannello (come Cartelli Semplici): 0,35rem tra etichetta e campo, 0,8rem tra
+       un campo e l'etichetta successiva, tra i gruppi, sotto titolo e selettore e prima del tasto di stampa */
     .form-group { margin-bottom: 0.8rem; }
 
     .form-group label {
       display: block;
       font-size: 0.72rem;
       font-weight: normal;
-      margin-bottom: 0.3rem;
+      margin-bottom: 0.35rem;
       color: #665e54;
     }
+
+    /* Titoli dei menu a discesa: come le altre etichette, nell'oro dei pulsanti sotto il pannello */
+    .form-group .section-label { color: #b49a62; }
 
     .form-group input,
     .form-group select {
@@ -113,26 +122,6 @@
 
     .price-range-select {
       position: relative;
-    }
-
-    .price-range-select label {
-      color: #8a6a35;
-      font-weight: 600;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      margin-bottom: 0.6rem;
-    }
-
-    #descGroup > label {
-      color: #8a6a35;
-      font-weight: 600;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      margin-bottom: 0.6rem;
-    }
-
-    #descGroup {
-      margin-bottom: 1.8rem;
     }
 
     .price-range-control select {
@@ -183,7 +172,7 @@
 
     .preset-select {
       position: relative;
-      margin-bottom: 0.6rem;
+      margin-bottom: 0.8rem;
       border: 1px solid #e3dacb;
       border-radius: 4px;
       background-color: #f8f6f1;
@@ -314,7 +303,7 @@
       text-transform: uppercase;
       border-radius: 4px;
       cursor: pointer;
-      margin-top: 10px;
+      margin-top: 0;
       transition: background-color 0.2s;
     }
 
@@ -590,11 +579,11 @@
       .controls h1, .controls h2 {
         font-size: 0.95rem;
         padding-bottom: 12px;
-        margin-bottom: 0.6rem;
+        margin-bottom: 0.55rem;
       }
       /* Pannello piu' compatto: su cellulare pannello e foglio devono
          stare in poco piu' di una schermata. */
-      .form-group { margin-bottom: 0.55rem; }
+      .form-group, .preset-select, .mode-switch { margin-bottom: 0.55rem; }
       .form-group label, .section-label {
         font-size: 0.68rem;
         margin-bottom: 0.18rem;
@@ -607,7 +596,8 @@
         padding: 6px;
         font-size: 0.64rem;
       }
-      .btn-print { margin-top: 6px; padding: 9px; }
+      .btn-print { margin-top: 0; padding: 9px; }
+      .controls h2 + .mode-switch, .controls h2 + .card-selector { margin-top: 0.7rem; }
     }
   </style>
   <link rel="stylesheet" href="assets/css/tema-italia.css">
@@ -642,7 +632,7 @@
         </div>
 
         <div class="form-group">
-          <label>Percentuale Sconto</label>
+          <label class="section-label" for="discountValue">Percentuale Sconto</label>
           <div class="percent-input-wrapper">
             <input type="number" id="discountValue" value="50" min="1" max="99" oninput="updateCard()">
             <div class="percent-stepper">
@@ -654,7 +644,7 @@
       </div>
 
       <div class="form-group" id="descGroup" style="display: none;">
-        <label>Articolo // Promo</label>
+        <label class="section-label" for="descPreset">Promozione</label>
         <div class="preset-select">
           <select id="descPreset" onchange="applyDescPreset()">
             <option value="">-- Seleziona un testo --</option>
@@ -670,11 +660,12 @@
             <option value="Fino ad esaurimento scorte">Fino ad esaurimento scorte</option>
           </select>
         </div>
+        <label for="descFree">Testo Libero</label>
         <input type="text" id="descFree" value="" placeholder="-- Testo Libero --" oninput="updateCard()">
       </div>
 
       <div class="form-group price-range-select" id="priceRangeGroup">
-        <label for="priceRange">Fasce Prezzo</label>
+        <label class="section-label" for="priceRange">Fasce Prezzo</label>
         <div class="price-range-control">
           <select id="priceRange" onchange="applyPriceRange()">
             <option value="">-- Seleziona Fascia Prezzo --</option>

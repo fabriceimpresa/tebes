@@ -61,8 +61,12 @@
     .editor-title { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--gold); margin-bottom: 0.8rem; font-weight: 700; border-bottom: 1px solid var(--border); padding-bottom: 0.4rem; }
 
     .form-group { margin-bottom: 0.8rem; }
-    .form-group label { display: block; font-size: 0.72rem; color: var(--text-muted); margin-bottom: 0.3rem; }
-    .form-control { width: 100%; padding: 0.5rem; background: var(--card); border: 1px solid var(--border); color: var(--text); border-radius: 4px; font-size: 0.82rem; outline: none; }
+    /* Spazi regolari nel pannello (come le pagine Crea Cartelli): 0,35rem tra etichetta e campo, 0,8rem tra
+       un campo e l'etichetta successiva, sotto il selettore e prima del tasto di stampa */
+    .form-group label { display: block; font-size: 0.72rem; color: var(--text-muted); margin-bottom: 0.35rem; }
+    /* Titoli dei menu a discesa e dei campi con frecce: come le altre etichette, nell'oro dei pulsanti sotto il pannello */
+    .form-group .section-label { color: #b49a62; }
+    .form-control { width: 100%; padding: 0.45rem; background: var(--card); border: 1px solid var(--border); color: var(--text); border-radius: 4px; font-size: 0.82rem; outline: none; }
     .form-control:focus { border-color: var(--gold); }
 
     /* MENU A DISCESA CON FRECCIA */
@@ -183,7 +187,7 @@
       background: #f3ede0;
       border: 1px solid #e3dacb;
       border-radius: 6px;
-      margin-bottom: 1.2rem;
+      margin-bottom: 0.8rem;
     }
 
     .mode-switch button {
@@ -200,7 +204,7 @@
       transition: all 0.2s ease;
       line-height: 1.2;
       text-align: center;
-      font-family: system-ui, -apple-system, sans-serif;
+      font-family: Arial, Helvetica, sans-serif;
     }
 
     .mode-switch button.active {
@@ -212,7 +216,11 @@
     .btn-print { width: 100%; padding: 0.75rem; background: #96382b; color: #fffdfa; font-weight: 700; border: none; border-radius: 4px; cursor: pointer; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.6px; transition: all 0.2s; margin-bottom: 1.2rem; }
     .btn-print:hover { background: #7a2d22; }
     /* Tasto di stampa dentro il riquadro di modifica, come nei cartelli */
-    .editor-section .btn-print { margin: 0.3rem 0 0; }
+    .editor-section .btn-print { margin: 0; }
+    /* Riquadro che comincia con un selettore: un poco di spazio in più sopra il selettore; l'ultimo elemento
+       del riquadro non aggiunge spazio sotto */
+    .editor-title + .mode-switch { margin-top: 1rem; }
+    .editor-section > :last-child { margin-bottom: 0; }
 
     /* --- PREVIEW MAIN --- */
     main { flex: 1; min-width: 0; padding: 1.5rem; overflow: auto; display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--border); -webkit-overflow-scrolling: touch; }
@@ -474,7 +482,7 @@
       </div>
 
       <div class="form-group">
-        <label for="brandSelect">Brand</label>
+        <label class="section-label" for="brandSelect">BRAND</label>
         <div class="preset-select">
           <select id="brandSelect" class="form-control" onchange="updateBrandSelection()">
             <option value="">-- Seleziona Brand --</option>
@@ -486,13 +494,13 @@
         <label for="customBrandSelect">Loghi personalizzati</label>
         <div class="preset-select">
           <select id="customBrandSelect" class="form-control" onchange="updateCustomBrandSelection()">
-            <option value="">-- Nessun logo personalizzato --</option>
+            <option value="">-- Seleziona Logo Personalizzato --</option>
           </select>
         </div>
       </div>
 
       <div class="form-group">
-        <label for="descPreset">Articoli pronti</label>
+        <label class="section-label" for="descPreset">Articoli</label>
         <div class="preset-select">
           <select id="descPreset" class="form-control" onchange="applyDescPreset()">
             <option value="">-- Seleziona un articolo --</option>
@@ -525,7 +533,7 @@
       </div>
 
       <div class="form-group">
-        <label>Descrizione Articolo</label>
+        <label for="inp-desc">Testo Libero</label>
         <input type="text" id="inp-desc" class="form-control" placeholder="es. Giubbino" oninput="updateCurrentCard()">
       </div>
 
@@ -538,7 +546,7 @@
           </div>
         </div>
         <div class="form-group">
-          <label>Aliquota Sconto</label>
+          <label class="section-label" for="discountValue">Percentuale Sconto</label>
           <div class="percent-input-wrapper">
             <input type="number" id="discountValue" class="form-control" value="50" min="1" max="99" oninput="updateCurrentCard()">
             <div class="percent-stepper">
@@ -551,7 +559,7 @@
 
       <div id="group-preset" style="display: none;">
         <div class="form-group">
-          <label>Testo Promozionale</label>
+          <label class="section-label" for="inp-preset">Promozione</label>
           <div class="preset-select">
             <select id="inp-preset" class="form-control" onchange="updateCurrentCard()">
               <option value="FINAL PRICE">FINAL PRICE</option>

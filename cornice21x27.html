@@ -47,7 +47,7 @@
       color: #b49a62;
       border-bottom: 1px solid #e3dacb;
       padding-bottom: 0.6rem;
-      margin-bottom: 1.2rem;
+      margin-bottom: 0.8rem;
       letter-spacing: 1.5px;
       text-align: center;
       text-transform: uppercase;
@@ -59,9 +59,15 @@
       font-weight: 600;
       letter-spacing: 0.04em;
       text-transform: uppercase;
-      margin-bottom: 0.4rem;
+      margin-bottom: 0.35rem;
     }
 
+    /* Pannello che comincia con un selettore: un poco di spazio in più sopra il selettore
+       (i margini si sommano a quello del titolo: vale il maggiore) */
+    .controls h2 + .mode-switch, .controls h2 + .card-selector { margin-top: 1rem; }
+
+    /* Spazi regolari nel pannello (come Cartelli Semplici): 0,35rem tra etichetta e campo, 0,8rem tra
+       un campo e l'etichetta successiva, tra i gruppi, sotto titolo e selettori e prima del tasto di stampa */
     .form-group { margin-bottom: 0.8rem; }
 
     .mode-switch {
@@ -71,7 +77,7 @@
       background: #f3ede0;
       border: 1px solid #e3dacb;
       border-radius: 6px;
-      margin-bottom: 1.2rem;
+      margin-bottom: 0.8rem;
     }
 
     .mode-switch button {
@@ -89,7 +95,7 @@
       transition: all 0.2s ease;
       line-height: 1.2;
       text-align: center;
-      font-family: system-ui, -apple-system, sans-serif;
+      font-family: Arial, Helvetica, sans-serif;
     }
 
     .mode-switch button.active {
@@ -101,9 +107,18 @@
     .form-group label {
       display: block;
       font-size: 0.72rem;
-      margin-bottom: 0.3rem;
+      margin-bottom: 0.35rem;
       color: #665e54;
       font-family: system-ui, -apple-system, sans-serif;
+    }
+
+    /* Titoli dei menu a discesa e dei campi con frecce: come le altre etichette, nell'oro dei
+       pulsanti sotto il pannello */
+    .form-group .section-label {
+      color: #b49a62;
+      font-weight: normal;
+      letter-spacing: normal;
+      text-transform: none;
     }
 
     .form-group textarea,
@@ -116,12 +131,13 @@
       font-size: 0.82rem;
       background-color: #f8f6f1;
       color: #282522;
-      font-family: system-ui, -apple-system, sans-serif;
+      font-family: Arial, Helvetica, sans-serif;
     }
 
     .form-group textarea {
       resize: vertical;
       height: 54px;
+      display: block;
     }
 
     .form-group textarea:focus,
@@ -134,7 +150,7 @@
 
     .preset-select {
       position: relative;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.8rem;
       border: 1px solid #e3dacb;
       border-radius: 4px;
       background-color: #f8f6f1;
@@ -148,7 +164,7 @@
       background: transparent;
       width: 100%;
       padding: 0.45rem;
-      font-family: system-ui, -apple-system, sans-serif;
+      font-family: Arial, Helvetica, sans-serif;
     }
 
     .preset-select::after {
@@ -182,7 +198,7 @@
       border: none;
       background: transparent;
       padding: 0.45rem;
-      font-family: system-ui, -apple-system, sans-serif;
+      font-family: Arial, Helvetica, sans-serif;
     }
 
     .percent-input-wrapper input:focus { outline: none; }
@@ -222,9 +238,9 @@
       text-transform: uppercase;
       border-radius: 4px;
       cursor: pointer;
-      margin-top: 10px;
+      margin-top: 0;
       transition: background-color 0.2s;
-      font-family: system-ui, -apple-system, sans-serif;
+      font-family: Arial, Helvetica, sans-serif;
     }
 
     .btn-print:hover { background-color: #7a2d22; }
@@ -262,13 +278,16 @@
     #decoTop { top: 11mm; }
     #decoBottom { bottom: 11mm; }
 
+    /* Testo + prezzi centrati in verticale nella cornice, cioè tra i due decori (che sono simmetrici) */
     .frame-content {
       position: absolute;
-      top: 85mm;
+      top: 0;
+      bottom: 0;
       left: 8mm;
       right: 8mm;
       display: flex;
       flex-direction: column;
+      justify-content: center;
       align-items: center;
       text-align: center;
       gap: 9mm;
@@ -288,6 +307,12 @@
       text-align: center;
       white-space: pre-line;
       overflow-wrap: anywhere;
+    }
+
+    /* Testo su una riga: niente spazio riservato alle due righe, il testo si avvicina ai prezzi e
+       testo + prezzi restano centrati nella cornice */
+    .frame-box.one-line-desc .desc-title {
+      min-height: 0;
     }
 
     .made-in-italy-flag {
@@ -352,6 +377,93 @@
       line-height: 1;
       white-space: nowrap;
       margin-top: -1mm;
+    }
+
+    /* MODALITA' PERCENTUALE SCONTO: gli stessi elementi di Cornici 10x15 (da cartellopercentuale.html),
+       ingranditi in proporzione ai decori della cornice 21x27 (circa 2,77x le misure di Cornici 10x15) */
+    .frame-box.percent-mode .frame-content {
+      gap: 0;
+      transform: none;
+    }
+
+    /* Modalità % Standard: senza descrizione ne' brand, percentuale e logo un po' piu' grandi. */
+    .frame-box.percent-mode.percent-standard .frame-content {
+      transform: scale(1.06);
+    }
+
+    /* Modalità % Brand: il logo piu' grande spinge giu' il blocco, che si alza un poco. */
+    .frame-box.percent-mode.percent-brand .frame-content {
+      transform: translateY(-6.9mm);
+    }
+
+    .pct-desc {
+      max-width: 150mm;
+      margin-bottom: 5.5mm;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 27.7pt;
+      line-height: 1.1;
+      letter-spacing: -0.05em;
+      color: #1a1a1a;
+      text-align: center;
+      overflow-wrap: anywhere;
+    }
+
+    .pct-desc.is-long { font-size: 23.5pt; }
+
+    .pct-brand-box {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 91.4mm;
+      height: 36mm;
+      margin-bottom: 5mm;
+    }
+
+    .pct-brand-box .frame-brand-logo { max-height: 36mm; }
+
+    .pct-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5.5mm;
+    }
+
+    .pct-fino {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.7mm;
+    }
+
+    .pct-fino-label {
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: 700;
+      font-size: 19.7pt;
+      letter-spacing: -0.05em;
+      color: #cc9e25;
+      white-space: nowrap;
+    }
+
+    .pct-minus-bar {
+      width: 23.4mm;
+      height: 5.3mm;
+      background-color: #cc9e25;
+    }
+
+    .pct-text {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 172pt;
+      letter-spacing: -0.05em;
+      line-height: 1;
+      color: #cc9e25;
+      white-space: nowrap;
+    }
+
+    .pct-logo {
+      display: block;
+      width: 49mm;
+      height: auto;
+      margin-top: 5.8mm;
     }
 
     .app-close-btn {
@@ -495,11 +607,11 @@
       .controls h1, .controls h2 {
         font-size: 0.95rem;
         padding-bottom: 12px;
-        margin-bottom: 0.6rem;
+        margin-bottom: 0.55rem;
       }
       /* Pannello piu' compatto: su cellulare pannello e foglio devono
          stare in poco piu' di una schermata. */
-      .form-group { margin-bottom: 0.55rem; }
+      .form-group, .preset-select, .mode-switch { margin-bottom: 0.55rem; }
       .form-group label, .section-label {
         font-size: 0.68rem;
         margin-bottom: 0.18rem;
@@ -512,7 +624,8 @@
         padding: 6px;
         font-size: 0.64rem;
       }
-      .btn-print { margin-top: 6px; padding: 9px; }
+      .btn-print { margin-top: 0; padding: 9px; }
+      .controls h2 + .mode-switch, .controls h2 + .card-selector { margin-top: 0.7rem; }
     }
   </style>
   <link rel="stylesheet" href="assets/css/tema-italia.css">
@@ -531,21 +644,101 @@
     <div class="controls">
       <h2>Cornice 21 X 27</h2>
 
-      <div class="section-label">Modalità cartello</div>
       <div class="mode-switch" role="group" aria-label="Modalità cartello">
-        <button type="button" class="active" id="modeDescription" aria-pressed="true" onclick="switchContentMode('description')">Descrizione Articolo</button>
-        <button type="button" id="modeBrand" aria-pressed="false" onclick="switchContentMode('brand')">Modalità<br>Brand</button>
+        <button type="button" class="active" id="modeDescription" aria-pressed="true" onclick="switchContentMode('description')">STANDARD</button>
+        <button type="button" id="modeBrand" aria-pressed="false" onclick="switchContentMode('brand')">BRAND</button>
+        <button type="button" id="modePercent" aria-pressed="false" onclick="switchContentMode('percent')">PERCENTUALE<br>SCONTO</button>
+      </div>
+
+      <!-- CAMPI MODALITA' PERCENTUALE SCONTO -->
+      <div id="percentFieldsGroup" style="display: none;">
+        <div class="mode-switch" aria-label="Modalità %">
+          <button type="button" class="active" id="percentExtraStandardBtn" onclick="setPercentExtra('standard')">STANDARD</button>
+          <button type="button" id="percentExtraDescBtn" onclick="setPercentExtra('descrizione')">DESCRIZIONE</button>
+          <button type="button" id="percentExtraBrandBtn" onclick="setPercentExtra('brand')">BRAND</button>
+        </div>
+
+        <div class="form-group">
+          <label class="section-label" for="percentValue">Percentuale Sconto</label>
+          <div class="percent-input-wrapper">
+            <input type="number" id="percentValue" min="1" max="99" oninput="updatePercentData()">
+            <div class="percent-stepper">
+              <button type="button" aria-label="Aumenta percentuale" onclick="stepPercent(1)">▲</button>
+              <button type="button" aria-label="Diminuisci percentuale" onclick="stepPercent(-1)">▼</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group" id="percentDescGroup">
+          <label class="section-label" for="percentDescPreset">Promozione</label>
+          <div class="preset-select">
+            <select id="percentDescPreset" onchange="applyPercentDescPreset()">
+              <option value="">-- Seleziona un testo --</option>
+              <option value="Sconto alla Cassa">Sconto alla Cassa</option>
+              <option value="Special Deal">Special Deal</option>
+              <option value="Final Price">Final Price</option>
+              <option value="Summer Sale">Summer Sale</option>
+              <option value="Spring Sale">Spring Sale</option>
+              <option value="Winter Sale">Winter Sale</option>
+              <option value="Black Friday">Black Friday</option>
+              <option value="Made in Italy">Made in Italy</option>
+              <option value="Vera Pelle • Genuine Leather">Vera Pelle • Genuine Leather</option>
+              <option value="Made in Italy • Genuine Leather">Made in Italy • Genuine Leather</option>
+              <option value="Fino ad esaurimento scorte">Fino ad esaurimento scorte</option>
+            </select>
+          </div>
+          <label for="percentDescValue">Testo Libero</label>
+          <input type="text" id="percentDescValue" oninput="updatePercentData()">
+        </div>
       </div>
 
       <div class="form-group" id="descriptionFieldsGroup">
-        <label for="descFree">Descrizione Articolo (massimo 2 righe)</label>
+        <label class="section-label" for="descPreset">Testo Pronto</label>
+        <div class="preset-select">
+          <select id="descPreset" onchange="applyDescPreset()">
+            <option value="" selected>-- Seleziona un Testo o Articolo --</option>
+            <option value="PURO COTONE">⭐ PURO COTONE</option>
+            <option value="LANA & CACHEMIRE">⭐ LANA & CACHEMIRE</option>
+            <option value="PURA SETA">⭐ PURA SETA</option>
+            <option value="LINO PURO">⭐ LINO PURO</option>
+            <option value="ECO PELLICCIA">⭐ ECO PELLICCIA</option>
+            <option value="LANA MERINOS">⭐ LANA MERINOS</option>
+            <option value="MADE IN ITALY">⭐ MADE IN ITALY</option>
+            <!-- Articoli (stesso elenco di Multi Articolo), in maiuscolo e in ordine alfabetico -->
+            <option value="ABITO">ABITO</option>
+            <option value="BERMUDA">BERMUDA</option>
+            <option value="BLUSA">BLUSA</option>
+            <option value="BORSA">BORSA</option>
+            <option value="BORSA VERA PELLE">BORSA VERA PELLE</option>
+            <option value="CAMICIA">CAMICIA</option>
+            <option value="CAPPELLO">CAPPELLO</option>
+            <option value="CAPPOTTO">CAPPOTTO</option>
+            <option value="CARDIGAN">CARDIGAN</option>
+            <option value="CINTURA">CINTURA</option>
+            <option value="COPRISPALLE">COPRISPALLE</option>
+            <option value="FOULARD">FOULARD</option>
+            <option value="GIACCA">GIACCA</option>
+            <option value="GILET">GILET</option>
+            <option value="GONNA">GONNA</option>
+            <option value="JEANS">JEANS</option>
+            <option value="MAGLIA">MAGLIA</option>
+            <option value="OCCHIALI">OCCHIALI</option>
+            <option value="PANTALONCINO">PANTALONCINO</option>
+            <option value="PANTALONE">PANTALONE</option>
+            <option value="SHORTS">SHORTS</option>
+            <option value="T-SHIRT">T-SHIRT</option>
+            <option value="TOP">TOP</option>
+            <option value="TUTINA">TUTINA</option>
+          </select>
+        </div>
+        <label for="descFree">Testo Libero</label>
         <textarea id="descFree" maxlength="120" oninput="updateDescription()" placeholder="Inserisci la descrizione su una o due righe">LANA &amp;
 CACHEMIRE</textarea>
       </div>
 
       <div id="brandFieldsGroup" style="display: none;">
         <div class="form-group">
-          <label for="brandSelect">Brand</label>
+          <label class="section-label" for="brandSelect">BRAND</label>
           <div class="preset-select">
             <select id="brandSelect" onchange="updateBrandSelection()">
               <option value="">-- Seleziona Brand --</option>
@@ -557,19 +750,20 @@ CACHEMIRE</textarea>
           <label for="customBrandSelect">Loghi personalizzati</label>
           <div class="preset-select">
             <select id="customBrandSelect" onchange="updateCustomBrandSelection()">
-              <option value="">-- Nessun logo personalizzato --</option>
+              <option value="">-- Seleziona Logo Personalizzato --</option>
             </select>
           </div>
         </div>
       </div>
 
+      <div id="priceFieldsGroup">
       <div class="form-group">
         <label for="oldPrice">Prezzo Originario</label>
         <input type="text" id="oldPrice" value="99,90" placeholder="es. 99,90" oninput="updatePrices()">
       </div>
 
       <div class="form-group">
-        <label for="discountValue">Percentuale Sconto</label>
+        <label class="section-label" for="discountValue">Percentuale Sconto</label>
         <div class="percent-input-wrapper">
           <input type="number" id="discountValue" value="30" min="1" max="99" oninput="updatePrices()">
           <div class="percent-stepper">
@@ -582,6 +776,7 @@ CACHEMIRE</textarea>
       <div class="form-group">
         <label for="newPrice">Prezzo Finale</label>
         <input type="text" id="newPrice" value="69,90" placeholder="es. 69,90" oninput="updatePrices()">
+      </div>
       </div>
 
       <button class="btn-print" type="button" onclick="printCard()">Stampa Cartello (A4)</button>
@@ -604,26 +799,96 @@ CACHEMIRE</textarea>
       brand: { officialFile: '', customLogoId: '' },
       oldPrice: '99,90',
       discount: '30',
-      newPrice: '69,90'
+      newPrice: '69,90',
+      // Percentuale Sconto (come in Cornici 10x15): extra = 'standard' | 'descrizione' | 'brand'
+      percent: { discount: '50', extra: 'standard', desc: 'Sconto alla Cassa' }
     };
 
     function limitDescriptionLines(value) {
       return value.split(/\r?\n/).slice(0, 2).join('\n');
     }
 
+    // Modalità del cartello: 'description' (Standard), 'brand' o 'percent' (Percentuale Sconto).
     function switchContentMode(mode) {
       cardState.mode = mode;
-      document.getElementById('modeDescription').classList.toggle('active', mode === 'description');
-      document.getElementById('modeDescription').setAttribute('aria-pressed', String(mode === 'description'));
-      document.getElementById('modeBrand').classList.toggle('active', mode === 'brand');
-      document.getElementById('modeBrand').setAttribute('aria-pressed', String(mode === 'brand'));
-      document.getElementById('descriptionFieldsGroup').style.display = cardState.mode === 'description' ? 'block' : 'none';
-      document.getElementById('brandFieldsGroup').style.display = cardState.mode === 'brand' ? 'block' : 'none';
-      if (cardState.mode === 'brand' && !cardState.brand.officialFile && !cardState.brand.customLogoId) {
-        cardState.brand.officialFile = getDefaultBrandFile();
-        document.getElementById('brandSelect').value = cardState.brand.officialFile;
-      }
+      if (usesBrandLogo()) ensureBrandSelected();
+      syncPanel();
       renderCard();
+    }
+
+    // Il logo brand serve in modalità Brand e in Percentuale Sconto con l'opzione Brand.
+    function usesBrandLogo() {
+      return cardState.mode === 'brand' || (cardState.mode === 'percent' && cardState.percent.extra === 'brand');
+    }
+
+    function ensureBrandSelected() {
+      if (!cardState.brand.officialFile && !cardState.brand.customLogoId) {
+        cardState.brand.officialFile = getDefaultBrandFile();
+      }
+    }
+
+    // Pannello allineato allo stato: modalità, gruppi di campi visibili e valori.
+    function syncPanel() {
+      const { mode, percent } = cardState;
+      [['modeDescription', 'description'], ['modeBrand', 'brand'], ['modePercent', 'percent']].forEach(([id, value]) => {
+        document.getElementById(id).classList.toggle('active', mode === value);
+        document.getElementById(id).setAttribute('aria-pressed', String(mode === value));
+      });
+      document.getElementById('descriptionFieldsGroup').style.display = mode === 'description' ? 'block' : 'none';
+      document.getElementById('brandFieldsGroup').style.display = usesBrandLogo() ? 'block' : 'none';
+      document.getElementById('percentFieldsGroup').style.display = mode === 'percent' ? 'block' : 'none';
+      document.getElementById('priceFieldsGroup').style.display = mode === 'percent' ? 'none' : 'block';
+
+      document.getElementById('percentExtraStandardBtn').classList.toggle('active', percent.extra === 'standard');
+      document.getElementById('percentExtraDescBtn').classList.toggle('active', percent.extra === 'descrizione');
+      document.getElementById('percentExtraBrandBtn').classList.toggle('active', percent.extra === 'brand');
+      document.getElementById('percentDescGroup').style.display = percent.extra === 'descrizione' ? 'block' : 'none';
+      document.getElementById('percentValue').value = percent.discount;
+      document.getElementById('percentDescValue').value = percent.desc;
+      const percentPreset = document.getElementById('percentDescPreset');
+      percentPreset.value = [...percentPreset.options].some(option => option.value === percent.desc) ? percent.desc : '';
+
+      document.getElementById('brandSelect').value = cardState.brand.officialFile;
+      document.getElementById('customBrandSelect').value = cardState.brand.customLogoId;
+    }
+
+    function setPercentExtra(extra) {
+      cardState.percent.extra = extra;
+      if (usesBrandLogo()) ensureBrandSelected();
+      syncPanel();
+      renderCard();
+    }
+
+    function updatePercentData() {
+      cardState.percent.discount = document.getElementById('percentValue').value;
+      cardState.percent.desc = document.getElementById('percentDescValue').value;
+      renderCard();
+    }
+
+    function applyPercentDescPreset() {
+      document.getElementById('percentDescValue').value = document.getElementById('percentDescPreset').value;
+      updatePercentData();
+    }
+
+    function stepPercent(delta) {
+      const input = document.getElementById('percentValue');
+      const value = Number.parseInt(input.value, 10) || 50;
+      input.value = Math.min(99, Math.max(1, value + delta));
+      updatePercentData();
+    }
+
+    // Testo Pronto (stesse voci di Cornici 10x15): il testo va nel campo libero, già diviso su due righe
+    // dove serve (le voci con la stellina e BORSA VERA PELLE).
+    function applyDescPreset() {
+      const preset = document.getElementById('descPreset').value;
+      if (!preset) return;
+      const formatted = preset === 'MADE IN ITALY'
+        ? 'MADE\nIN ITALY'
+        : preset === 'BORSA VERA PELLE'
+          ? 'BORSA\nVERA PELLE'
+          : preset.replace(' & ', ' &\n').replace(' COTONE', '\nCOTONE').replace(' CACHEMIRE', '\nCACHEMIRE').replace(' SETA', '\nSETA').replace(' PURO', '\nPURO').replace(' PELLICCIA', '\nPELLICCIA').replace(' MERINOS', '\nMERINOS');
+      document.getElementById('descFree').value = formatted;
+      updateDescription();
     }
 
     function updateDescription() {
@@ -726,7 +991,7 @@ CACHEMIRE</textarea>
     }
 
     function waitForCardImages() {
-      return Promise.all(Array.from(document.querySelectorAll('.frame-brand-logo'), image => {
+      return Promise.all(Array.from(document.querySelectorAll('.frame-brand-logo, .pct-logo'), image => {
         if (image.complete) {
           return image.naturalWidth > 0
             ? Promise.resolve()
@@ -743,7 +1008,21 @@ CACHEMIRE</textarea>
     }
 
     function renderCard() {
+      const box = document.getElementById('frameBox');
       const content = document.getElementById('frameContent');
+      box.classList.toggle('percent-mode', cardState.mode === 'percent');
+      if (cardState.mode !== 'percent') box.classList.remove('percent-standard', 'percent-brand');
+      if (cardState.mode === 'percent') {
+        box.classList.remove('one-line-desc');
+        renderPercentContent(box, content);
+        return;
+      }
+
+      const isOneLine = cardState.mode === 'description'
+        && cardState.description !== 'MADE\nIN ITALY'
+        && cardState.description.trim() !== ''
+        && cardState.description.split(/\r?\n/).length === 1;
+      box.classList.toggle('one-line-desc', isOneLine);
       const title = cardState.mode === 'description'
         ? cardState.description === 'MADE\nIN ITALY'
           ? '<div class="desc-title made-in-italy-title"><img class="made-in-italy-flag" src="assets/img/madeinitaly.png" alt="Bandiera italiana">MADE<br>IN ITALY</div>'
@@ -758,40 +1037,89 @@ CACHEMIRE</textarea>
         <div class="price-final-frame">€ ${escapeHtml(cardState.newPrice)}</div>
       `;
 
-      if (cardState.mode === 'brand' && (cardState.brand.customLogoId || cardState.brand.officialFile)) {
-        const image = content.querySelector('.frame-brand-logo');
-        const customLogo = readCustomLogos().find(logo => logo.id === cardState.brand.customLogoId);
-        image.alt = customLogo?.name || cleanBrandName(cardState.brand.officialFile);
-        getBrandLogoSource().then(source => {
-          if (image.isConnected) image.src = source;
-        }).catch(error => {
-          console.error('Caricamento del logo brand fallito.', error);
-        });
+      if (cardState.mode === 'brand') loadBrandImage(content.querySelector('.frame-brand-logo'));
+      if (isOneLine) fitOneLineDesc(content);
+    }
+
+    function loadBrandImage(image) {
+      if (!image || (!cardState.brand.customLogoId && !cardState.brand.officialFile)) return;
+      const customLogo = readCustomLogos().find(logo => logo.id === cardState.brand.customLogoId);
+      image.alt = customLogo?.name || cleanBrandName(cardState.brand.officialFile);
+      getBrandLogoSource().then(source => {
+        if (image.isConnected) image.src = source;
+      }).catch(error => {
+        console.error('Caricamento del logo brand fallito.', error);
+      });
+    }
+
+    // Testo su una riga troppo lungo (es. PANTALONCINO): il corpo si riduce finché il testo non supera
+    // il 70% della larghezza dei decori, come in Cornici 10x15. Vale anche per il testo libero.
+    const ONE_LINE_MAX_RATIO = 0.7;
+    function fitOneLineDesc(content) {
+      const title = content.querySelector('.desc-title');
+      const deco = document.getElementById('decoTop');
+      if (!title || !deco) return;
+      title.style.fontSize = '';
+      const range = document.createRange();
+      range.selectNodeContents(title);
+      const textWidth = range.getBoundingClientRect().width;
+      const maxWidth = deco.getBoundingClientRect().width * ONE_LINE_MAX_RATIO;
+      if (!textWidth || !maxWidth || textWidth <= maxWidth) return;
+      const fontSize = parseFloat(getComputedStyle(title).fontSize);
+      title.style.fontSize = `${fontSize * maxWidth / textWidth}px`;
+    }
+
+    // Percentuale Sconto: descrizione o logo brand, "FINO AL" con la barra del meno e la percentuale,
+    // logo TEBE oro; il tutto centrato tra le due decorazioni (come in Cornici 10x15).
+    function renderPercentContent(box, content) {
+      const { percent } = cardState;
+      const element = (tag, className, text) => {
+        const node = document.createElement(tag);
+        node.className = className;
+        if (text !== undefined) node.textContent = text;
+        return node;
+      };
+      const nodes = [];
+      // In Standard ci sono solo percentuale e logo TEBE, un po' piu' grandi.
+      box.classList.toggle('percent-standard', percent.extra === 'standard');
+      box.classList.toggle('percent-brand', percent.extra === 'brand');
+      if (percent.extra === 'brand') {
+        const brandBox = element('div', 'pct-brand-box');
+        const brandImage = element('img', 'frame-brand-logo');
+        brandImage.alt = 'Logo brand';
+        brandBox.appendChild(brandImage);
+        nodes.push(brandBox);
+      } else if (percent.extra === 'descrizione' && percent.desc.trim()) {
+        const desc = element('div', 'pct-desc', percent.desc);
+        desc.classList.toggle('is-long', percent.desc.trim().length > 22);
+        nodes.push(desc);
       }
+
+      const row = element('div', 'pct-row');
+      const fino = element('div', 'pct-fino');
+      fino.append(element('div', 'pct-fino-label', 'FINO AL'), element('div', 'pct-minus-bar'));
+      const numeric = String(percent.discount).replace(/[^0-9]/g, '');
+      row.append(fino, element('div', 'pct-text', `${numeric || '50'}%`));
+      nodes.push(row);
+
+      const logo = element('img', 'pct-logo');
+      logo.src = 'assets/img/footer_tebe.png';
+      logo.alt = 'TEBE';
+      nodes.push(logo);
+
+      content.replaceChildren(...nodes);
+      if (percent.extra === 'brand') loadBrandImage(content.querySelector('.frame-brand-logo'));
     }
 
     window.captureTemaItaliaState = () => JSON.parse(JSON.stringify(cardState));
 
     window.restoreTemaItaliaState = savedState => {
-      cardState.mode = savedState.mode;
-      cardState.description = savedState.description;
-      cardState.brand = { ...savedState.brand };
-      cardState.oldPrice = savedState.oldPrice;
-      cardState.discount = savedState.discount;
-      cardState.newPrice = savedState.newPrice;
-
+      Object.assign(cardState, JSON.parse(JSON.stringify(savedState)));
       document.getElementById('descFree').value = cardState.description;
       document.getElementById('oldPrice').value = cardState.oldPrice;
       document.getElementById('discountValue').value = cardState.discount;
       document.getElementById('newPrice').value = cardState.newPrice;
-      document.getElementById('brandSelect').value = cardState.brand.officialFile;
-      document.getElementById('customBrandSelect').value = cardState.brand.customLogoId;
-      document.getElementById('modeDescription').classList.toggle('active', cardState.mode === 'description');
-      document.getElementById('modeDescription').setAttribute('aria-pressed', String(cardState.mode === 'description'));
-      document.getElementById('modeBrand').classList.toggle('active', cardState.mode === 'brand');
-      document.getElementById('modeBrand').setAttribute('aria-pressed', String(cardState.mode === 'brand'));
-      document.getElementById('descriptionFieldsGroup').style.display = cardState.mode === 'description' ? 'block' : 'none';
-      document.getElementById('brandFieldsGroup').style.display = cardState.mode === 'brand' ? 'block' : 'none';
+      syncPanel();
       renderCard();
     };
 
@@ -806,7 +1134,7 @@ CACHEMIRE</textarea>
     }
 
     function printCard() {
-      const prepareLogo = cardState.mode === 'brand'
+      const prepareLogo = usesBrandLogo()
         ? getBrandLogoSource().then(source => {
           const image = document.querySelector('.frame-brand-logo');
           if (!image) throw new Error('Logo brand non presente nel cartello.');
@@ -825,7 +1153,10 @@ CACHEMIRE</textarea>
 
     loadBrandSelect();
     loadCustomBrandSelect();
+    syncPanel();
     renderCard();
+    // Il carattere Castoro arriva da Google Fonts: a caricamento finito si rimisura il testo.
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => renderCard());
   </script>
   <script src="assets/js/tema-italia.js"></script>
   <script src="assets/js/cursore.js"></script>
@@ -835,12 +1166,14 @@ CACHEMIRE</textarea>
       panel: '.controls',
       watch: '#printSheet',
       scope: '#printSheet',
-      obstacles: '#frameBox .deco-img, #frameBox .desc-title, #frameBox .frame-brand-logo, #frameBox .price-old-frame, #frameBox .price-percent-frame, #frameBox .price-final-frame',
+      obstacles: '#frameBox .deco-img, #frameBox .desc-title, #frameBox .frame-brand-logo, #frameBox .price-old-frame, #frameBox .price-percent-frame, #frameBox .price-final-frame, #frameBox .pct-desc, #frameBox .pct-fino-label, #frameBox .pct-text, #frameBox .pct-logo',
       rules: [
-        // primo selettore (Descrizione Articolo / Modalità Brand): dall'alto, sopra la cornice intera
-        { controls: '#modeDescription, #modeBrand', target: '#frameBox', placement: 'above' },
-        { controls: '#descFree', target: '#frameContent .desc-title' },
-        { controls: '#brandSelect, #customBrandSelect', target: '#frameContent .frame-brand-logo' },
+        // selettore delle modalità: dall'alto, sopra la cornice intera
+        { controls: '#modeDescription, #modeBrand, #modePercent', target: '#frameBox', placement: 'above' },
+        { controls: '#descPreset, #descFree', target: '#frameContent .desc-title' },
+        { controls: '#brandSelect, #customBrandSelect, #percentExtraBrandBtn', target: '#frameContent .frame-brand-logo' },
+        { controls: '#percentExtraStandardBtn, #percentValue, button[onclick^="stepPercent"]', target: '#frameContent .pct-row' },
+        { controls: '#percentExtraDescBtn, #percentDescPreset, #percentDescValue', target: '#frameContent .pct-desc' },
         { controls: '#oldPrice', target: '#frameContent .price-old-frame' },
         { controls: '#discountValue, button[onclick^="stepDiscount"]', target: '#frameContent .price-percent-frame' },
         { controls: '#newPrice', target: '#frameContent .price-final-frame' }

@@ -56,7 +56,7 @@
     }
 
     .controls h1 {
-      margin-bottom: 1.2rem;
+      margin-bottom: 0.8rem;
       padding-bottom: 0.6rem;
       border-bottom: 1px solid #e3dacb;
       color: #b49a62;
@@ -66,12 +66,18 @@
       text-transform: uppercase;
     }
 
+    /* Pannello che comincia con un selettore: un poco di spazio in più sopra il selettore
+       (i margini si sommano a quello del titolo: vale il maggiore) */
+    .controls h1 + .mode-switch, .controls h1 + .card-selector { margin-top: 1rem; }
+
+    /* Spazi regolari nel pannello (come Cartelli Semplici): 0,35rem tra etichetta e campo, 0,8rem tra
+       un campo e l'etichetta successiva, tra i gruppi, sotto titolo e selettori e prima del tasto di stampa */
     .form-group {
-      margin-bottom: 1rem;
+      margin-bottom: 0.8rem;
     }
 
     .section-label {
-      margin-bottom: 0.45rem;
+      margin-bottom: 0.35rem;
       color: #8a6a35;
       font-size: 0.68rem;
       font-weight: 600;
@@ -82,7 +88,7 @@
     .mode-switch {
       display: flex;
       gap: 4px;
-      margin-bottom: 1.2rem;
+      margin-bottom: 0.8rem;
       padding: 4px;
       border: 1px solid #e3dacb;
       border-radius: 6px;
@@ -124,6 +130,15 @@
       font-size: 0.72rem;
     }
 
+    /* Titoli dei menu a discesa e dei campi con frecce: come le altre etichette, nell'oro dei
+       pulsanti sotto il pannello */
+    .form-group .section-label {
+      color: #b49a62;
+      font-weight: normal;
+      letter-spacing: normal;
+      text-transform: none;
+    }
+
     .form-group input,
     .form-group select {
       width: 100%;
@@ -144,7 +159,7 @@
 
     .preset-select {
       position: relative;
-      margin-bottom: 0.6rem;
+      margin-bottom: 0.8rem;
       overflow: hidden;
       border: 1px solid #e3dacb;
       border-radius: 4px;
@@ -182,7 +197,7 @@
 
     .btn-print {
       width: 100%;
-      margin-top: 0.3rem;
+      margin-top: 0;
       padding: 10px;
       border: 1px solid #96382b;
       border-radius: 4px;
@@ -510,7 +525,7 @@
     }
 
     .article-mode-switch {
-      margin: -0.35rem 0 0.9rem;
+      margin: 0 0 0.8rem;
     }
 
     .article-mode-switch button {
@@ -520,12 +535,12 @@
     }
 
     .article-fields {
-      padding-top: 0.3rem;
+      padding-top: 0.8rem;
       border-top: 1px solid #e3dacb;
     }
 
     .article-fields h2 {
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.35rem;
       color: #8a6a35;
       font-size: 0.7rem;
       font-weight: 700;
@@ -534,7 +549,7 @@
     }
 
     .article-fields .form-group {
-      margin-bottom: 0.7rem;
+      margin-bottom: 0.8rem;
     }
 
     .article-fields [data-article-fields="double"] {
@@ -657,11 +672,11 @@
       .controls h1, .controls h2 {
         font-size: 0.95rem;
         padding-bottom: 12px;
-        margin-bottom: 0.6rem;
+        margin-bottom: 0.55rem;
       }
       /* Pannello piu' compatto: su cellulare pannello e foglio devono
          stare in poco piu' di una schermata. */
-      .form-group { margin-bottom: 0.55rem; }
+      .form-group, .preset-select, .mode-switch { margin-bottom: 0.55rem; }
       .form-group label, .section-label {
         font-size: 0.68rem;
         margin-bottom: 0.18rem;
@@ -674,7 +689,8 @@
         padding: 6px;
         font-size: 0.64rem;
       }
-      .btn-print { margin-top: 6px; padding: 9px; }
+      .btn-print { margin-top: 0; padding: 9px; }
+      .controls h1 + .mode-switch, .controls h1 + .card-selector { margin-top: 0.7rem; }
     }
   </style>
   <link rel="stylesheet" href="assets/css/tema-italia.css">
@@ -693,13 +709,11 @@
     <div class="controls">
       <h1>Paletto 18x12</h1>
 
-      <div class="section-label">Cartello in modifica</div>
       <div class="mode-switch card-mode-switch" aria-label="Seleziona il cartello da modificare">
         <button type="button" class="active" id="selectTop" onclick="selectCard('top')">CARTELLO<br>SUPERIORE</button>
         <button type="button" id="selectBottom" onclick="selectCard('bottom')">CARTELLO<br>INFERIORE</button>
       </div>
 
-      <div class="section-label">Modalità cartello</div>
       <div class="mode-switch" aria-label="Seleziona la modalità del cartello">
         <button type="button" class="active" id="standardMode" onclick="setMode('standard')">STANDARD</button>
         <button type="button" id="doublePriceMode" onclick="setMode('double')">DOPPIO<br>PREZZO</button>
@@ -708,7 +722,7 @@
 
       <div id="standardFields">
         <div class="form-group">
-          <label for="descriptionPreset">Testo Descrittivo</label>
+          <label class="section-label" for="descriptionPreset">Promozione</label>
           <div class="preset-select">
             <select id="descriptionPreset" onchange="applyDescriptionPreset()">
               <option value="">-- Seleziona un testo --</option>
@@ -724,6 +738,7 @@
               <option value="Fino ad esaurimento scorte">Fino ad esaurimento scorte</option>
             </select>
           </div>
+          <label for="description">Testo Libero</label>
           <input id="description" type="text" value="Vera Pelle • Genuine Leather" placeholder="-- Testo Libero --" oninput="updateDescription()">
         </div>
 
@@ -739,7 +754,7 @@
           <input id="oldPrice" type="text" value="59,80" inputmode="decimal" oninput="updateCards()">
         </div>
         <div class="form-group">
-          <label for="discount">Percentuale Sconto</label>
+          <label class="section-label" for="discount">Percentuale Sconto</label>
           <input id="discount" type="number" value="50" min="1" max="99" oninput="updateCards()">
         </div>
         <div class="form-group">
@@ -749,7 +764,6 @@
       </div>
 
       <div id="doubleArticleFields" hidden>
-        <div class="section-label">Modalità articoli</div>
         <div class="mode-switch article-mode-switch" aria-label="Seleziona la modalità degli articoli">
           <button type="button" class="active" id="articleStandardMode" onclick="setArticlePriceMode('standard')">DESCRIZIONE</button>
           <button type="button" id="articleDoublePriceMode" onclick="setArticlePriceMode('double')">DOPPIO PREZZO</button>
@@ -758,12 +772,13 @@
           <h2>Articolo sinistro</h2>
           <div data-article-fields="standard">
             <div class="form-group">
-              <label for="firstDescriptionPreset">Testo Descrittivo</label>
+              <label class="section-label" for="firstDescriptionPreset">Promozione</label>
               <div class="preset-select">
                 <select id="firstDescriptionPreset" onchange="applyArticleDescriptionPreset('first')">
                   <option value="">-- Seleziona un testo --</option>
                 </select>
               </div>
+              <label for="firstDescription">Testo Libero</label>
               <input id="firstDescription" type="text" placeholder="-- Testo Libero --" oninput="updateArticleDescription('first')">
             </div>
             <div class="form-group">
@@ -777,7 +792,7 @@
               <input id="firstOldPrice" type="text" inputmode="decimal" oninput="updateCards()">
             </div>
             <div class="form-group">
-              <label for="firstDiscount">Percentuale Sconto</label>
+              <label class="section-label" for="firstDiscount">Percentuale Sconto</label>
               <input id="firstDiscount" type="number" min="1" max="99" oninput="updateCards()">
             </div>
             <div class="form-group">
@@ -790,12 +805,13 @@
           <h2>Articolo destro</h2>
           <div data-article-fields="standard">
             <div class="form-group">
-              <label for="secondDescriptionPreset">Testo Descrittivo</label>
+              <label class="section-label" for="secondDescriptionPreset">Promozione</label>
               <div class="preset-select">
                 <select id="secondDescriptionPreset" onchange="applyArticleDescriptionPreset('second')">
                   <option value="">-- Seleziona un testo --</option>
                 </select>
               </div>
+              <label for="secondDescription">Testo Libero</label>
               <input id="secondDescription" type="text" placeholder="-- Testo Libero --" oninput="updateArticleDescription('second')">
             </div>
             <div class="form-group">
@@ -809,7 +825,7 @@
               <input id="secondOldPrice" type="text" inputmode="decimal" oninput="updateCards()">
             </div>
             <div class="form-group">
-              <label for="secondDiscount">Percentuale Sconto</label>
+              <label class="section-label" for="secondDiscount">Percentuale Sconto</label>
               <input id="secondDiscount" type="number" min="1" max="99" oninput="updateCards()">
             </div>
             <div class="form-group">

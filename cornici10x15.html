@@ -47,7 +47,7 @@
       color: #b49a62;
       border-bottom: 1px solid #e3dacb;
       padding-bottom: 0.6rem;
-      margin-bottom: 1.2rem;
+      margin-bottom: 0.8rem;
       letter-spacing: 1.5px;
       text-align: center;
       text-transform: uppercase;
@@ -59,7 +59,7 @@
       font-weight: 600;
       letter-spacing: 0.04em;
       text-transform: uppercase;
-      margin-bottom: 0.4rem;
+      margin-bottom: 0.35rem;
     }
 
     .mode-switch,
@@ -70,7 +70,7 @@
       background: #f3ede0;
       border: 1px solid #e3dacb;
       border-radius: 6px;
-      margin-bottom: 1.2rem;
+      margin-bottom: 0.8rem;
     }
 
     .mode-switch button,
@@ -88,7 +88,7 @@
       transition: all 0.2s ease;
       line-height: 1.2;
       text-align: center;
-      font-family: system-ui, -apple-system, sans-serif;
+      font-family: Arial, Helvetica, sans-serif;
     }
 
     .mode-switch button.active,
@@ -104,14 +104,29 @@
       letter-spacing: 0.04em;
     }
 
+    /* Pannello che comincia con un selettore: un poco di spazio in più sopra il selettore
+       (i margini si sommano a quello del titolo: vale il maggiore) */
+    .controls h2 + .mode-switch, .controls h2 + .card-selector { margin-top: 1rem; }
+
+    /* Spazi regolari nel pannello (come Cartelli Semplici): 0,35rem tra etichetta e campo, 0,8rem tra
+       un campo e l'etichetta successiva, tra i gruppi, sotto titolo e selettori e prima del tasto di stampa */
     .form-group { margin-bottom: 0.8rem; }
 
     .form-group label {
       display: block;
       font-size: 0.72rem;
-      margin-bottom: 0.3rem;
+      margin-bottom: 0.35rem;
       color: #665e54;
       font-family: system-ui, -apple-system, sans-serif;
+    }
+
+    /* Titoli dei menu a discesa e dei campi con frecce: come le altre etichette, nell'oro dei
+       pulsanti sotto il pannello */
+    .form-group .section-label {
+      color: #b49a62;
+      font-weight: normal;
+      letter-spacing: normal;
+      text-transform: none;
     }
 
     .form-group textarea,
@@ -124,12 +139,13 @@
       font-size: 0.82rem;
       background-color: #f8f6f1;
       color: #282522;
-      font-family: system-ui, -apple-system, sans-serif;
+      font-family: Arial, Helvetica, sans-serif;
     }
 
     .form-group textarea {
       resize: vertical;
       height: 60px;
+      display: block;
     }
 
     .form-group textarea:focus,
@@ -142,7 +158,7 @@
 
     .preset-select {
       position: relative;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.8rem;
       border: 1px solid #e3dacb;
       border-radius: 4px;
       background-color: #f8f6f1;
@@ -156,7 +172,7 @@
       background: transparent;
       width: 100%;
       padding: 0.45rem;
-      font-family: system-ui, -apple-system, sans-serif;
+      font-family: Arial, Helvetica, sans-serif;
     }
 
     .preset-select::after {
@@ -188,7 +204,7 @@
       border: none;
       background: transparent;
       padding: 0.45rem;
-      font-family: system-ui, -apple-system, sans-serif;
+      font-family: Arial, Helvetica, sans-serif;
     }
 
     .percent-input-wrapper input:focus { outline: none; }
@@ -228,9 +244,9 @@
       text-transform: uppercase;
       border-radius: 4px;
       cursor: pointer;
-      margin-top: 10px;
+      margin-top: 0;
       transition: background-color 0.2s;
-      font-family: system-ui, -apple-system, sans-serif;
+      font-family: Arial, Helvetica, sans-serif;
     }
     .btn-print:hover { background-color: #7a2d22; }
 
@@ -324,6 +340,12 @@
 
     .desc-title.made-in-italy-title {
       position: relative;
+    }
+
+    /* Testo su una riga: niente spazio riservato alle tre righe, il testo si avvicina ai prezzi e
+       testo + prezzi restano centrati nella cornice (la colonna centra il blocco tra i decori) */
+    .frame-box.standard-one-line-desc .desc-title {
+      min-height: 0;
     }
 
     .frame-box.standard-two-line-desc .price-row-frame,
@@ -661,11 +683,11 @@
       .controls h1, .controls h2 {
         font-size: 0.95rem;
         padding-bottom: 12px;
-        margin-bottom: 0.6rem;
+        margin-bottom: 0.55rem;
       }
       /* Pannello piu' compatto: su cellulare pannello e foglio devono
          stare in poco piu' di una schermata. */
-      .form-group { margin-bottom: 0.55rem; }
+      .form-group, .preset-select, .mode-switch, .row-selector { margin-bottom: 0.55rem; }
       .form-group label, .section-label {
         font-size: 0.68rem;
         margin-bottom: 0.18rem;
@@ -678,7 +700,8 @@
         padding: 6px;
         font-size: 0.64rem;
       }
-      .btn-print { margin-top: 6px; padding: 9px; }
+      .btn-print { margin-top: 0; padding: 9px; }
+      .controls h2 + .mode-switch, .controls h2 + .card-selector { margin-top: 0.7rem; }
     }
   </style>
   <link rel="stylesheet" href="assets/css/tema-italia.css">
@@ -699,15 +722,13 @@
       <h2>Cornice 10 X 15</h2>
 
       <!-- SELETTORE CORNICE ATTIVA -->
-      <div class="section-label">Cornice in Modifica</div>
-      <div class="mode-switch">
+      <div class="mode-switch" aria-label="Cornice in Modifica">
         <button type="button" class="active" id="btnLeft" onclick="switchActiveFrame('left')">CORNICE<br>SINISTRA</button>
         <button type="button" id="btnRight" onclick="switchActiveFrame('right')">CORNICE<br>DESTRA</button>
       </div>
 
       <!-- SELETTORE MODALITÀ CARTELLO -->
-      <div class="section-label">Modalità cartello</div>
-      <div class="mode-switch cartello-mode-switch">
+      <div class="mode-switch cartello-mode-switch" aria-label="Modalità cartello">
         <button type="button" class="active" id="standardModeBtn" onclick="setFrameMode('standard')">STANDARD</button>
         <button type="button" id="extraArticleModeBtn" onclick="setFrameMode('extra')">DOPPIO<br>ARTICOLO</button>
         <button type="button" id="brandModeBtn" onclick="setFrameMode('brand')">BRAND</button>
@@ -716,15 +737,14 @@
 
       <!-- CAMPI MODALITA' PERCENTUALE SCONTO -->
       <div id="percentFieldsGroup" style="display: none;">
-        <div class="section-label">Modalità %</div>
-        <div class="mode-switch">
+        <div class="mode-switch" aria-label="Modalità %">
           <button type="button" class="active" id="percentExtraStandardBtn" onclick="setPercentExtra('standard')">STANDARD</button>
           <button type="button" id="percentExtraDescBtn" onclick="setPercentExtra('descrizione')">DESCRIZIONE</button>
           <button type="button" id="percentExtraBrandBtn" onclick="setPercentExtra('brand')">BRAND</button>
         </div>
 
         <div class="form-group">
-          <label for="percentValue">Percentuale Sconto</label>
+          <label class="section-label" for="percentValue">Percentuale Sconto</label>
           <div class="percent-input-wrapper">
             <input type="number" id="percentValue" min="1" max="99" oninput="updatePercentData()">
             <div class="percent-stepper">
@@ -735,7 +755,7 @@
         </div>
 
         <div class="form-group" id="percentDescGroup">
-          <label for="percentDescPreset">Articolo // Promo</label>
+          <label class="section-label" for="percentDescPreset">Promozione</label>
           <div class="preset-select">
             <select id="percentDescPreset" onchange="applyPercentDescPreset()">
               <option value="">-- Seleziona un testo --</option>
@@ -759,7 +779,7 @@
 
       <div id="brandFieldsGroup" style="display: none;">
         <div class="form-group">
-          <label for="brandSelect">Brand</label>
+          <label class="section-label" for="brandSelect">BRAND</label>
           <div class="preset-select">
             <select id="brandSelect" onchange="updateBrandSelection()">
               <option value="">-- Seleziona Brand --</option>
@@ -771,7 +791,7 @@
           <label for="customBrandSelect">Loghi personalizzati</label>
           <div class="preset-select">
             <select id="customBrandSelect" onchange="updateCustomBrandSelection()">
-              <option value="">-- Nessun logo personalizzato --</option>
+              <option value="">-- Seleziona Logo Personalizzato --</option>
             </select>
           </div>
         </div>
@@ -779,8 +799,7 @@
 
       <!-- SELETTORE RIGA ATTIVA (attivo solo se 2 articoli sono attivi) -->
       <div id="rowSelectorWrapper" style="display: none;">
-        <div class="section-label">Seleziona Articolo</div>
-        <div class="row-selector" id="rowSelectorContainer">
+        <div class="row-selector" aria-label="Seleziona Articolo" id="rowSelectorContainer">
           <button type="button" class="active" id="btnRow0" onclick="selectActiveRow(0)">Articolo 1</button>
           <button type="button" id="btnRow1" onclick="selectActiveRow(1)">Articolo 2</button>
         </div>
@@ -788,18 +807,45 @@
 
       <!-- CAMPI INPUT -->
       <div class="form-group" id="descriptionFieldsGroup">
-        <label id="descLabel">Descrizione Articolo</label>
+        <label class="section-label" id="descLabel" for="descPreset">Testo Pronto</label>
         <div class="preset-select">
           <select id="descPreset" onchange="applyDescPreset()">
-            <option value="PURO COTONE">PURO COTONE</option>
-            <option value="LANA & CACHEMIRE">LANA & CACHEMIRE</option>
-            <option value="PURA SETA">PURA SETA</option>
-            <option value="LINO PURO">LINO PURO</option>
-            <option value="ECO PELLICCIA">ECO PELLICCIA</option>
-            <option value="LANA MERINOS">LANA MERINOS</option>
-            <option value="MADE IN ITALY">MADE IN ITALY</option>
+            <option value="" selected>-- Seleziona un Testo o Articolo --</option>
+            <option value="PURO COTONE">⭐ PURO COTONE</option>
+            <option value="LANA & CACHEMIRE">⭐ LANA & CACHEMIRE</option>
+            <option value="PURA SETA">⭐ PURA SETA</option>
+            <option value="LINO PURO">⭐ LINO PURO</option>
+            <option value="ECO PELLICCIA">⭐ ECO PELLICCIA</option>
+            <option value="LANA MERINOS">⭐ LANA MERINOS</option>
+            <option value="MADE IN ITALY">⭐ MADE IN ITALY</option>
+            <!-- Articoli (stesso elenco di Multi Articolo), in maiuscolo e in ordine alfabetico -->
+            <option value="ABITO">ABITO</option>
+            <option value="BERMUDA">BERMUDA</option>
+            <option value="BLUSA">BLUSA</option>
+            <option value="BORSA">BORSA</option>
+            <option value="BORSA VERA PELLE">BORSA VERA PELLE</option>
+            <option value="CAMICIA">CAMICIA</option>
+            <option value="CAPPELLO">CAPPELLO</option>
+            <option value="CAPPOTTO">CAPPOTTO</option>
+            <option value="CARDIGAN">CARDIGAN</option>
+            <option value="CINTURA">CINTURA</option>
+            <option value="COPRISPALLE">COPRISPALLE</option>
+            <option value="FOULARD">FOULARD</option>
+            <option value="GIACCA">GIACCA</option>
+            <option value="GILET">GILET</option>
+            <option value="GONNA">GONNA</option>
+            <option value="JEANS">JEANS</option>
+            <option value="MAGLIA">MAGLIA</option>
+            <option value="OCCHIALI">OCCHIALI</option>
+            <option value="PANTALONCINO">PANTALONCINO</option>
+            <option value="PANTALONE">PANTALONE</option>
+            <option value="SHORTS">SHORTS</option>
+            <option value="T-SHIRT">T-SHIRT</option>
+            <option value="TOP">TOP</option>
+            <option value="TUTINA">TUTINA</option>
           </select>
         </div>
+        <label for="descFree">Testo Libero</label>
         <textarea id="descFree" placeholder="Testo descrittivo..." oninput="updateData()"></textarea>
       </div>
 
@@ -810,7 +856,7 @@
       </div>
 
       <div class="form-group">
-        <label>Percentuale Sconto</label>
+        <label class="section-label" for="discountValue">Percentuale Sconto</label>
         <div class="percent-input-wrapper">
           <input type="number" id="discountValue" min="1" max="99" oninput="updateData()">
           <div class="percent-stepper">
@@ -991,9 +1037,9 @@
       if (state.twoArticlesActive) {
         document.getElementById('btnRow0').classList.toggle('active', state.activeRow === 0);
         document.getElementById('btnRow1').classList.toggle('active', state.activeRow === 1);
-        document.getElementById('descLabel').textContent = `Descrizione Articolo ${state.activeRow + 1}`;
+        document.getElementById('descLabel').textContent = `Testo Pronto Articolo ${state.activeRow + 1}`;
       } else if (!state.brandActive) {
-        document.getElementById('descLabel').textContent = 'Descrizione Articolo';
+        document.getElementById('descLabel').textContent = 'Testo Pronto';
       }
 
       document.getElementById('brandSelect').value = state.brand.officialFile;
@@ -1099,9 +1145,12 @@
 
     function applyDescPreset() {
       const preset = document.getElementById('descPreset').value;
+      if (!preset) return;
       const formatted = preset === 'MADE IN ITALY'
         ? 'MADE\nIN ITALY'
-        : preset.replace(' & ', ' &\n').replace(' COTONE', '\nCOTONE').replace(' CACHEMIRE', '\nCACHEMIRE').replace(' SETA', '\nSETA').replace(' PURO', '\nPURO').replace(' PELLICCIA', '\nPELLICCIA').replace(' MERINOS', '\nMERINOS');
+        : preset === 'BORSA VERA PELLE'
+          ? 'BORSA\nVERA PELLE'
+          : preset.replace(' & ', ' &\n').replace(' COTONE', '\nCOTONE').replace(' CACHEMIRE', '\nCACHEMIRE').replace(' SETA', '\nSETA').replace(' PURO', '\nPURO').replace(' PELLICCIA', '\nPELLICCIA').replace(' MERINOS', '\nMERINOS');
       document.getElementById('descFree').value = formatted;
       updateData();
     }
@@ -1166,6 +1215,7 @@
         const lineCount = art.desc.split(/\r?\n/).length;
         box.classList.toggle('standard-max-lines', lineCount > 3);
         box.classList.toggle('standard-two-line-desc', lineCount === 2);
+        box.classList.toggle('standard-one-line-desc', lineCount === 1 && !state.brandActive && art.desc.trim() !== '');
         if (lineCount > 3) {
           box.style.setProperty('--standard-desc-font-size', `${54 / lineCount}pt`);
         } else {
@@ -1189,11 +1239,12 @@
         if (state.brandActive) {
           loadBrandImage(container.querySelector('.frame-brand-logo'), state.brand);
         }
+        if (box.classList.contains('standard-one-line-desc')) fitOneLineDesc(container);
       } else {
         box.classList.add('layout-2-articles');
         box.classList.remove('brand-mode');
         box.classList.remove('standard-max-lines');
-        box.classList.remove('standard-two-line-desc');
+        box.classList.remove('standard-two-line-desc', 'standard-one-line-desc');
         box.style.removeProperty('--standard-desc-font-size');
         const art1 = state.articles[0];
         const art2 = state.articles[1];
@@ -1222,7 +1273,7 @@
     // Percentuale Sconto: descrizione o logo brand, "FINO AL" con la barra del meno
     // e la percentuale, logo TEBE oro; il tutto tra le due decorazioni della cornice.
     function renderPercentContent(state, box, container) {
-      box.classList.remove('layout-2-articles', 'brand-mode', 'standard-max-lines', 'standard-two-line-desc');
+      box.classList.remove('layout-2-articles', 'brand-mode', 'standard-max-lines', 'standard-two-line-desc', 'standard-one-line-desc');
       box.style.removeProperty('--standard-desc-font-size');
 
       const element = (tag, className, text) => {
@@ -1285,10 +1336,30 @@
       brandImage.alt = customLogo?.name || cleanBrandName(brand.officialFile);
     }
 
+    // Testo su una riga troppo lungo (es. PANTALONCINO): il corpo si riduce finché il testo non supera
+    // il 70% della larghezza dei decori. Le misure sono a schermo, il rapporto vale anche in stampa.
+    const ONE_LINE_MAX_RATIO = 0.7;
+    function fitOneLineDesc(container) {
+      const title = container.querySelector('.desc-title');
+      const deco = container.querySelector('.deco-img');
+      if (!title || !deco) return;
+      title.style.fontSize = '';
+      const range = document.createRange();
+      range.selectNodeContents(title);
+      const textWidth = range.getBoundingClientRect().width;
+      const maxWidth = deco.getBoundingClientRect().width * ONE_LINE_MAX_RATIO;
+      if (!textWidth || !maxWidth || textWidth <= maxWidth) return;
+      const fontSize = parseFloat(getComputedStyle(title).fontSize);
+      title.style.fontSize = `${fontSize * maxWidth / textWidth}px`;
+    }
+
     function updateAll() {
       renderFrameContent('left');
       renderFrameContent('right');
     }
+
+    // Il carattere Castoro arriva da Google Fonts: a caricamento finito si rimisurano i testi.
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => updateAll());
 
     // Tema Made in Italy indipendente per ciascuna cornice: per ogni lato si
     // conserva lo stato di prima dell'attivazione (null = tema spento).

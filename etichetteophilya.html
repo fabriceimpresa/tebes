@@ -610,7 +610,7 @@
         </div>
         <div class="form-group" style="margin-bottom: 0;">
           <select id="customLogoSelect" class="form-control custom-select" onchange="onCustomLogoSelectChange()">
-            <option value="">-- Nessun Logo Personalizzato --</option>
+            <option value="">-- Seleziona Logo Personalizzato --</option>
           </select>
         </div>
       </div>
@@ -1030,7 +1030,7 @@
       const select = document.getElementById('customLogoSelect');
       const customLogos = JSON.parse(localStorage.getItem('custom_brand_logos') || localStorage.getItem('customLogos') || '[]');
 
-      select.innerHTML = '<option value="">-- Nessun Logo Personalizzato --</option>';
+      select.innerHTML = '<option value="">-- Seleziona Logo Personalizzato --</option>';
 
       if (Array.isArray(customLogos) && customLogos.length > 0) {
         customLogos.forEach((item, index) => {

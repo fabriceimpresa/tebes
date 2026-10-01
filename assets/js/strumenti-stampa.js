@@ -13,12 +13,13 @@
   // Foto guida per capire dove montare la stampa, per pagina: { src, caption }.
   // Finché l'elenco di una pagina è vuoto il popup mostra dei riquadri segnaposto.
   // Le foto stanno in assets/foto/.
-  const MORSA_SALE = [{ src: 'assets/foto/morsasale.jpg' }];
+  // Cartelli in morsa sulla rastrelliera: stessa foto, con sopra il cartello della pagina.
   const GUIDE_PHOTOS = {
-    'cartelli_semplici.html': MORSA_SALE,
-    'cartelli_sale.html': MORSA_SALE,
-    'cartelli_brand.html': MORSA_SALE,
-    'cartellopercentuale.html': MORSA_SALE,
+    'cartelli_semplici.html': [{ src: 'assets/foto/morsasemplice.jpg' }],
+    'cartelli_sale.html': [{ src: 'assets/foto/morsasale.jpg' }],
+    'cartelli_brand.html': [{ src: 'assets/foto/morsabrand.jpg' }],
+    'cartellopercentuale.html': [{ src: 'assets/foto/morsapercentuale.jpg' }],
+    'cartelli_multiarticolo.html': [{ src: 'assets/foto/morsamultiarticolo.jpg' }],
     'cornici10x15.html': [{ src: 'assets/foto/cornice10x15.jpg' }],
     'paletto.html': [{ src: 'assets/foto/paletto.jpg' }],
     'paletto18x12.html': [{ src: 'assets/foto/paletto.jpg' }]

@@ -50,7 +50,7 @@
       color: #b49a62;
       border-bottom: 1px solid #e3dacb;
       padding-bottom: 0.6rem;
-      margin-bottom: 1.2rem;
+      margin-bottom: 0.8rem;
       letter-spacing: 1.5px;
       text-align: center;
       text-transform: uppercase;
@@ -62,7 +62,7 @@
       font-weight: 600;
       letter-spacing: 0.04em;
       text-transform: uppercase;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.35rem;
     }
 
     /* SELETTORI MODALITA' E RIGHE */
@@ -74,7 +74,7 @@
       background: #f3ede0;
       border: 1px solid #e3dacb;
       border-radius: 6px;
-      margin-bottom: 1.4rem;
+      margin-bottom: 0.8rem;
     }
 
     .mode-switch button,
@@ -100,14 +100,29 @@
       box-shadow: 0 1px 3px rgba(0,0,0,0.08);
     }
 
+    /* Pannello che comincia con un selettore: un poco di spazio in più sopra il selettore
+       (i margini si sommano a quello del titolo: vale il maggiore) */
+    .controls h2 + .mode-switch, .controls h2 + .card-selector { margin-top: 1rem; }
+
+    /* Spazi regolari nel pannello (come Cartelli Semplici): 0,35rem tra etichetta e campo, 0,8rem tra
+       un campo e l'etichetta successiva, tra i gruppi, sotto titolo e selettori e prima del tasto di stampa */
     .form-group { margin-bottom: 0.8rem; }
 
     .form-group label {
       display: block;
       font-size: 0.72rem;
       font-weight: normal;
-      margin-bottom: 0.3rem;
+      margin-bottom: 0.35rem;
       color: #665e54;
+    }
+
+    /* Titoli dei menu a discesa e dei campi con frecce: come le altre etichette, nell'oro dei
+       pulsanti sotto il pannello */
+    .form-group .section-label {
+      color: #b49a62;
+      font-weight: normal;
+      letter-spacing: normal;
+      text-transform: none;
     }
 
     .form-group input,
@@ -130,7 +145,7 @@
 
     .preset-select {
       position: relative;
-      margin-bottom: 0.6rem;
+      margin-bottom: 0.8rem;
       border: 1px solid #e3dacb;
       border-radius: 4px;
       background-color: #f8f6f1;
@@ -254,7 +269,7 @@
       text-transform: uppercase;
       border-radius: 4px;
       cursor: pointer;
-      margin-top: 10px;
+      margin-top: 0;
       transition: background-color 0.2s;
     }
 
@@ -616,11 +631,11 @@
       .controls h1, .controls h2 {
         font-size: 0.95rem;
         padding-bottom: 12px;
-        margin-bottom: 0.6rem;
+        margin-bottom: 0.55rem;
       }
       /* Pannello piu' compatto: su cellulare pannello e foglio devono
          stare in poco piu' di una schermata. */
-      .form-group { margin-bottom: 0.55rem; }
+      .form-group, .preset-select, .mode-switch, .row-selector { margin-bottom: 0.55rem; }
       .form-group label, .section-label {
         font-size: 0.68rem;
         margin-bottom: 0.18rem;
@@ -633,7 +648,8 @@
         padding: 6px;
         font-size: 0.64rem;
       }
-      .btn-print { margin-top: 6px; padding: 9px; }
+      .btn-print { margin-top: 0; padding: 9px; }
+      .controls h2 + .mode-switch, .controls h2 + .card-selector { margin-top: 0.7rem; }
     }
   </style>
   <link rel="stylesheet" href="assets/css/strumenti-stampa.css">
@@ -653,21 +669,19 @@
     <div class="controls">
       <h2>Cartello Multi Articolo</h2>
 
-      <div class="section-label">Numero Articoli</div>
       <div class="mode-switch">
         <button type="button" id="btnNum2" onclick="setNumArticles(2)">2 Articoli</button>
         <button type="button" id="btnNum3" class="active" onclick="setNumArticles(3)">3 Articoli</button>
         <button type="button" id="btnNum4" onclick="setNumArticles(4)">4 Articoli</button>
       </div>
 
-      <div class="section-label">Seleziona Riga da Modificare</div>
       <div class="row-selector" id="rowSelectorContainer">
         <!-- Generati dinamicamente via JS -->
       </div>
 
       <!-- Form per la riga attiva -->
       <div class="form-group">
-        <label>Descrizione Articolo (Max 25 Caratteri)</label>
+        <label class="section-label" for="descPreset">Articoli</label>
         <div class="preset-select">
           <select id="descPreset" onchange="applyDescPreset()">
             <option value="">-- Seleziona un articolo --</option>
@@ -697,6 +711,7 @@
             <option value="Tutina">Tutina</option>
           </select>
         </div>
+        <label for="descFree">Testo Libero</label>
         <input type="text" id="descFree" value="" maxlength="25" placeholder="-- Testo Libero (Max 25 ch) --" oninput="onInputDesc()">
       </div>
 
@@ -706,7 +721,7 @@
       </div>
 
       <div class="form-group">
-        <label>Percentuale Sconto (%)</label>
+        <label class="section-label" for="discountValue">Percentuale Sconto</label>
         <div class="percent-input-wrapper">
           <input type="number" id="discountValue" value="20" min="1" max="99" oninput="onInputDiscount()">
           <div class="percent-stepper">

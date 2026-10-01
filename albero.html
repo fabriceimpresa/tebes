@@ -34,7 +34,7 @@
     }
 
     .controls h1 {
-      margin-bottom: 1.2rem;
+      margin-bottom: 0.8rem;
       padding-bottom: 0.6rem;
       border-bottom: 1px solid #e3dacb;
       color: #b49a62;
@@ -45,7 +45,7 @@
     }
 
     .section-label {
-      margin-bottom: 0.4rem;
+      margin-bottom: 0.35rem;
       color: #8a6a35;
       font-size: 0.72rem;
       font-weight: 600;
@@ -56,7 +56,7 @@
     .card-selector {
       display: flex;
       gap: 4px;
-      margin-bottom: 1.2rem;
+      margin-bottom: 0.8rem;
       padding: 4px;
       border: 1px solid #e3dacb;
       border-radius: 6px;
@@ -70,7 +70,7 @@
       border-radius: 4px;
       background: transparent;
       color: #8a7f6e;
-      font: 600 0.78rem system-ui, -apple-system, sans-serif;
+      font: 600 0.78rem Arial, Helvetica, sans-serif;
       cursor: pointer;
     }
 
@@ -80,7 +80,13 @@
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
     }
 
-    .form-group { margin-bottom: 1rem; }
+    /* Pannello che comincia con un selettore: un poco di spazio in più sopra il selettore
+       (i margini si sommano a quello del titolo: vale il maggiore) */
+    .controls h1 + .mode-switch, .controls h1 + .card-selector { margin-top: 1rem; }
+
+    /* Spazi regolari nel pannello (come Cartelli Semplici): 0,35rem tra etichetta e campo, 0,8rem tra
+       un campo e l'etichetta successiva, tra i gruppi, sotto titolo e selettori e prima del tasto di stampa */
+    .form-group { margin-bottom: 0.8rem; }
 
     .form-group label {
       display: block;
@@ -91,12 +97,12 @@
 
     .form-group input {
       width: 100%;
-      padding: 0.55rem;
+      padding: 0.45rem;
       border: 1px solid #e3dacb;
       border-radius: 4px;
       background: #f8f6f1;
       color: #282522;
-      font: 0.9rem system-ui, -apple-system, sans-serif;
+      font: 0.82rem Arial, Helvetica, sans-serif;
     }
 
     .form-group input:focus {
@@ -105,15 +111,65 @@
       box-shadow: 0 0 4px rgba(180, 154, 98, 0.35);
     }
 
+    /* Titoli dei menu a discesa: come le altre etichette, nell'oro dei pulsanti sotto il pannello */
+    .form-group .section-label {
+      color: #b49a62;
+      font-weight: normal;
+      letter-spacing: normal;
+      text-transform: none;
+    }
+
+    /* Menu a discesa con la casella del triangolo a destra, come nelle altre pagine */
+    .preset-select {
+      position: relative;
+      margin-bottom: 0.8rem;
+      overflow: hidden;
+      border: 1px solid #e3dacb;
+      border-radius: 4px;
+      background: #f8f6f1;
+    }
+
+    .preset-select:focus-within {
+      border-color: #b49a62;
+      box-shadow: 0 0 4px rgba(180, 154, 98, 0.35);
+    }
+
+    .preset-select select {
+      width: 100%;
+      padding: 0.45rem 2rem 0.45rem 0.45rem;
+      border: none;
+      background: transparent;
+      color: #282522;
+      font: 0.82rem Arial, Helvetica, sans-serif;
+      appearance: none;
+    }
+
+    .preset-select select:focus { outline: none; }
+
+    .preset-select::after {
+      content: '▼';
+      position: absolute;
+      inset: 0 0 0 auto;
+      width: 1.6rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-left: 1px solid #e3dacb;
+      background: #f3ede0;
+      color: #b49a62;
+      font-size: 0.6rem;
+      pointer-events: none;
+    }
+
     .btn-print {
       width: 100%;
-      margin-top: 0.3rem;
+      margin-top: 0;
       padding: 10px;
       border: 1px solid #96382b;
       border-radius: 4px;
       background: #96382b;
       color: #fffdfa;
-      font: 700 0.78rem system-ui, -apple-system, sans-serif;
+      font: 700 0.78rem Arial, Helvetica, sans-serif;
       letter-spacing: 0.6px;
       text-transform: uppercase;
       cursor: pointer;
@@ -315,7 +371,7 @@
         overflow: visible;
         padding-bottom: 12px;
       }
-      .form-group input { font-size: 16px; }
+      .form-group input, .preset-select select { font-size: 16px; }
       .card-selector button { min-height: 44px; }
       .print-sheet { zoom: 0.75; }
       .app-close-btn { top: 10px; right: 4px; width: 44px; height: 44px; }
@@ -332,11 +388,11 @@
       .controls h1, .controls h2 {
         font-size: 0.95rem;
         padding-bottom: 12px;
-        margin-bottom: 0.6rem;
+        margin-bottom: 0.55rem;
       }
       /* Pannello piu' compatto: su cellulare pannello e foglio devono
          stare in poco piu' di una schermata. */
-      .form-group { margin-bottom: 0.55rem; }
+      .form-group, .card-selector, .preset-select { margin-bottom: 0.55rem; }
       .form-group label, .section-label {
         font-size: 0.68rem;
         margin-bottom: 0.18rem;
@@ -349,7 +405,8 @@
         padding: 6px;
         font-size: 0.64rem;
       }
-      .btn-print { margin-top: 6px; padding: 9px; }
+      .btn-print { margin-top: 0; padding: 9px; }
+      .controls h1 + .mode-switch, .controls h1 + .card-selector { margin-top: 0.7rem; }
     }
   </style>
   <link rel="stylesheet" href="assets/css/strumenti-stampa.css">
@@ -367,15 +424,58 @@
     <section class="controls" aria-labelledby="pageTitle">
       <h1 id="pageTitle">Albero Accessori</h1>
 
-      <div class="section-label" id="selectorLabel">Cartello in modifica</div>
-      <div class="card-selector" role="group" aria-labelledby="selectorLabel">
+      <div class="card-selector" role="group" aria-label="Cartello in modifica">
         <button type="button" class="active" aria-pressed="true" onclick="selectSign(0)">1</button>
         <button type="button" aria-pressed="false" onclick="selectSign(1)">2</button>
         <button type="button" aria-pressed="false" onclick="selectSign(2)">3</button>
       </div>
 
       <div class="form-group">
-        <label for="descriptionInput">Testo descrittivo</label>
+        <label class="section-label" for="descPreset">Testi Pronti</label>
+        <div class="preset-select">
+          <select id="descPreset" onchange="applyDescPreset()">
+            <option value="">-- Seleziona un testo --</option>
+            <optgroup label="Articoli">
+              <option value="Abito">Abito</option>
+              <option value="Bermuda">Bermuda</option>
+              <option value="Blusa">Blusa</option>
+              <option value="Borsa">Borsa</option>
+              <option value="Borsa Vera Pelle">Borsa Vera Pelle</option>
+              <option value="Camicia">Camicia</option>
+              <option value="Cappello">Cappello</option>
+              <option value="Cappotto">Cappotto</option>
+              <option value="Cardigan">Cardigan</option>
+              <option value="Cintura">Cintura</option>
+              <option value="Coprispalle">Coprispalle</option>
+              <option value="Foulard">Foulard</option>
+              <option value="Giacca">Giacca</option>
+              <option value="Gilet">Gilet</option>
+              <option value="Gonna">Gonna</option>
+              <option value="Jeans">Jeans</option>
+              <option value="Maglia">Maglia</option>
+              <option value="Occhiali">Occhiali</option>
+              <option value="Pantaloncino">Pantaloncino</option>
+              <option value="Pantalone">Pantalone</option>
+              <option value="Shorts">Shorts</option>
+              <option value="T-Shirt">T-Shirt</option>
+              <option value="Top">Top</option>
+              <option value="Tutina">Tutina</option>
+            </optgroup>
+            <optgroup label="Promozioni">
+              <option value="Special Deal">Special Deal</option>
+              <option value="Final Price">Final Price</option>
+              <option value="Summer Sale">Summer Sale</option>
+              <option value="Spring Sale">Spring Sale</option>
+              <option value="Winter Sale">Winter Sale</option>
+              <option value="Black Friday">Black Friday</option>
+              <option value="Made in Italy">Made in Italy</option>
+              <option value="Vera Pelle • Genuine Leather">Vera Pelle • Genuine Leather</option>
+              <option value="Made in Italy • Genuine Leather">Made in Italy • Genuine Leather</option>
+              <option value="Fino ad esaurimento scorte">Fino ad esaurimento scorte</option>
+            </optgroup>
+          </select>
+        </div>
+        <label for="descriptionInput">Testo Libero</label>
         <input id="descriptionInput" type="text" value="Foulard" maxlength="80" oninput="updateActiveSign()">
       </div>
 
@@ -424,6 +524,13 @@
       document.getElementById(`pricePreview${activeSign}`).textContent = `€ ${sign.price}`;
     }
 
+    // Testi Pronti (lo stesso menu di Cartellini TEBE: articoli e testi promo) scrive il testo nel campo libero.
+    function applyDescPreset() {
+      const preset = document.getElementById('descPreset').value;
+      if (preset) document.getElementById('descriptionInput').value = preset;
+      updateActiveSign();
+    }
+
     function selectSign(index) {
       updateActiveSign();
       activeSign = index;
@@ -433,6 +540,7 @@
         button.setAttribute('aria-pressed', String(isActive));
       });
       document.getElementById('descriptionInput').value = signs[index].description;
+      document.getElementById('descPreset').value = '';
       document.getElementById('priceInput').value = signs[index].price;
     }
   </script>
@@ -448,7 +556,7 @@
       obstacles: () => activeTreeSign()?.querySelectorAll('.sign-description, .sign-price, .sign-logo') || [],
       rules: [
         { controls: '.card-selector', target: activeTreeSign, placement: 'above' },
-        { controls: '#descriptionInput', target: () => document.getElementById(`descriptionPreview${activeSign}`) },
+        { controls: '#descPreset, #descriptionInput', target: () => document.getElementById(`descriptionPreview${activeSign}`) },
         { controls: '#priceInput', target: () => document.getElementById(`pricePreview${activeSign}`) }
       ]
     });
