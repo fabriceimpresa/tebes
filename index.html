@@ -258,6 +258,9 @@ body.cassiere-mode #strumenti-cassa{order:1}
 body.cassiere-mode #cash-tools-area{order:2}
 body.creator-mode #strumenti-cassa,
 body.creator-mode #cash-tools-area{order:20}
+/* OPHILYA in CREATOR: le Utilità di Cassa non compaiono (restano in CASSIERE). */
+body.ophilya.creator-mode #strumenti-cassa,
+body.ophilya.creator-mode #cash-tools-area{display:none}
 body.cassiere-mode .content > #cartelli,
 body.cassiere-mode .content > .cartelli-carousel-shell,
 body.cassiere-mode .content > #etichette,
@@ -315,7 +318,7 @@ h1{
 .section{
   font-size:10px;
   letter-spacing:.25em;
-  color:#8b8175;
+  color:var(--gold);
   margin:31px 0 14px;
 }
 /* Un po' di respiro in piu' sopra la prima sezione (solo desktop: sul telefono vale la regola mobile). */
@@ -589,6 +592,13 @@ h1{
   scroll-snap-type:x mandatory;
   scroll-behavior:smooth;
   scrollbar-width:none;
+}
+/* Durante il cambio di negozio i caroselli tornano all'inizio di colpo, senza
+   animazione e senza riagganciarsi alla card di prima (vedi resetCarousels). */
+body.store-switching .cards,
+body.store-switching .dymo-carousel{
+  scroll-snap-type:none;
+  scroll-behavior:auto;
 }
 .dymo-carousel::-webkit-scrollbar{
   display:none;
@@ -1067,8 +1077,7 @@ body.ophilya .lower{
   pointer-events:none;
 }
 /* Widget presenti solo in TEBE (es. etichetta Taglie Brand, che OPHILYA non ha). */
-body.ophilya .tebe-only{display:none}
-/* Widget presenti solo in OPHILYA (es. Albero Accessori OPHILYA, primo di CREA CARTELLI). */
+body.ophilya .tebe-only{display:none}/* Widget presenti solo in OPHILYA (es. Albero Accessori OPHILYA, primo di CREA CARTELLI). */
 body:not(.ophilya) .ophilya-only{display:none}
 /* OPHILYA: in CREA CARTELLI i cartelli TEBE lasciano il posto a voci "Presto disponibile" non cliccabili. */
 .sidebar-nav-ophilya,
@@ -1524,7 +1533,7 @@ body.ophilya .cash-tools-coming-soon{
           <div>
             <div class="number">01<span class="card-type">RASTRELLIERA</span></div>
             <div class="card-thumb slideshow">
-              <img src="assets/thumbnail/alberoophilyathumb.png" alt="Albero Accessori OPHILYA">
+              <img src="assets/thumbnail/alberoophilyathumb.png?v=20261002" alt="Albero Accessori OPHILYA">
               <img src="assets/thumbnail/alberoophilyathumb2.png" alt="" aria-hidden="true">
             </div>
           </div>
@@ -1959,6 +1968,7 @@ function changeStore(store){
 
   document.getElementById("tebe").classList.toggle("selected",store==="tebe");
   document.getElementById("ophilya").classList.toggle("selected",store==="ophilya");
+  document.body.classList.add("store-switching");
   document.body.classList.toggle("ophilya", store === "ophilya");
   // Miniature con una versione OPHILYA (es. etichette DYMO).
   document.querySelectorAll("img[data-ophilya-src]").forEach(img => {
@@ -1967,6 +1977,30 @@ function changeStore(store){
   });
 
   updateLinks();
+  resetCarousels();
+}
+
+/* Al cambio di negozio compaiono o spariscono card in testa ai caroselli
+   (es. .ophilya-only): lo scroll-snap resterebbe agganciato alla card di prima,
+   più avanti nel carosello, e lo scorrimento animato si vedrebbe. Con la classe
+   store-switching (aggiunta da changeStore) snap e animazione sono sospesi:
+   i caroselli tornano subito al primo widget e solo dopo si riattiva lo snap,
+   che a quel punto si aggancia proprio al primo. */
+function resetCarousels(){
+  const carousels = document.querySelectorAll(".cartelli-carousel, .dymo-carousel");
+  const reset = () => carousels.forEach(carousel => {
+    carousel._carouselTarget = null;
+    carousel.scrollLeft = 0;
+  });
+  reset();
+  requestAnimationFrame(() => {
+    reset();
+    document.body.classList.remove("store-switching");
+    updateDymoCarouselControls();
+    updateCartelliCarouselControls();
+    updatePrintsCarouselControls();
+    updateCartelliniCarouselControls();
+  });
 }
 
 function goTo(sectionId){
