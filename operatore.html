@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <script src="assets/js/negozi.js?v=20261010-45"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>STORE // CRAFT · Area operatore</title>
+  <!-- Pagina operatore: strumenti di amministrazione riservati al titolare di STORE // CRAFT. Non collegata da dashboard
+       e splash page. Nella copia per un cliente (installati.js con copiaCliente) mostra solo Importa e Gestisci loghi
+       ufficiali, per aggiornare i menu BRAND di quel cliente senza toccare il progetto madre. Raccoglie l'importazione e la gestione dei loghi ufficiali
+       (logoimport.html, logogestione.html), la guida tecnica (guida-componenti.html), la struttura delle pagine (schema-pagine.html) e la preparazione di una copia per un cliente, fatta qui con la File System
+       Access API (Chrome / Edge sul computer), con la stessa logica di Prepara copia.bat, che resta come alternativa. -->
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600&family=Plus+Jakarta+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #121110;
+      --frame: #8f6a1f;          /* oro scuro della cornice, come nella splash page */
+      --frame-soft: rgba(143, 106, 31, 0.35);
+      --gold: #b48b37;
+      --gold-light: #e5ba73;
+      --accent: #d4a373;
+      --text: #f4f1ea;
+      --text-muted: #8c857b;
+      --card: #1a1917;
+      --ok: #6fbf73;
+      --err: #e06666;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      background: var(--bg);
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 28px;
+      padding: 40px 16px;
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', Arial, sans-serif;
+      background:
+        radial-gradient(ellipse at top, rgba(180, 139, 55, 0.07) 0%, rgba(18, 17, 16, 0) 60%),
+        var(--bg);
+    }
+
+    /* Cornice doppia della splash page */
+    .frame {
+      position: relative;
+      width: min(880px, 100%);
+      /* sotto 13 px in più che sopra: il logo ha un poco di margine trasparente in alto, così lo spazio libero tra la
+         linea interna della cornice e il contenuto è uguale sopra e sotto */
+      padding: 58px 44px 67px;
+      border: 1px solid var(--frame);
+    }
+
+    .frame::before {
+      content: '';
+      position: absolute;
+      inset: 7px;
+      border: 1px solid var(--frame-soft);
+      pointer-events: none;
+    }
+
+    .brand {
+      display: block;
+      width: 150px;
+      height: auto;
+      margin: 0 auto;
+      filter: brightness(0) saturate(100%) invert(73%) sepia(29%) saturate(836%) hue-rotate(352deg) brightness(91%) contrast(87%);
+      opacity: 0.9;
+    }
+
+    .title {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin: 30px auto;
+      max-width: 520px;
+      color: var(--gold-light);
+      font-family: 'Cinzel', serif;
+      font-weight: 500;
+      font-size: 0.78rem;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .title::before,
+    .title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--frame-soft);
+    }
+
+    /* Menu degli strumenti: solo i titoli, in grigio chiaro (oro al passaggio), ben spaziati, divisi da linee sottili. Al passaggio del mouse (o con la
+       tastiera) un accenno da terminale: > davanti e < dopo, come una voce scelta in un terminale; tutto in IBM Plex Mono */
+    .menu {
+      display: flex;
+      flex-direction: column;
+      max-width: 520px;
+      margin: 6px auto 0;
+      padding-top: 12px;   /* un poco di respiro sotto il titolo (un margine si fonderebbe con quello del titolo) */
+    }
+
+    .voce {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 22px 0;
+      border: 0;
+      /* divisorio sopra la voce, largo quanto il riquadro di Guida tecnica (--larghezza-divisori, misurata nello script) */
+      background: linear-gradient(rgba(143, 106, 31, 0.22), rgba(143, 106, 31, 0.22)) top center / var(--larghezza-divisori, 100%) 1px no-repeat;
+      /* grigio chiaro del testo della guida dei componenti (#d9d3c7); al passaggio oro */
+      color: #d9d3c7;
+      /* carattere da terminale, come dentro le sezioni operatore (guida dei componenti) */
+      font: 400 0.78rem 'IBM Plex Mono', ui-monospace, monospace;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      text-decoration: none;
+      cursor: pointer;
+      transition: color 0.2s ease, letter-spacing 0.3s ease;
+    }
+
+    .voce:first-child { background: none; }
+    /* Guida tecnica: un aiuto, staccata dagli strumenti (spazio, niente linea sopra) e chiusa in un riquadro con il
+       solo bordo, tutto nell'oro spento della cornice (--frame), con l'icona dell'aiuto */
+    .voce-aiuto { align-self: center; margin-top: 42px; padding: 12px 24px; border: 1px solid var(--frame); background: none; color: var(--frame); }
+    .voce-aiuto::before, .voce-aiuto::after { color: var(--frame); }
+    .voce-aiuto svg { flex: none; width: 15px; height: 15px; }
+    .voce-aiuto:hover, .voce-aiuto:focus-visible { color: var(--gold); border-color: var(--gold); }
+
+    .voce::before,
+    .voce::after {
+      font: 400 0.78rem 'IBM Plex Mono', ui-monospace, monospace;
+      color: var(--gold);
+      letter-spacing: 0;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .voce::before { content: '>'; }
+    .voce::after { content: '<'; }
+
+    .voce:hover,
+    .voce:focus-visible,
+    .voce[aria-expanded="true"] {
+      color: var(--gold-light);
+      letter-spacing: 0.19em;
+      outline: none;
+    }
+
+    .voce:hover::before,
+    .voce:focus-visible::before,
+    .voce[aria-expanded="true"]::before { opacity: 1; }
+
+    .voce:hover::after,
+    .voce:focus-visible::after,
+    .voce[aria-expanded="true"]::after { opacity: 1; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .voce { transition: none; }
+    }
+
+    /* Viste delle sezioni (Importa loghi, Gestisci loghi, Prepara copia) dentro la cornice: cliccando una voce le altre
+       spariscono, il titolo diventa il nome della sezione (scritto come in un terminale) e la cornice si adatta alla
+       nuova altezza con un'animazione; ← area operatore riporta al menu. Stile terminale elegante (IBM Plex Mono) */
+    .indietro {
+      position: absolute;
+      top: 20px;
+      left: 24px;
+      z-index: 2;
+      padding: 0;
+      border: 0;
+      background: none;
+      color: var(--text-muted);
+      font: 400 11.5px 'IBM Plex Mono', ui-monospace, monospace;
+      letter-spacing: .08em;
+      cursor: pointer;
+      transition: color .2s;
+    }
+    .indietro:hover, .indietro:focus-visible { color: var(--gold-light); outline: none; }
+    .indietro[hidden] { display: none; }
+
+    .frame { overflow: hidden; }
+    .frame.con-sezione { width: min(1120px, 100%); }
+    .menu[hidden] { display: none; }
+    .vista[hidden] { display: none; }
+    .vista { margin-top: 8px; }
+    .vista iframe { display: block; width: 100%; height: 320px; border: 0; background: transparent; }
+
+    /* Prepara copia: tre passi, stile terminale */
+    .copy { color: #d9d3c7; font: 300 13px/1.65 'IBM Plex Mono', ui-monospace, monospace; }
+    .copy-note { margin: 0 0 18px; color: var(--text-muted); font-size: 11.5px; line-height: 1.6; }
+    .copy-note::before { content: '// '; color: var(--accent); }
+
+    .step {
+      display: grid;
+      grid-template-columns: 34px 1fr;
+      gap: 12px;
+      padding: 14px 0;
+      border-top: 1px solid #2a2723;
+    }
+    /* niente linea sotto l'ultimo passo: sotto c'è il terminale della copia */
+    .terminale { margin-top: 18px; border: 1px solid #2a2723; border-radius: 6px; overflow: hidden; background: #000; box-shadow: 0 6px 18px rgba(0, 0, 0, .45); }
+    .terminale-barra { display: flex; align-items: center; gap: 6px; padding: 7px 10px; border-bottom: 1px solid #1d1c1a; background: #0d0c0b; }
+    .terminale-barra span { width: 9px; height: 9px; border-radius: 50%; background: #3a3631; }
+    .terminale-barra b { margin-left: 8px; color: var(--text-muted); font: 400 10.5px 'IBM Plex Mono', ui-monospace, monospace; letter-spacing: .08em; }
+    .terminale-testo { height: 260px; margin: 0; padding: 12px 14px; overflow-y: auto; color: #8c857b; font: 400 11.5px/1.6 'IBM Plex Mono', ui-monospace, monospace; white-space: pre-wrap; word-break: break-all; }
+    .terminale-testo .comando { color: var(--gold-light); }
+    .terminale-testo .sezione { color: #d9d3c7; }
+    .terminale-testo .salta { color: #5d5850; }
+    .terminale-testo .ok { color: #8fbf7a; }
+    .terminale-testo .err { color: #e07a5f; }
+    .step-num { color: var(--gold-light); font-size: 12px; }
+    .step-num::before { content: '['; color: var(--text-muted); }
+    .step-num::after { content: ']'; color: var(--text-muted); }
+    .step-label { margin: 0 0 10px; color: #d9d3c7; font-size: 12.5px; }
+    .step[aria-disabled="true"] { opacity: .4; }
+
+    .btn {
+      padding: 7px 12px;
+      border: 1px solid var(--accent);
+      border-radius: 3px;
+      background: transparent;
+      color: var(--gold-light);
+      font: 400 11px 'IBM Plex Mono', ui-monospace, monospace;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background .15s, color .15s;
+    }
+    .btn:hover:not(:disabled) { background: var(--accent); color: #121110; }
+    .btn:disabled { opacity: .45; cursor: not-allowed; }
+    .btn:focus-visible { outline: 1px solid var(--gold-light); outline-offset: 2px; }
+
+    .status { margin: 8px 0 0; color: var(--text-muted); font-size: 12px; line-height: 1.5; }
+    .status:not(:empty)::before { content: '$ '; color: var(--accent); }
+    .status.ok { color: #8fbf7a; }
+    .status.err { color: #e07a5f; }
+
+    .stores { display: flex; flex-wrap: wrap; gap: 10px 22px; margin: 0; padding: 0; border: 0; }
+    .stores label { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; cursor: pointer; }
+    .stores input { width: 14px; height: 14px; accent-color: var(--accent); }
+
+    .footer {
+      color: #6f6a62;
+      font-size: 0.66rem;
+      letter-spacing: 0.04em;
+      text-align: center;
+    }
+
+    @media (max-width: 760px) {
+      .frame { padding: 46px 20px 59px; }
+      .voce { padding: 18px 0; font-size: 0.7rem; letter-spacing: 0.1em; }
+      .voce-aiuto { padding: 10px 18px; }
+      .voce:hover, .voce:focus-visible, .voce[aria-expanded="true"] { letter-spacing: 0.12em; }
+      .title { font-size: 0.64rem; letter-spacing: 0.2em; }
+      .indietro { top: 14px; left: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="frame" id="cornice">
+    <button class="indietro" type="button" id="indietro" hidden>← area operatore</button>
+    <img class="brand" src="assets/img/storecraftlogo.png" alt="STORE // CRAFT">
+    <h1 class="title" id="titolo">Area operatore</h1>
+
+    <nav class="menu" id="menu" aria-label="Strumenti dell'operatore">
+      <button class="voce" type="button" data-vista="importa">Importa loghi ufficiali</button>
+      <button class="voce" type="button" data-vista="gestione">Gestisci loghi ufficiali</button>
+      <a class="voce" href="schema-pagine.html">Struttura negozi</a>
+      <button class="voce" type="button" data-vista="copia">Prepara copia per un cliente</button>
+      <!-- la guida è un aiuto, non uno strumento: staccata dal resto del menu, in un riquadro oro -->
+      <a class="voce voce-aiuto" href="guida-componenti.html"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="7"/><path d="M6 6.2a2 2 0 1 1 2.8 1.8c-.5.2-.8.6-.8 1.1v.6"/><circle cx="8" cy="11.6" r=".35" fill="currentColor"/></svg>Guida tecnica</a>
+    </nav>
+
+    <!-- Sezioni: le pagine dei loghi dentro la cornice (si caricano alla prima apertura), Prepara copia qui -->
+    <section class="vista" data-vista="importa" hidden>
+      <iframe data-src="logoimport.html?incorporata" title="Importa loghi ufficiali"></iframe>
+    </section>
+    <section class="vista" data-vista="gestione" hidden>
+      <iframe data-src="logogestione.html?incorporata" title="Gestisci loghi ufficiali"></iframe>
+    </section>
+
+    <section class="vista copy" data-vista="copia" id="copyPanel" hidden aria-label="Prepara copia per un cliente">
+      <p class="copy-note">come Prepara copia.bat: nella copia la splash page, le cartelle dei negozi scelti, i file comuni e
+        le schede dei negozi, con installati.js scritto per loro, e quest'area con i soli loghi ufficiali (importa e gestisci),
+        per aggiornare i menu BRAND del cliente. Restano fuori Struttura negozi, Prepara copia, la Guida tecnica, il piano
+        di lavoro, le pagine di prova _*, Git, la documentazione e i lanciatori. Il progetto non viene modificato.</p>
+      <p class="copy-note">per provarla in locale: copia nella cartella della copia Avvia server.bat (sul mac avvia server mac.command) e fai doppio clic (prima chiudi il server del progetto: la porta 8000 è una sola); finita la prova, toglilo dalla copia prima di consegnarla.</p>
+
+      <div class="step">
+        <span class="step-num">1</span>
+        <div>
+          <p class="step-label">collega la cartella del progetto STORE // CRAFT</p>
+          <button class="btn" type="button" id="pickSource">scegli cartella progetto</button>
+          <p class="status" id="sourceStatus" role="status">nessuna cartella collegata</p>
+        </div>
+      </div>
+
+      <div class="step" id="stepStores" aria-disabled="true">
+        <span class="step-num">2</span>
+        <div>
+          <p class="step-label" id="storesLabel">negozi da mettere nella copia</p>
+          <fieldset class="stores" id="stores" aria-labelledby="storesLabel" disabled></fieldset>
+        </div>
+      </div>
+
+      <div class="step" id="stepCopy" aria-disabled="true">
+        <span class="step-num">3</span>
+        <div>
+          <p class="step-label">scegli la cartella di destinazione e prepara la copia</p>
+          <button class="btn" type="button" id="pickTarget" disabled>scegli cartella e prepara</button>
+          <p class="status" id="copyStatus" role="status" aria-live="polite"></p>
+        </div>
+      </div>
+
+      <!-- terminale della copia: durante la preparazione ci scorrono tutte le operazioni -->
+      <div class="terminale" id="terminale" hidden>
+        <div class="terminale-barra" aria-hidden="true"><span></span><span></span><span></span><b>prepara-copia</b></div>
+        <pre class="terminale-testo" id="terminaleTesto" role="log" aria-label="Operazioni della copia"></pre>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">© 2026 STORE // CRAFT · Developed by Fabrizio Notte</footer>
+
+  <script>
+    // ----- Viste delle sezioni dentro la cornice -----
+    // #importa, #gestione, #copia nell'indirizzo: si apre la sezione (anche con avanti / indietro del browser)
+    const VISTE = { importa: 'Importa loghi ufficiali', gestione: 'Gestisci loghi ufficiali', copia: 'Prepara copia per un cliente' };
+    const TITOLO_MENU = 'Area operatore';
+    const cornice = document.getElementById('cornice');
+    const titolo = document.getElementById('titolo');
+    const menu = document.getElementById('menu');
+    const indietro = document.getElementById('indietro');
+    const piano = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let vistaAperta = null;
+
+    // Copia per un cliente: solo le due sezioni dei loghi ufficiali (i menu BRAND del cliente); Struttura negozi,
+    // Prepara copia e Guida tecnica restano nel progetto madre
+    if (Negozi.copiaCliente) {
+      menu.querySelectorAll('a[href="schema-pagine.html"], [data-vista="copia"], .voce-aiuto').forEach(voce => voce.remove());
+      delete VISTE.copia;   // la sezione resta nella pagina, nascosta e non apribile (il suo script ne cerca i comandi)
+    }
+
+    // la cornice passa dall'altezza di prima alla nuova con un'animazione (cambia passa al nuovo contenuto)
+    function adatta(cambia, durata = 450) {
+      const prima = cornice.offsetHeight;
+      cambia();
+      const dopo = cornice.offsetHeight;
+      if (piano.matches || prima === dopo) return;
+      cornice.animate([{ height: `${prima}px` }, { height: `${dopo}px` }], { duration: durata, easing: 'cubic-bezier(.2, .8, .2, 1)' });
+    }
+
+    // il titolo si riscrive lettera per lettera, come in un terminale
+    let scrittura = 0;
+    function scrivi(testo) {
+      clearInterval(scrittura);
+      if (piano.matches) { titolo.textContent = testo; return; }
+      let n = 0;
+      titolo.textContent = '';
+      scrittura = setInterval(() => {
+        n += 1;
+        titolo.textContent = testo.slice(0, n);
+        if (n >= testo.length) clearInterval(scrittura);
+      }, 26);
+    }
+
+    // subito: senza animazioni (aprendo la pagina con #sezione nell'indirizzo)
+    async function apri(nome, subito = false) {
+      const nuova = VISTE[nome] ? nome : null;
+      if (nuova === vistaAperta) return;
+      const voci = [...menu.querySelectorAll('.voce')];
+      const anima = !subito && !piano.matches;
+      if (nuova && anima) {
+        // le voci non scelte spariscono per prime, poi quella scelta
+        // (al massimo 0,4 s: se il browser non fa scorrere le animazioni si va avanti lo stesso)
+        await Promise.race([new Promise(fatto => setTimeout(fatto, 400)),
+          Promise.all(voci.map(voce => voce.animate([{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'translateY(-6px)' }],
+            { duration: 200, delay: voce.dataset.vista === nuova ? 120 : 0, easing: 'ease-in', fill: 'forwards' }).finished))]);
+      }
+      (anima ? adatta : cambia => cambia())(() => {
+        document.querySelectorAll('.vista').forEach(vista => {
+          vista.hidden = vista.dataset.vista !== nuova;
+          const riquadro = vista.querySelector('iframe[data-src]');
+          if (!vista.hidden && riquadro && !riquadro.getAttribute('src')) riquadro.src = riquadro.dataset.src;
+        });
+        menu.hidden = Boolean(nuova);
+        // con una sezione aperta la cornice è più larga (spazio per le pagine dei loghi); tornando al menu riprende la sua
+        cornice.classList.toggle('con-sezione', Boolean(nuova));
+        cornice.style.width = '';
+        indietro.hidden = !nuova;
+      });
+      voci.forEach(voce => voce.getAnimations().forEach(animazione => animazione.cancel()));
+      if (!nuova && anima) {
+        voci.forEach((voce, i) => voce.animate([{ opacity: 0, transform: 'translateY(6px)' }, { opacity: 1, transform: 'none' }],
+          { duration: 260, delay: 60 * i, easing: 'ease-out', fill: 'backwards' }));
+      }
+      // il logo e il titolo accompagnano il cambio: il logo si riaccende appena, il titolo si riscrive
+      if (anima) document.querySelector('.brand').animate([{ opacity: .35, transform: 'scale(.94)' }, { opacity: .9, transform: 'none' }],
+        { duration: 480, easing: 'ease-out' });
+      if (anima) scrivi(nuova ? VISTE[nuova] : TITOLO_MENU);
+      else titolo.textContent = nuova ? VISTE[nuova] : TITOLO_MENU;
+      vistaAperta = nuova;
+      // aperta una sezione, la tastiera parte da ← area operatore: con Tab si entra nei suoi comandi
+      if (nuova && !subito) indietro.focus({ preventScroll: true });
+    }
+
+    // divisori delle voci larghi quanto il riquadro di Guida tecnica (misurato a riposo: all'apertura, a caratteri
+    // caricati e cambiando la finestra, non al passaggio del mouse, che allarga appena le lettere)
+    const misuraDivisori = () => {
+      const aiuto = menu.querySelector('.voce-aiuto');
+      if (aiuto && aiuto.offsetWidth) menu.style.setProperty('--larghezza-divisori', `${aiuto.offsetWidth}px`);
+    };
+    misuraDivisori();
+    document.fonts.ready.then(misuraDivisori);
+    window.addEventListener('resize', misuraDivisori);
+
+    menu.addEventListener('click', evento => {
+      const voce = evento.target.closest('[data-vista]');
+      if (voce) location.hash = voce.dataset.vista;
+    });
+    // Tastiera: nel menu frecce su / giù (e Home / Fine) tra le voci, Invio apre; Tab passa ai comandi della sezione;
+    // Esc in una sezione torna al menu, sulla voce di prima
+    menu.addEventListener('keydown', evento => {
+      const voci = [...menu.querySelectorAll('.voce')];
+      const ora = voci.indexOf(document.activeElement);
+      const passi = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 };
+      let prossima = null;
+      if (evento.key in passi) prossima = voci[(Math.max(ora, 0) + passi[evento.key] + voci.length) % voci.length];
+      else if (evento.key === 'Home') prossima = voci[0];
+      else if (evento.key === 'End') prossima = voci[voci.length - 1];
+      if (!prossima) return;
+      evento.preventDefault();
+      prossima.focus();
+    });
+    const tornaAlMenu = () => {
+      const voce = menu.querySelector(`[data-vista="${vistaAperta}"]`);
+      history.pushState(null, '', location.pathname);
+      apri(null).then(() => voce?.focus());
+    };
+    indietro.addEventListener('click', tornaAlMenu);
+    document.addEventListener('keydown', evento => {
+      if (evento.key === 'Escape' && vistaAperta) { evento.preventDefault(); tornaAlMenu(); }
+    });
+    // le pagine dei loghi nel riquadro mandano il loro Esc qui (operatore-sezione.js)
+    window.addEventListener('message', evento => {
+      if (evento.origin === location.origin && evento.data?.esc && vistaAperta) tornaAlMenu();
+    });
+    window.addEventListener('hashchange', () => apri(location.hash.slice(1)));
+    if (VISTE[location.hash.slice(1)]) apri(location.hash.slice(1), true);
+
+    // le pagine dei loghi comunicano la loro altezza (operatore-sezione.js): riquadro e cornice si adattano
+    window.addEventListener('message', evento => {
+      if (evento.origin !== location.origin || !evento.data?.sezioneOperatore) return;
+      document.querySelectorAll('.vista iframe').forEach(riquadro => {
+        if (riquadro.contentWindow !== evento.source) return;
+        // contenuto più largo del riquadro: la cornice si allarga quanto serve (fino alla finestra) invece di mostrare barre
+        const piuLargo = (evento.data.larghezza || 0) - riquadro.clientWidth;
+        if (piuLargo > 0 && !riquadro.closest('.vista').hidden) cornice.style.width = `min(${cornice.offsetWidth + piuLargo + 8}px, 100%)`;
+        const altezza = `${Math.max(120, evento.data.altezza)}px`;
+        if (riquadro.style.height === altezza) return;
+        if (riquadro.closest('.vista').hidden) riquadro.style.height = altezza;
+        else adatta(() => { riquadro.style.height = altezza; }, 300);
+      });
+    });
+
+    const $ = id => document.getElementById(id);
+    const supportata = typeof window.showDirectoryPicker === 'function';
+    let sorgente = null;     // cartella del progetto (lettura)
+    let negozi = [];         // [{ id, nome }] dalle schede in assets/negozi/
+    let inCorso = false;
+
+    function stato(elemento, testo, tipo = '') {
+      elemento.textContent = testo;
+      elemento.className = `status ${tipo}`.trim();
+    }
+
+    if (!supportata) {
+      $('pickSource').disabled = true;
+      stato($('sourceStatus'), 'serve Chrome o Edge sul computer: questo browser non può leggere e scrivere cartelle (in alternativa Prepara copia.bat)', 'err');
+    }
+
+    async function cartella(dir, nome) {
+      try { return await dir.getDirectoryHandle(nome); } catch { return null; }
+    }
+
+    async function testo(dir, nome) {
+      return (await (await dir.getFileHandle(nome)).getFile()).text();
+    }
+
+    // 1. Cartella del progetto: deve contenere index.html e assets/negozi/installati.js
+    $('pickSource').addEventListener('click', async () => {
+      if (inCorso) return;
+      let scelta;
+      try {
+        scelta = await window.showDirectoryPicker({ id: 'storecraft-progetto', mode: 'read' });
+      } catch (errore) {
+        if (errore.name !== 'AbortError') stato($('sourceStatus'), `Cartella non collegata: ${errore.message}`, 'err');
+        return;
+      }
+      try {
+        const assets = await cartella(scelta, 'assets');
+        const schede = assets && await cartella(assets, 'negozi');
+        if (!schede) throw new Error('non è la cartella del progetto STORE // CRAFT (manca assets/negozi).');
+        await scelta.getFileHandle('index.html');
+        // Negozi: le schede <negozio>.js (non installati.js né <negozio>-dashboard.js), con il nome scritto nella scheda,
+        // nell'ordine dell'elenco installati.js del progetto
+        const trovati = [];
+        for await (const [nome, voce] of schede.entries()) {
+          if (voce.kind !== 'file' || !nome.endsWith('.js') || nome === 'installati.js' || nome.endsWith('-dashboard.js')) continue;
+          const id = nome.slice(0, -3);
+          const contenuto = await (await voce.getFile()).text();
+          trovati.push({ id, nome: contenuto.match(/nome:\s*'([^']+)'/)?.[1] || id.toUpperCase() });
+        }
+        if (!trovati.length) throw new Error('non trovo le schede dei negozi in assets/negozi.');
+        const ordine = [...(await testo(schede, 'installati.js')).matchAll(/'([a-z0-9_-]+)'/g)].map(m => m[1]);
+        const posto = id => (ordine.includes(id) ? ordine.indexOf(id) : 999);
+        negozi = trovati.sort((a, b) => posto(a.id) - posto(b.id) || a.id.localeCompare(b.id));
+        sorgente = scelta;
+        stato($('sourceStatus'), `Collegata: ${scelta.name} (${negozi.length} negozi).`, 'ok');
+        mostraNegozi();
+      } catch (errore) {
+        sorgente = null;
+        stato($('sourceStatus'), `La cartella scelta non va bene: ${errore.message}`, 'err');
+        mostraNegozi();
+      }
+    });
+
+    // 2. Caselle dei negozi
+    function mostraNegozi() {
+      const campo = $('stores');
+      campo.replaceChildren();
+      negozi.forEach(({ id, nome }) => {
+        const etichetta = document.createElement('label');
+        const casella = document.createElement('input');
+        casella.type = 'checkbox';
+        casella.value = id;
+        casella.addEventListener('change', aggiornaPassi);
+        etichetta.append(casella, document.createTextNode(nome));
+        campo.append(etichetta);
+      });
+      aggiornaPassi();
+    }
+
+    function scelti() {
+      return [...document.querySelectorAll('#stores input:checked')].map(casella => casella.value);
+    }
+
+    function aggiornaPassi() {
+      const pronto = Boolean(sorgente) && !inCorso;
+      $('stores').disabled = !pronto;
+      $('stepStores').setAttribute('aria-disabled', String(!pronto));
+      const puoCopiare = pronto && scelti().length > 0;
+      $('pickTarget').disabled = !puoCopiare;
+      $('stepCopy').setAttribute('aria-disabled', String(!puoCopiare && !inCorso));
+      $('pickSource').disabled = !supportata || inCorso;
+    }
+
+    // ----- Copia -----
+    let copiati = 0;
+
+    // Terminale della copia: una riga per operazione (tipo: comando, sezione, file, salta, ok, err), sempre in fondo;
+    // tiene le ultime 600 righe
+    const terminale = $('terminale');
+    const terminaleTesto = $('terminaleTesto');
+    function riga(testo, tipo = 'file') {
+      const linea = document.createElement('span');
+      linea.className = tipo;
+      linea.textContent = `${testo}\n`;
+      terminaleTesto.append(linea);
+      while (terminaleTesto.childElementCount > 600) terminaleTesto.firstElementChild.remove();
+      terminaleTesto.scrollTop = terminaleTesto.scrollHeight;
+    }
+
+    async function copiaFile(voce, dir, nome, percorso = nome) {
+      const file = await voce.getFile();
+      const scrittura = await (await dir.getFileHandle(nome, { create: true })).createWritable();
+      await scrittura.write(file);
+      await scrittura.close();
+      copiati += 1;
+      riga(`  copio ${percorso}  (${Math.max(1, Math.round(file.size / 1024))} kB)`);
+      if (copiati % 20 === 0) stato($('copyStatus'), `Copia in corso… ${copiati} file.`);
+    }
+
+    // Copia un file o una cartella; le cartelle si uniscono a quelle già presenti (come Esplora file)
+    async function copia(voce, dir, nome, percorso = nome) {
+      if (voce.kind === 'file') return copiaFile(voce, dir, nome, percorso);
+      const arrivo = await dir.getDirectoryHandle(nome, { create: true });
+      for await (const [figlio, sotto] of voce.entries()) await copia(sotto, arrivo, figlio, `${percorso}/${figlio}`);
+    }
+
+    function testoInstallati(ids) {
+      const oggi = new Date().toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' });
+      return '/* Negozi installati in questa copia di STORE // CRAFT (vedi assets/js/negozi.js).\r\n' +
+        '   Con un solo negozio la splash page apre subito la sua dashboard e i menu mostrano solo quel negozio.\r\n' +
+        `   Scritto dalla pagina operatore il ${oggi}. */\r\n` +
+        `Negozi.installa([${ids.map(id => `'${id}'`).join(', ')}], { copiaCliente: true });\r\n`;
+    }
+
+    async function preparaCopia(destinazione, ids) {
+      const tutti = negozi.map(negozio => negozio.id);
+      // Radice: la splash page e l'area operatore con i soli loghi ufficiali (operatore, logoimport, logogestione);
+      // non Struttura negozi, la Guida tecnica, il piano di lavoro e le pagine di prova (_*)
+      const esclusi = ['guida-componenti.html', 'guida-campione.html', 'schema-pagine.html', 'Storecraft Aggiornamento.html'];
+      riga('// radice: splash page e area operatore dei loghi (non guida, struttura, piano e pagine _*)', 'sezione');
+      for await (const [nome, voce] of sorgente.entries()) {
+        if (voce.kind !== 'file' || !nome.endsWith('.html') || nome.startsWith('_') || esclusi.includes(nome)) continue;
+        await copiaFile(voce, destinazione, nome);
+      }
+      // Cartelle delle pagine dei negozi scelti
+      for (const id of ids) {
+        riga(`// pagine del negozio: ${id}/`, 'sezione');
+        const pagine = await cartella(sorgente, id);
+        if (pagine) await copia(pagine, destinazione, id);
+      }
+      // assets: file comuni interi; nelle cartelle divise per negozio i file comuni e le sottocartelle dei soli negozi scelti
+      const assets = await cartella(sorgente, 'assets');
+      const assetsArrivo = await destinazione.getDirectoryHandle('assets', { create: true });
+      for await (const [nome, voce] of assets.entries()) {
+        if (voce.kind === 'file') { await copiaFile(voce, assetsArrivo, nome, `assets/${nome}`); continue; }
+        if (nome === 'negozi') {
+          riga('// schede dei negozi scelti: assets/negozi/', 'sezione');
+          const arrivo = await assetsArrivo.getDirectoryHandle('negozi', { create: true });
+          for await (const [file, scheda] of voce.entries()) {
+            const base = file.replace(/\.[^.]+$/, '');
+            if (scheda.kind === 'file' && ids.some(id => base === id || base === `${id}-dashboard`)) await copiaFile(scheda, arrivo, file, `assets/negozi/${file}`);
+          }
+          const scrittura = await (await arrivo.getFileHandle('installati.js', { create: true })).createWritable();
+          await scrittura.write(testoInstallati(ids));
+          await scrittura.close();
+          riga(`  scrivo assets/negozi/installati.js  → Negozi.installa([${ids.map(id => `'${id}'`).join(', ')}], { copiaCliente: true })`, 'ok');
+          continue;
+        }
+        riga(`// assets/${nome}/`, 'sezione');
+        const figli = [];
+        for await (const voceFiglia of voce.entries()) figli.push(voceFiglia);
+        const divisa = figli.some(([figlio, sotto]) => sotto.kind === 'directory' && tutti.includes(figlio));
+        if (!divisa) { await copia(voce, assetsArrivo, nome, `assets/${nome}`); continue; }
+        const arrivo = await assetsArrivo.getDirectoryHandle(nome, { create: true });
+        for (const [figlio, sotto] of figli) {
+          if (sotto.kind === 'directory' && tutti.includes(figlio) && !ids.includes(figlio)) {
+            riga(`  salto assets/${nome}/${figlio}/  (negozio non scelto)`, 'salta');
+            continue;
+          }
+          await copia(sotto, arrivo, figlio, `assets/${nome}/${figlio}`);
+        }
+      }
+    }
+
+    // 3. Cartella di destinazione e copia
+    $('pickTarget').addEventListener('click', async () => {
+      const ids = scelti();
+      if (!sorgente || !ids.length || inCorso) return;
+      const nomi = negozi.filter(negozio => ids.includes(negozio.id)).map(negozio => negozio.nome).join(', ');
+      let destinazione;
+      try {
+        destinazione = await window.showDirectoryPicker({ id: 'storecraft-copia', mode: 'readwrite' });
+      } catch (errore) {
+        if (errore.name !== 'AbortError') stato($('copyStatus'), `Cartella non scelta: ${errore.message}`, 'err');
+        return;
+      }
+      // La copia non può stare dentro il progetto (si copierebbe dentro sé stessa)
+      if (await sorgente.isSameEntry(destinazione) || await sorgente.resolve(destinazione)) {
+        stato($('copyStatus'), 'La copia non può stare dentro il progetto STORE // CRAFT: scegli un\'altra cartella (es. sul Desktop o in Documenti).', 'err');
+        return;
+      }
+      // Cartella non vuota: conferma prima di scriverci dentro
+      for await (const _ of destinazione.keys()) {
+        if (!confirm(`La cartella "${destinazione.name}" non è vuota.\n\nI file con lo stesso nome verranno sostituiti; gli altri file restano. Per una copia pulita conviene una cartella vuota.\n\nVuoi continuare?`)) return;
+        break;
+      }
+      inCorso = true;
+      copiati = 0;
+      aggiornaPassi();
+      stato($('copyStatus'), `Preparo la copia con: ${nomi}…`);
+      // terminale: si apre vuoto e mostra il comando di partenza
+      terminaleTesto.replaceChildren();
+      adatta(() => { terminale.hidden = false; }, 300);
+      riga(`$ prepara-copia --negozi ${ids.join(',')} --da "${sorgente.name}" --a "${destinazione.name}"`, 'comando');
+      const inizio = performance.now();
+      try {
+        await preparaCopia(destinazione, ids);
+        riga(`✓ copia pronta: ${copiati} file in ${((performance.now() - inizio) / 1000).toFixed(1)} s nella cartella "${destinazione.name}"`, 'ok');
+        stato($('copyStatus'), `Copia pronta: ${nomi} (${copiati} file) nella cartella "${destinazione.name}". Per provarla o pubblicarla, la pagina d'ingresso è index.html.`, 'ok');
+      } catch (errore) {
+        console.error(errore);
+        riga(`✗ copia interrotta dopo ${copiati} file: ${errore.message}`, 'err');
+        stato($('copyStatus'), `La copia non è riuscita (${copiati} file copiati): ${errore.message}`, 'err');
+      } finally {
+        inCorso = false;
+        aggiornaPassi();
+      }
+    });
+  </script>
+</body>
+</html>

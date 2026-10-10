@@ -1,0 +1,588 @@
+/*
+ * Pannello standard degli editor (Crea Cartelli e Cartellini), comune a tutti i negozi.
+ * I colori sono del negozio della pagina, nella sua scheda (assets/negozi/<negozio>.css: --pannello-*); qui i valori
+ * di riserva, i colori scuri di Luxury Outlet. Nelle pagine Luxury il tema chiaro li cambia con theme.css.
+ * Struttura e misure sono quelle del pannello standard di TEBE (vedi AGENTS.md):
+ * - campi, menu e tasto di stampa con i caratteri predefiniti dei controlli (Arial), campi e menu alti 31,4 px;
+ * - pulsanti dei selettori come in Cartello Sale del progetto TEBE: system-ui a peso normale con lettere distanziate (0,08em), interlinea 1,2;
+ * - 0,35rem tra etichetta e campo; dentro i blocchi del pannello 0,65rem tra un campo e l'etichetta successiva
+ *   e 0,5rem dopo un selettore (un poco meno che in TEBE: sul telefono 0,45rem); 0,8rem sotto il titolo; 1,6rem tra i blocchi;
+ * - i selettori a pulsanti (.mode-switch) non hanno un titolo sopra: il nome sta in aria-label;
+ * - se il pannello comincia con un selettore, sopra c'è 1rem dalla linea del titolo;
+ * - i titoli dei menu a discesa (label.section-label) sono come le altre etichette, ma in oro;
+ * - i menu partono da "-- Seleziona … --" e il campo libero sotto un menu si chiama "Testo Libero".
+ * Va incluso dopo assets/css/font-arial.css.
+ */
+
+:root {
+  --pannello-sfondo: #1e1d1a;            /* riquadro del pannello */
+  --pannello-testo: #f4f1ea;             /* testo del pannello e dei campi */
+  --pannello-bordo: #2e2b27;             /* bordi di riquadro, campi, selettori; linea sotto il titolo */
+  --pannello-titolo: #d4a373;            /* titolo del pannello */
+  --pannello-etichetta: #a39a8d;         /* etichette dei campi */
+  --pannello-oro: #d4a373;               /* titoli dei menu, bordo dei campi in uso, frecce, simboli, caselle */
+  --pannello-oro-chiaro: #e5ba73;        /* maniglia della barra al passaggio del mouse */
+  --pannello-alone: rgba(212, 163, 115, 0.35);  /* alone del campo in uso */
+  --pannello-campo: #0a0908;             /* fondo dei campi */
+  --pannello-segnaposto: #5f5a53;        /* testo di esempio nelle aree di testo */
+  --pannello-riquadro: #181715;          /* riquadro della freccia dei menu e frecce ▲▼ */
+  --pannello-riquadro-hover: #2e2b27;    /* frecce ▲▼ al passaggio del mouse */
+  --pannello-selettore: #0a0908;         /* fondo dei selettori a pulsanti */
+  --pannello-selettore-testo: #8c857b;   /* voci non scelte dei selettori */
+  --pannello-selettore-hover: #f4f1ea;   /* voce non scelta al passaggio del mouse */
+  --pannello-selettore-attivo: #d4a373;  /* voce scelta: fondo */
+  --pannello-selettore-attivo-testo: #121110;  /* voce scelta: testo */
+  --pannello-ombra: rgba(0, 0, 0, 0.5);  /* ombre di pulsanti, voce scelta e maniglia */
+  --pannello-linea: rgba(212, 163, 115, 0.28);  /* linea sotto COPIA SU ALTRO CARTELLO */
+  --pannello-stampa-testo: #f4f1ea;      /* scritta del tasto di stampa */
+  --pannello-schema: dark;               /* schema dei controlli nativi (elenchi dei menu): dark o light */
+}
+
+.sidebar {
+  width: 360px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  position: relative;
+  z-index: 1;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.controls {
+  background: var(--pannello-sfondo);
+  color: var(--pannello-testo);
+  /* sotto (dopo il tasto di stampa) lo stesso spazio che si vede in alto tra il bordo e le lettere del titolo:
+     1rem più i 4 px di cui le maiuscole cominciano sotto il bordo della loro riga */
+  padding: 1rem 1rem 1.25rem;
+  border: 1px solid var(--pannello-bordo);
+  border-radius: 8px;
+}
+
+.controls h1,
+.controls h2 {
+  font-family: 'Cinzel', serif;
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: var(--pannello-titolo);
+  border-bottom: 1px solid var(--pannello-bordo);
+  padding-bottom: 0.6rem;
+  margin-bottom: 0.8rem;
+  letter-spacing: 1.5px;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+/* Pannello che comincia con un selettore: un poco di spazio in più sopra il selettore
+   (i margini si sommano a quello del titolo: vale il maggiore) */
+.controls h1 + .mode-switch,
+.controls h2 + .mode-switch { margin-top: 1rem; }
+
+/* Blocchi del pannello (.panel-block), uguali in tutti i menu e sempre in quest'ordine:
+   1. selettori e pulsanti (cartello superiore / inferiore, modalità, + AGGIUNGI 2° BRAND);
+   2. brand (ufficiali e personalizzati) e claim laterali;
+   3. campi del cartello: prezzi, descrizione o entrambi, secondo la modalità (con il selettore dell'articolo, se c'è);
+   4. stampa (COPIA SU ALTRO CARTELLO, impostazioni di stampa, tasto di stampa).
+   Dentro un blocco i campi sono un poco più vicini che in TEBE (0,65rem tra un campo e l'etichetta successiva,
+   0,5rem dopo un selettore); tra un blocco e l'altro ci sono in tutto 1,6rem, per leggere meglio.
+   Il primo blocco segue il titolo come prima; gli altri non lasciano uscire i margini (flow-root), così lo spazio
+   tra i blocchi è sempre lo spazio dei campi (0,65rem) più 0,95rem. */
+.panel-block + .panel-block {
+  display: flow-root;
+  margin-top: 0.95rem;
+}
+
+/* Un blocco che in quel momento non ha nulla da mostrare si nasconde intero (es. il brand in Black Friday con la descrizione) */
+.panel-block[hidden] { display: none; }
+
+/* Anche il primo blocco tiene dentro lo spazio sotto l'ultimo campo (un filo di padding impedisce che si fonda con lo
+   spazio tra i blocchi), così la distanza tra il primo e il secondo blocco è uguale a quella tra gli altri. */
+.panel-block { padding-bottom: 0.1px; }
+
+.controls h1 + .panel-block > .mode-switch:first-child,
+.controls h2 + .panel-block > .mode-switch:first-child { margin-top: 1rem; }
+
+/* Ogni blocco finisce con lo spazio dei campi (0,65rem), anche quando l'ultimo elemento è un selettore */
+.panel-block > .mode-switch:last-child { margin-bottom: 0.65rem; }
+
+/* COPIA SU ALTRO CARTELLO all'inizio del blocco di stampa: equidistante dal blocco sopra e dalla linea sotto
+   (1,6rem, quanto lo spazio tra i blocchi) */
+.panel-block > .check-row:first-child { padding-bottom: 1.6rem; }
+
+.form-group { margin-bottom: 0.65rem; }
+
+.form-group label {
+  display: block;
+  font-weight: normal;
+  margin-bottom: 0.35rem;
+  color: var(--pannello-etichetta);
+  font-size: 0.72rem;
+}
+
+/* Titoli dei menu a discesa: come le altre etichette, in oro */
+.form-group .section-label {
+  color: var(--pannello-oro);
+  /* come le altre etichette anche dove la pagina ha una regola generale .section-label (es. in maiuscolo) */
+  font-weight: normal;
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+/* Due campi affiancati (es. Claim Sinistro / Claim Destro) */
+.form-row { display: flex; gap: 6px; }
+.form-row > .form-group { flex: 1; min-width: 0; }
+.form-row[hidden] { display: none; }
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 0.45rem;
+  border: 1px solid var(--pannello-bordo);
+  border-radius: 4px;
+  background: var(--pannello-campo);
+  color: var(--pannello-testo);
+  font-size: 0.82rem;
+}
+
+/* TEXT AREA: campo di testo su più righe (es. Area Testo del Magazzino). Regole diverse dai campi di
+   una riga: stesso bordo, fondo e carattere (Arial), ma alto quanto le righe che il cartello accetta (4, con
+   rows="4"), interlinea più ampia, nessuna maniglia per allargarlo; si va a capo con Invio e il numero massimo
+   di righe lo controlla la pagina. */
+.form-group textarea {
+  display: block;
+  width: 100%;
+  height: calc(var(--righe, 4) * 1.4em + 0.9rem + 2px);   /* righe che il cartello accetta: style="--righe: 2" sul campo */
+  padding: 0.45rem;
+  border: 1px solid var(--pannello-bordo);
+  border-radius: 4px;
+  background: var(--pannello-campo);
+  color: var(--pannello-testo);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.82rem;
+  line-height: 1.4;
+  resize: none;
+}
+
+.form-group textarea::placeholder { color: var(--pannello-segnaposto); }
+
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--pannello-oro);
+  box-shadow: 0 0 4px var(--pannello-alone);
+}
+
+/* Barra da trascinare (es. Dimensione Testo): linea scura con il bordo dei campi e maniglia tonda oro,
+   alta come un campo perché gli spazi del pannello restino uguali. */
+.form-group input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  display: block;
+  height: 31.4px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.form-group input[type="range"]:focus { box-shadow: none; }
+
+.form-group input[type="range"]::-webkit-slider-runnable-track {
+  height: 6px;
+  border: 1px solid var(--pannello-bordo);
+  border-radius: 3px;
+  background: var(--pannello-campo);
+}
+
+.form-group input[type="range"]::-moz-range-track {
+  height: 4px;
+  border: 1px solid var(--pannello-bordo);
+  border-radius: 3px;
+  background: var(--pannello-campo);
+}
+
+.form-group input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  margin-top: -6px;
+  border: none;
+  border-radius: 50%;
+  background: var(--pannello-oro);
+  box-shadow: 0 1px 3px var(--pannello-ombra);
+}
+
+.form-group input[type="range"]::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border: none;
+  border-radius: 50%;
+  background: var(--pannello-oro);
+  box-shadow: 0 1px 3px var(--pannello-ombra);
+}
+
+.form-group input[type="range"]:hover::-webkit-slider-thumb,
+.form-group input[type="range"]:focus-visible::-webkit-slider-thumb { background: var(--pannello-oro-chiaro); }
+.form-group input[type="range"]:hover::-moz-range-thumb,
+.form-group input[type="range"]:focus-visible::-moz-range-thumb { background: var(--pannello-oro-chiaro); }
+
+/* Campi Claim Sinistro / Destro: il testo è in maiuscolo (es. SALDI 2026, SHOP NOW), quindi un poco più piccolo
+   degli altri campi, con il campo alto uguale (31,4 px). :where tiene la regola debole, così sul telefono vale
+   comunque la grandezza di 16 px. */
+.form-group input:where(#leftClaim, #rightClaim) {
+  height: 31.4px;
+  font-size: 0.74rem;
+}
+
+.form-group select option {
+  background: var(--interface-control, #0a0908);
+  color: var(--interface-text, #f4f1ea);
+}
+/* Stella dei brand prioritari (stagionali) nei menu BRAND: la ★ dei loghi personalizzati, sempre gialla */
+.brand-star { color: #f2b705; }
+
+@supports (appearance: base-select) {
+  .form-group select.ready-text-complete optgroup,
+  .form-group select.grouped-select optgroup {
+    font-style: italic;
+    text-align: right;
+  }
+  .form-group select.ready-text-complete optgroup option,
+  .form-group select.grouped-select optgroup option { font-style: normal; }
+}
+
+/* Titoli dei gruppi nei menu (es. Promozioni e Articoli in Testi Pronti): oro su fondo scuro */
+.form-group select optgroup {
+  background: var(--interface-control, #0a0908);
+  color: var(--interface-accent, #d4a373);
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: var(--pannello-oro);
+  box-shadow: 0 0 4px var(--pannello-alone);
+}
+
+/* Menu a discesa con la freccia in un riquadro a destra */
+.preset-select {
+  position: relative;
+  margin-bottom: 0.65rem;
+  overflow: hidden;
+  border: 1px solid var(--pannello-bordo);
+  border-radius: 4px;
+  background: var(--pannello-campo);
+}
+
+
+.preset-select:focus-within {
+  border-color: var(--pannello-oro);
+  box-shadow: 0 0 4px var(--pannello-alone);
+}
+
+.form-group .preset-select select {
+  margin-bottom: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 2rem;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.preset-select::after {
+  content: '▼';
+  position: absolute;
+  inset: 0 0 0 auto;
+  width: 1.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-left: 1px solid var(--pannello-bordo);
+  background: var(--pannello-riquadro);
+  color: var(--pannello-oro);
+  font-size: 0.6rem;
+  pointer-events: none;
+}
+
+/* Elenco a discesa: il tema scuro è predefinito; theme.css adatta colori e
+   selettori personalizzabili al tema chiaro quando viene scelto. */
+.form-group select { color-scheme: var(--pannello-schema); }
+
+@supports (appearance: base-select) {
+  .form-group select,
+  .form-group .preset-select select,
+  .form-group select::picker(select) { appearance: base-select; }
+
+  /* come prima: Arial come gli altri campi (non il carattere del pannello) e testo su una riga sola, alto uguale */
+  .form-group select { font-family: Arial, Helvetica, sans-serif; white-space: nowrap; overflow: hidden; }
+
+  /* la freccia la disegna già .preset-select */
+  .form-group select::picker-icon { display: none; }
+
+  /* l'elenco è largo quanto il campo, bordo compreso (il menu sta dentro il bordo di .preset-select) */
+  .form-group select::picker(select) {
+    width: calc(anchor-size(width) + 2px);
+    margin: 2px 0 0 -1px;
+    max-height: 320px;
+    border: 1px solid var(--interface-accent, #d4a373);
+    border-radius: 4px;
+    background: var(--interface-control, #0a0908);
+    color: var(--interface-text, #f4f1ea);
+    box-shadow: 0 8px 24px var(--interface-dropdown-shadow, rgba(0, 0, 0, 0.6));
+  }
+
+  .form-group select option {
+    padding: 5px 8px;
+    font-size: 0.82rem;
+  }
+
+  .form-group select option::checkmark { display: none; }
+  .form-group select option:hover,
+  .form-group select option:focus-visible {
+    background: var(--interface-option-hover, #2e2b27);
+    outline: none;
+  }
+  .form-group select option:checked { color: var(--interface-accent, #d4a373); }
+}
+
+/* Selettori a pulsanti: il pulsante scelto è oro con testo scuro, come CREATOR / CASSIERE in dashboard */
+.mode-switch {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 0.5rem;   /* tra un selettore e il selettore o il pulsante che segue: un poco meno dello spazio normale */
+  padding: 4px;
+  border: 1px solid var(--pannello-bordo);
+  border-radius: 6px;
+  background: var(--pannello-selettore);
+}
+
+.mode-switch[hidden] { display: none; }
+
+.mode-switch button {
+  flex: 1;
+  padding: 9px 8px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--pannello-selettore-testo);
+  /* come il selettore di Cartello Sale del progetto TEBE: peso normale e lettere distanziate, più arioso */
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 0.68rem;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  line-height: 1.2;
+  text-align: center;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.mode-switch button:hover:not(.active):not(:disabled) { color: var(--pannello-selettore-hover); }
+
+.mode-switch button.active {
+  background: var(--pannello-selettore-attivo);
+  color: var(--pannello-selettore-attivo-testo);
+  box-shadow: 0 1px 3px var(--pannello-ombra);
+}
+
+.mode-switch button:disabled { opacity: 0.35; cursor: default; }
+
+
+
+/* Pulsante a due stati a tutta larghezza (es. + AGGIUNGI 2° BRAND): vuoto con bordo e scritta oro,
+   che al passaggio del mouse si illuminano e si sollevano; attivo diventa verde con la scritta chiara. */
+.btn-toggle {
+  width: 100%;
+  margin-bottom: 0.65rem;
+  padding: 8px 8px;
+  border: 1px solid var(--pannello-oro);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--pannello-oro);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 0 2px 6px var(--pannello-ombra);
+  transition: filter 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+}
+
+.btn-toggle:hover {
+  filter: brightness(1.12);
+  transform: translateY(-2px);
+  box-shadow: 0 3px 0 var(--pannello-ombra);
+}
+
+.btn-toggle.active {
+  background: #5f8a55;
+  border-color: #5f8a55;
+  color: #f4f1ea;
+}
+
+/* Riga con una scritta e una casella da spuntare subito dopo (es. COPIA SU ALTRO CARTELLO) */
+.check-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  /* linea sottile oro chiaro che la separa dai comandi che seguono: sopra e sotto la linea lo stesso spazio,
+     un poco più di quello normale */
+  padding-bottom: 1.1rem;
+  border-bottom: 1px solid var(--pannello-linea);
+  margin-bottom: 1.1rem;
+  color: var(--pannello-oro);
+  font-size: 0.72rem;
+  cursor: pointer;
+}
+
+.check-row[hidden] { display: none; }
+
+/* Casella disegnata a mano, con il bordo scuro dei campi: spuntata diventa oro con il segno scuro */
+.check-row input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+  margin: 0;
+  border: 1px solid var(--pannello-bordo);
+  border-radius: 3px;
+  background: var(--pannello-campo) center / 10px 10px no-repeat;
+  cursor: pointer;
+}
+
+.check-row input[type="checkbox"]:checked {
+  border-color: var(--pannello-oro);
+  background-color: var(--pannello-oro);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M1.5 5.2 4 7.6 8.6 2.6' fill='none' stroke='%23121110' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+.check-row input[type="checkbox"]:focus-visible { outline: none; box-shadow: 0 0 4px var(--pannello-oro); }
+
+.btn-print {
+  width: 100%;
+  margin-top: 0;
+  padding: 10px;
+  border: 1px solid #96382b;
+  border-radius: 4px;
+  background: #96382b;
+  color: var(--pannello-stampa-testo);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.btn-print:hover { background: #7a2d22; }
+
+/* Campo con un simbolo fisso (€ davanti ai prezzi, % dopo lo sconto) che l'utente non deve scrivere,
+   ed eventualmente le frecce ▲▼ per aumentare e diminuire il numero (come il campo percentuale di TEBE). */
+.input-affix {
+  display: flex;
+  align-items: stretch;
+  border: 1px solid var(--pannello-bordo);
+  border-radius: 4px;
+  background: var(--pannello-campo);
+  overflow: hidden;
+}
+
+.input-affix:focus-within {
+  border-color: var(--pannello-oro);
+  box-shadow: 0 0 4px var(--pannello-alone);
+}
+
+.form-group .input-affix input {
+  flex: 1 1 auto;
+  min-width: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  -moz-appearance: textfield;
+}
+
+.form-group .input-affix input:focus { box-shadow: none; }
+
+.input-affix input::-webkit-outer-spin-button,
+.input-affix input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.input-affix .affix {
+  display: flex;
+  align-items: center;
+  color: var(--pannello-oro);
+  font-size: 0.82rem;
+  font-weight: var(--pannello-simbolo-peso, 400);
+  pointer-events: none;
+}
+
+.input-affix .affix:first-child { padding-left: 0.45rem; }
+.input-affix .affix:first-child + input { padding-left: 0.3rem; }
+.input-affix input + .affix { padding-right: 0.35rem; }
+
+.input-affix .stepper {
+  flex: 0 0 1.4rem;
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid var(--pannello-bordo);
+}
+
+.input-affix .stepper button {
+  flex: 1;
+  padding: 0;
+  border: none;
+  border-bottom: 1px solid var(--pannello-bordo);
+  background: var(--pannello-riquadro);
+  color: var(--pannello-oro);
+  font-size: 0.5rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.input-affix .stepper button:last-child { border-bottom: none; }
+.input-affix .stepper button:hover { background: var(--pannello-riquadro-hover); }
+
+@media print {
+  .sidebar { display: none !important; }
+}
+
+/* Vista telefono (solo cellulari): pannello più compatto */
+@media screen and (max-width: 760px) and (pointer: coarse) {
+  .sidebar { width: 100%; max-width: 560px; }
+  .controls { width: 100%; padding: 12px 12px 16px; }   /* sotto 4 px in più, come sopra le lettere del titolo */
+  .controls h1,
+  .controls h2 {
+    font-size: 0.95rem;
+    padding-bottom: 12px;
+    margin-bottom: 0.55rem;
+  }
+  .controls h1 + .mode-switch,
+  .controls h2 + .mode-switch,
+  .controls h1 + .panel-block > .mode-switch:first-child,
+  .controls h2 + .panel-block > .mode-switch:first-child { margin-top: 0.7rem; }
+  .panel-block + .panel-block { margin-top: 0.65rem; }
+  .form-group,
+  .preset-select,
+  .mode-switch { margin-bottom: 0.45rem; }
+  .btn-toggle { margin-bottom: 0.45rem; }
+  .check-row { padding-bottom: 0.75rem; margin-bottom: 0.75rem; }
+  .panel-block > .mode-switch:last-child { margin-bottom: 0.45rem; }
+  .panel-block > .check-row:first-child { padding-bottom: 1.1rem; }
+  .form-group label {
+    font-size: 0.68rem;
+    margin-bottom: 0.18rem;
+  }
+  .form-group input,
+  .form-group select,
+  .form-group textarea { font-size: 16px; }
+  .mode-switch button {
+    min-height: 36px;
+    padding: 6px;
+    font-size: 0.64rem;
+  }
+  .btn-print { padding: 9px; }
+}

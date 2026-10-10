@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="it" data-negozio="tebe">
+<head>
+  <meta charset="UTF-8">
+  <script src="../assets/js/negozi.js?v=20261010-45"></script>
+  <!-- tema CHIARO / SCURO scelto nella dashboard (colori nella scheda del negozio) -->
+  <script src="../assets/js/theme.js?v=20261010-45"></script>
+  <link rel="stylesheet" href="../assets/css/chiudi-pagina.css?v=20261010-45">
+  <link rel="stylesheet" href="../assets/css/torna-al-menu.css?v=20261010-45">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../assets/css/font-arial.css?v=20261010-45">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600&display=swap" rel="stylesheet">
+  <title>Cartello Multi Articolo</title>
+  <link rel="stylesheet" href="../assets/css/pannello.css?v=20261010-45">
+  <script defer src="../assets/js/campi-prezzo.js?v=20261010-45"></script>
+  <style>
+    * { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+    }
+
+    /* Sfondo principale UI */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: var(--interface-page);
+      padding: 20px;
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    /* Il pannello segue il pannello standard (../assets/css/pannello.css): blocchi, selettori, menu e campi comuni.
+       Qui solo ciò che è proprio della pagina: nella riga dei prezzi le etichette su una riga sola (come Outlet). */
+    .form-row .form-group label { white-space: nowrap; }
+
+    /* FOGLIO STAMPA A4 */
+    .print-sheet {
+      position: relative;
+      z-index: 1;
+      width: 210mm;
+      height: 297mm;
+      background: white;
+      box-shadow: 0 20px 60px rgba(40,34,28,.18);
+      padding: 14.56mm 0 0 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    /* CARTELLO */
+    .card {
+      width: 210mm;
+      height: 118.35mm;
+      border: 0.34mm solid #9d9490;
+      background: #ffffff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      overflow: hidden;
+      padding: 4mm 12mm;
+      box-sizing: border-box;
+    }
+
+    #cardBottom {
+      border-bottom: none;
+      transform: rotate(180deg);
+    }
+
+    /* CONTENITORE BLOCCO INTERNO PER TRASLAZIONE VERSO L'ALTO */
+    .card-content {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transform: translateY(-6mm);
+    }
+
+    .sale-label {
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: 400;
+      font-size: 46pt;
+      color: #c49f3f;
+      line-height: 1;
+      text-align: center;
+      letter-spacing: -0.05em;
+      transition: all 0.3s ease;
+    }
+
+    .items-table-wrapper {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: all 0.3s ease;
+    }
+
+    .card-logo {
+      width: 38mm;
+      height: auto;
+      transition: all 0.3s ease;
+    }
+
+    /* MOVIMENTO DINAMICO DELLE SPAZIATURE E DISTANZIAMENTO LOGO */
+    .card.rows-2 .sale-label { margin-bottom: 1mm; }
+    .card.rows-2 .items-table-wrapper { margin: 1mm 0; width: 100%; }
+    .card.rows-2 .card-logo { margin-top: 4mm; }
+
+    .card.rows-3 .sale-label { margin-bottom: 4mm; }
+    .card.rows-3 .items-table-wrapper { margin: 3mm 0; }
+    .card.rows-3 .card-logo { margin-top: 8mm; }
+
+    .card.rows-4 .sale-label { margin-bottom: 5mm; }
+    .card.rows-4 .items-table-wrapper { margin: 1mm 0; }
+    .card.rows-4 .card-logo { margin-top: 9mm; }
+
+    /* LAYOUT A 2 ARTICOLI (DUE COLONNE AFFIANCATE CON ARIAL REGULAR E SPACING -50) */
+    .dual-items-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      margin: 2mm 0;
+    }
+
+    .item-column {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 0 4mm;
+    }
+
+    .vertical-divider {
+      width: 1px;
+      height: 42mm;
+      background-color: rgba(40, 37, 34, 0.15);
+      flex-shrink: 0;
+    }
+
+    .item-column .item-title {
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: 400;
+      font-size: 22pt;
+      color: #282522;
+      margin-bottom: 2mm;
+      text-align: center;
+      line-height: 1;
+      letter-spacing: -0.05em;
+    }
+
+    .item-column .price-row-old {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      font-size: 16pt;
+      margin-bottom: 2mm;
+      letter-spacing: -0.05em;
+    }
+
+    .item-column .price-original {
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: 400;
+      color: #282522;
+      text-decoration: line-through;
+      text-decoration-color: #c49f3f;
+      text-decoration-thickness: 2px;
+    }
+
+    .item-column .discount-tag {
+      font-family: Arial, Helvetica, sans-serif;
+      color: #c49f3f;
+      font-weight: 700;
+    }
+
+    .item-column .price-final {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 42pt;
+      font-weight: 400;
+      color: #282522;
+      line-height: 0.9;
+      text-align: center;
+      letter-spacing: -0.05em;
+      white-space: nowrap;
+    }
+
+    /* TABELLA PRODOTTI ADATTIVA (PER 3 E 4 ARTICOLI) */
+    .items-table {
+      border-collapse: collapse;
+      table-layout: auto;
+      margin: 0 auto;
+    }
+
+    .items-table td {
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: 400;
+      font-size: 20pt;
+      line-height: 1.2;
+      white-space: nowrap;
+      letter-spacing: -0.05em;
+      transition: padding 0.3s ease;
+    }
+
+    .items-table.rows-3 td { padding-top: 1.5mm; padding-bottom: 1.5mm; }
+    .items-table.rows-4 td { padding-top: 0.5mm; padding-bottom: 0.5mm; }
+
+    /* DESCRIZIONE: DIMEZZATA A 21MM DI DISTANZA DAL PREZZO */
+    .col-desc {
+      text-align: left;
+      padding-right: 21mm;
+      color: #1a1a1a;
+      white-space: nowrap;
+    }
+
+    /* PREZZO ORIGINARIO */
+    .col-old-price {
+      text-align: right;
+      padding-right: 4mm;
+      color: #1a1a1a;
+      text-decoration: line-through;
+      text-decoration-color: #c49f3f;
+      text-decoration-thickness: 2.5px;
+      min-width: 28mm;
+    }
+
+    /* PERCENTUALE SCONTO DORATA IN GRASSETTO */
+    .col-discount {
+      text-align: center;
+      padding: 0 3mm;
+      color: #c49f3f;
+      font-weight: 700;
+      min-width: 22mm;
+    }
+
+    .col-new-price {
+      text-align: right;
+      padding-left: 2mm;
+      color: #1a1a1a;
+      min-width: 28mm;
+    }
+
+    /* NAVIGAZIONE UI */
+
+    @page {
+      size: A4 portrait;
+      margin: 0mm !important;
+    }
+
+    @media print {
+      html, body {
+        width: 210mm;
+        height: 297mm !important;
+        max-height: 297mm !important;
+        background: white !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        overflow: hidden !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      .sidebar, .app-close-btn, .floating-nav-box { display: none !important; }
+
+      .print-sheet {
+        box-shadow: none;
+        margin: 0 auto !important;
+        padding: 14.56mm 0 0 0 !important;
+        width: 210mm;
+        height: 297mm !important;
+        max-height: 297mm !important;
+        page-break-after: avoid !important;
+        page-break-before: avoid !important;
+        page-break-inside: avoid !important;
+        break-after: avoid !important;
+        break-before: avoid !important;
+        break-inside: avoid !important;
+        overflow: hidden !important;
+      }
+
+      .sale-label, .col-discount, .col-old-price, .discount-tag, .card-logo {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+    }
+
+  </style>
+  <link rel="stylesheet" href="../assets/css/strumenti-stampa.css?v=20261010-45">
+  <link rel="stylesheet" href="../assets/css/cursore.css?v=20261010-45">
+  <link rel="stylesheet" href="../assets/css/menu-cascata.css?v=20261010-45">
+  <script defer src="../assets/js/menu-cascata.js?v=20261010-45"></script>
+  <link rel="stylesheet" href="../assets/css/responsive.css?v=20261010-45">
+  <script defer src="../assets/js/responsive.js?v=20261010-45"></script>
+</head>
+<body data-layout="cartelli">
+
+  <!-- Pulsanti e Riquadri Navigazione UI -->
+  <a href="index.html?store=tebe" class="app-close-btn" title="Chiudi e torna all'index">✕</a>
+
+  <div class="floating-nav-box">
+    <div class="floating-nav-title">TEBE</div>
+    <a href="index.html?store=tebe" class="floating-nav-btn">← Torna al Menu Principale</a>
+  </div>
+
+  <div class="sidebar">
+    <div class="controls">
+      <h2>Cartello Multi Articolo</h2>
+
+      <!-- Eccezione voluta: le due metà del foglio sono fronte e retro dello stesso cartello in morsa (la metà
+           inferiore è capovolta), quindi niente CARTELLO SUPERIORE / INFERIORE, COPIA SU ALTRO CARTELLO né
+           2 / 1 CARTELLI; il cartello non ha brand né claim (blocco 2 omesso). -->
+
+      <!-- Blocco 1: selettori e pulsanti -->
+      <div class="panel-block">
+        <div data-selettore-numero-articoli data-counts="2,3,4" data-on-change="setNumArticles" data-button2-id="btnNum2" data-button3-id="btnNum3" data-button4-id="btnNum4"></div>
+      </div>
+
+      <!-- Blocco 3: campi del cartello (articolo scelto con ARTICOLO 1 / 2 / …) -->
+      <div class="panel-block">
+        <!-- selettore comune (selettore.js): una voce per articolo, scritte da renderRowSelector -->
+        <div data-selettore id="rowSelectorContainer" data-on-change="selectRow" aria-label="Seleziona l'articolo da modificare"></div>
+
+        <div class="form-group">
+          <label class="section-label" for="descPreset">Articoli</label>
+          <div class="preset-select">
+            <select id="descPreset" onchange="applyDescPreset()" data-testi-pronti="Articoli" data-testi-senza-gruppi>
+              <option value="">-- Seleziona un articolo --</option>
+            </select>
+          </div>
+          <!-- 25 caratteri: quanti ne entrano nella colonna della descrizione -->
+          <label for="descFree">Testo Libero</label>
+          <input type="text" id="descFree" value="" maxlength="25" placeholder="-- Testo Libero --" oninput="onInputDesc()">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="oldPrice">Prezzo Originario</label>
+            <input data-prezzo type="text" id="oldPrice" value="" placeholder="49,90" oninput="onInputOldPrice()">
+          </div>
+          <div class="form-group">
+            <label for="discountValue">Sconto</label>
+            <input data-percentuale type="number" id="discountValue" value="20" min="1" max="99" placeholder="20" oninput="onInputDiscount()">
+          </div>
+          <div class="form-group">
+            <label for="newPrice">Prezzo Finale</label>
+            <input data-prezzo type="text" id="newPrice" value="" placeholder="39,90" oninput="onInputNewPrice()">
+          </div>
+        </div>
+      </div>
+
+      <!-- Blocco 4: stampa -->
+      <div class="panel-block">
+        <button type="button" class="btn-print" id="printBtn" onclick="window.print()">STAMPA CARTELLO</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- AREA STAMPA A4 -->
+  <div class="print-sheet" id="printSheet">
+    <!-- Cartello Superiore -->
+    <div class="card rows-3" id="cardTop">
+      <div class="card-content">
+        <div class="sale-label">Sale</div>
+        <div class="items-table-wrapper">
+          <div id="itemsContainerTop" style="width:100%;"></div>
+        </div>
+        <img class="card-logo" src="../assets/img/tebe/footer_tebe.png" alt="TEBE">
+      </div>
+    </div>
+
+    <!-- Cartello Inferiore Ruotato 180° -->
+    <div class="card rows-3" id="cardBottom">
+      <div class="card-content">
+        <div class="sale-label">Sale</div>
+        <div class="items-table-wrapper">
+          <div id="itemsContainerBottom" style="width:100%;"></div>
+        </div>
+        <img class="card-logo" src="../assets/img/tebe/footer_tebe.png" alt="TEBE">
+      </div>
+    </div>
+  </div>
+
+  <script src="../assets/js/testi-pronti.js?v=20261010-45"></script>
+  <script src="../assets/js/selettore.js?v=20261010-45"></script>
+  <script src="../assets/js/selettore-numero-articoli.js?v=20261010-45"></script>
+  <script>
+    let articles = [
+      { desc: 'Top', oldPrice: '49,90', discount: '20', newPrice: '39,90' },
+      { desc: 'Camicia', oldPrice: '59,90', discount: '23', newPrice: '46,90' },
+      { desc: 'Pantalone', oldPrice: '75,90', discount: '20', newPrice: '59,90' },
+      { desc: 'Abito', oldPrice: '89,90', discount: '20', newPrice: '71,90' }
+    ];
+
+    let numArticles = 3;  
+    let activeRowIndex = 0; 
+
+    function setNumArticles(n) {
+      numArticles = n;
+      SelettoreNumeroArticoli.setActive(n);
+
+      if (activeRowIndex >= numArticles) {
+        activeRowIndex = numArticles - 1;
+      }
+      renderRowSelector();
+      loadActiveRowIntoForm();
+      updateCards();
+    }
+
+    function renderRowSelector() {
+      Selettore.voci('rowSelectorContainer',
+        Array.from({ length: numArticles }, (_, i) => ({ valore: i, testo: `ARTICOLO ${i + 1}` })));
+      Selettore.attiva('rowSelectorContainer', activeRowIndex);
+    }
+
+    // Clic su ARTICOLO N: il valore della voce è l'indice dell'articolo.
+    function selectRow(index) {
+      activeRowIndex = Number(index);
+      loadActiveRowIntoForm();
+    }
+
+    function loadActiveRowIntoForm() {
+      const art = articles[activeRowIndex];
+      document.getElementById('descFree').value = art.desc;
+      document.getElementById('descPreset').value = '';
+      document.getElementById('oldPrice').value = art.oldPrice;
+      document.getElementById('discountValue').value = art.discount;
+      document.getElementById('newPrice').value = art.newPrice;
+    }
+
+    function applyDescPreset() {
+      const preset = document.getElementById('descPreset').value;
+      if (preset) {
+        const truncated = preset.slice(0, 25);
+        document.getElementById('descFree').value = truncated;
+        articles[activeRowIndex].desc = truncated;
+        updateCards();
+      }
+    }
+
+    function onInputDesc() {
+      const input = document.getElementById('descFree');
+      if (input.value.length > 25) {
+        input.value = input.value.slice(0, 25);
+      }
+      articles[activeRowIndex].desc = input.value;
+      updateCards();
+    }
+
+    function onInputOldPrice() {
+      articles[activeRowIndex].oldPrice = document.getElementById('oldPrice').value;
+      updateCards();
+    }
+
+    function onInputDiscount() {
+      articles[activeRowIndex].discount = document.getElementById('discountValue').value;
+      updateCards();
+    }
+
+    function onInputNewPrice() {
+      articles[activeRowIndex].newPrice = document.getElementById('newPrice').value;
+      updateCards();
+    }
+
+    function updateCards() {
+      document.getElementById('cardTop').className = `card rows-${numArticles}`;
+      document.getElementById('cardBottom').className = `card rows-${numArticles}`;
+
+      document.getElementById('itemsContainerTop').replaceChildren(buildItems());
+      document.getElementById('itemsContainerBottom').replaceChildren(buildItems());
+    }
+
+    // Articoli del cartello costruiti con nodi DOM: il testo dell'utente va con textContent.
+    function node(tag, className, text) {
+      const element = document.createElement(tag);
+      if (className) element.className = className;
+      if (text) element.textContent = text;
+      return element;
+    }
+
+    function articleTexts(art) {
+      return {
+        desc: art.desc || '',
+        oldP: art.oldPrice ? `€ ${art.oldPrice}` : '',
+        disc: art.discount ? `-${art.discount}%` : '',
+        newP: art.newPrice ? `€ ${art.newPrice}` : ''
+      };
+    }
+
+    function buildItems() {
+      if (numArticles === 2) {
+        // 2 articoli: due colonne affiancate (articolo 1 a sinistra, articolo 2 a destra)
+        const column = art => {
+          const t = articleTexts(art);
+          const oldRow = node('div', 'price-row-old');
+          oldRow.append(node('span', 'price-original', t.oldP), node('span', 'discount-tag', t.disc));
+          const col = node('div', 'item-column');
+          col.append(node('div', 'item-title', t.desc), oldRow, node('div', 'price-final', t.newP));
+          return col;
+        };
+        const container = node('div', 'dual-items-container');
+        container.append(column(articles[0]), node('div', 'vertical-divider'), column(articles[1]));
+        return container;
+      }
+
+      // 3 o 4 articoli: tabella
+      const table = node('table', `items-table rows-${numArticles}`);
+      const body = node('tbody');
+      articles.slice(0, numArticles).forEach(art => {
+        const t = articleTexts(art);
+        const row = node('tr');
+        row.append(
+          node('td', 'col-desc', t.desc),
+          node('td', 'col-old-price', t.oldP),
+          node('td', 'col-discount', t.disc),
+          node('td', 'col-new-price', t.newP)
+        );
+        body.append(row);
+      });
+      table.append(body);
+      return table;
+    }
+
+    setNumArticles(3);   // si parte con 3 articoli (il selettore comune parte dal primo valore)
+  </script>
+  <script src="../assets/js/cursore.js?v=20261010-45"></script>
+  <script>
+    // Cursore: indica sulla metà superiore del cartello l'articolo (riga) in modifica e i suoi valori.
+    // Con 2 articoli ogni articolo è una colonna, con 3-4 una riga della tabella.
+    const activeArticle = () => numArticles === 2
+      ? document.querySelectorAll('#itemsContainerTop .item-column')[activeRowIndex]
+      : document.querySelectorAll('#itemsContainerTop tr')[activeRowIndex];
+    const inArticle = (twoSelector, tableSelector) => () => activeArticle()?.querySelector(numArticles === 2 ? twoSelector : tableSelector);
+
+    Cursore.create({
+      panel: '.controls',
+      watch: '#printSheet',
+      scope: '#cardTop',
+      obstacles: '#cardTop .sale-label, #cardTop .card-logo, #itemsContainerTop td, #itemsContainerTop .item-title, #itemsContainerTop .price-original, #itemsContainerTop .discount-tag, #itemsContainerTop .price-final',
+      rules: [
+        // numero di articoli: dall'alto, sopra il cartello intero (sopra la tabella coprirebbe "Sale")
+        { controls: '#btnNum2, #btnNum3, #btnNum4', target: '#cardTop', placement: 'above' },
+        { controls: '#rowSelectorContainer', target: inArticle('.item-title', '.col-desc'), placement: 'side' },
+        { controls: '#descPreset, #descFree', target: inArticle('.item-title', '.col-desc') },
+        { controls: '#oldPrice', target: inArticle('.price-original', '.col-old-price') },
+        { controls: '#discountValue, .percent-stepper', target: inArticle('.discount-tag', '.col-discount') },
+        { controls: '#newPrice', target: inArticle('.price-final', '.col-new-price') }
+      ]
+    });
+  </script>
+  <script src="../assets/js/strumenti-stampa.js?v=20261010-45"></script>
+  <script defer src="../assets/js/stampa-ios.js?v=20261010-45"></script>
+</body>
+</html>

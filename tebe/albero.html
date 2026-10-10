@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="it" data-negozio="tebe">
+<head>
+  <meta charset="UTF-8">
+  <script src="../assets/js/negozi.js?v=20261010-45"></script>
+  <!-- tema CHIARO / SCURO scelto nella dashboard (colori nella scheda del negozio) -->
+  <script src="../assets/js/theme.js?v=20261010-45"></script>
+  <link rel="stylesheet" href="../assets/css/chiudi-pagina.css?v=20261010-45">
+  <link rel="stylesheet" href="../assets/css/torna-al-menu.css?v=20261010-45">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../assets/css/font-arial.css?v=20261010-45">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600&display=swap" rel="stylesheet">
+  <title>Albero Accessori · TEBE</title>
+  <link rel="stylesheet" href="../assets/css/pannello.css?v=20261010-45">
+  <script defer src="../assets/js/campi-prezzo.js?v=20261010-45"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      padding: 20px;
+      position: relative;
+      background: var(--interface-page);
+      color: var(--interface-text);
+      font-family: Arial, sans-serif;
+    }
+
+
+
+
+    /* Il pannello segue il pannello standard (../assets/css/pannello.css): blocchi, selettori, menu e campi comuni. */
+
+    .preview-area {
+      flex: 0 0 210mm;
+      width: 210mm;
+      display: flex;
+      align-items: flex-start;
+      overflow: auto;
+    }
+
+    .print-sheet {
+      position: relative;
+      width: 210mm;
+      height: 297mm;
+      flex: 0 0 auto;
+      overflow: hidden;
+      background: #fff;
+      box-shadow: 0 20px 60px rgba(40, 34, 28, 0.18);
+    }
+
+    /* Due cartellini, ciascuno centrato nella sua metà dell'A4, con la linea di taglio tratteggiata a metà foglio (come nei Paletti) */
+    .tree-sign {
+      position: absolute;
+      left: 24.99mm;
+      width: 160.02mm;
+      height: 74.98mm;
+      overflow: hidden;
+      border: 0.25mm solid #8f8983;
+      background: #fff;
+      text-align: center;
+    }
+
+    .tree-sign:nth-child(1) { top: 36.76mm; }
+    .tree-sign:nth-child(2) { top: 185.26mm; }
+
+    .cut-line {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: 100%;
+      border-top: 0.2mm dashed #aaa;
+    }
+
+    .sign-description {
+      position: absolute;
+      top: 10.5mm;
+      right: 3mm;
+      left: 3mm;
+      overflow: hidden;
+      color: #000;
+      font: 400 24.48pt/1.1 Arial, Helvetica, sans-serif;
+      letter-spacing: -0.05em;
+      text-overflow: clip;
+      white-space: nowrap;
+    }
+
+    .sign-price {
+      position: absolute;
+      top: 23.2mm;
+      right: 2mm;
+      left: 2mm;
+      overflow: hidden;
+      color: #000;
+      font: 400 76.7pt/1 Arial, Helvetica, sans-serif;
+      letter-spacing: -0.05em;
+      white-space: nowrap;
+    }
+
+    .sign-logo {
+      position: absolute;
+      bottom: 16.3mm;
+      left: 50%;
+      width: 34mm;
+      height: auto;
+      object-fit: contain;
+      transform: translateX(-50%);
+    }
+
+    @page {
+      size: A4 portrait;
+      margin: 0;
+    }
+
+    @media print {
+      html, body {
+        width: 210mm;
+        height: 297mm !important;
+        max-height: 297mm !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+        background: #fff !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      body { display: block; }
+      .sidebar, .app-close-btn, .floating-nav-box { display: none !important; }
+
+      .preview-area {
+        display: block;
+        width: 210mm;
+        height: 297mm;
+        overflow: hidden;
+      }
+
+      .print-sheet {
+        width: 210mm;
+        height: 297mm !important;
+        margin: 0;
+        box-shadow: none;
+        page-break-after: avoid !important;
+        page-break-inside: avoid !important;
+      }
+    }
+
+    @media (max-width: 760px) {
+      body { padding: 12px; }
+      .sidebar { flex-basis: 300px; }
+      .preview-area { padding-bottom: 12px; }
+    }
+
+  </style>
+  <link rel="stylesheet" href="../assets/css/strumenti-stampa.css?v=20261010-45">
+  <link rel="stylesheet" href="../assets/css/cursore.css?v=20261010-45">
+  <link rel="stylesheet" href="../assets/css/menu-cascata.css?v=20261010-45">
+  <script defer src="../assets/js/menu-cascata.js?v=20261010-45"></script>
+  <link rel="stylesheet" href="../assets/css/responsive.css?v=20261010-45">
+  <script defer src="../assets/js/responsive.js?v=20261010-45"></script>
+</head>
+<body data-layout="cartelli">
+  <a href="index.html?store=tebe" class="app-close-btn" title="Chiudi e torna al menu principale">✕</a>
+
+  <div class="floating-nav-box">
+    <div class="floating-nav-title">TEBE</div>
+    <a href="index.html?store=tebe" class="floating-nav-btn">← Torna al Menu Principale</a>
+  </div>
+
+  <aside class="sidebar">
+    <section class="controls" aria-labelledby="pageTitle">
+      <h1 id="pageTitle">Albero Accessori</h1>
+
+      <!-- Blocco 1: selettori e pulsanti -->
+      <div class="panel-block">
+        <div id="cardSelector" data-selettore-cartello></div>
+      </div>
+
+      <!-- Blocco 2 omesso: il cartellino non ha brand né claim -->
+
+      <!-- Blocco 3: campi del cartellino scelto (testo e prezzo) -->
+      <div class="panel-block">
+        <div class="form-group">
+          <label class="section-label" for="descPreset">TESTI PRONTI</label>
+          <div class="preset-select">
+            <select id="descPreset" class="ready-text-complete" onchange="applyDescPreset()" data-testi-pronti="Promozioni,Articoli">
+              <option value="" class="ready-text-placeholder">-- Seleziona Testo Pronto --</option>
+            </select>
+          </div>
+          <label for="descriptionInput">Testo Libero</label>
+          <input id="descriptionInput" type="text" value="Foulard" maxlength="37" placeholder="-- Testo Libero --" oninput="updateActiveSign()">
+        </div>
+
+        <div class="form-group">
+          <label for="priceInput">Prezzo</label>
+          <input data-prezzo id="priceInput" type="text" inputmode="decimal" value="10,00" placeholder="10,00" maxlength="20" oninput="updateActiveSign()">
+        </div>
+      </div>
+
+      <!-- Blocco 4: stampa -->
+      <div class="panel-block">
+        <button class="btn-print" id="printBtn" type="button" onclick="window.print()">STAMPA CARTELLI</button>
+      </div>
+    </section>
+  </aside>
+
+  <main class="preview-area">
+    <div class="print-sheet" aria-label="Anteprima del foglio A4 con due cartelli">
+      <section class="tree-sign" aria-label="Cartello 1">
+        <div class="sign-description" id="descriptionPreview0">Foulard</div>
+        <div class="sign-price" id="pricePreview0">€ 10,00</div>
+        <img class="sign-logo" src="../assets/img/tebe/tebeoro.png" alt="TEBE">
+      </section>
+      <section class="tree-sign" aria-label="Cartello 2">
+        <div class="sign-description" id="descriptionPreview1">Foulard</div>
+        <div class="sign-price" id="pricePreview1">€ 10,00</div>
+        <img class="sign-logo" src="../assets/img/tebe/tebeoro.png" alt="TEBE">
+      </section>
+      <div class="cut-line" aria-hidden="true"></div>
+    </div>
+  </main>
+
+  <script src="../assets/js/testi-pronti.js?v=20261010-45"></script>
+  <script src="../assets/js/selettore.js?v=20261010-45"></script>
+  <script src="../assets/js/selettore-cartello.js?v=20261010-45"></script>
+  <script>
+    const signs = [
+      { description: 'Foulard', price: '10,00' },
+      { description: 'Foulard', price: '10,00' }
+    ];
+    let activeSign = 0;
+
+    function updateActiveSign() {
+      const sign = signs[activeSign];
+      sign.description = document.getElementById('descriptionInput').value;
+      sign.price = document.getElementById('priceInput').value;
+      document.getElementById(`descriptionPreview${activeSign}`).textContent = sign.description;
+      document.getElementById(`pricePreview${activeSign}`).textContent = `€ ${sign.price}`;
+    }
+
+    // Testi Pronti (lo stesso menu di Cartellini TEBE: articoli e testi promo) scrive il testo nel campo libero.
+    function applyDescPreset() {
+      const preset = document.getElementById('descPreset').value;
+      if (preset) document.getElementById('descriptionInput').value = preset;
+      updateActiveSign();
+    }
+
+    function selectSign(index) {
+      updateActiveSign();
+      activeSign = index;
+      SelettoreCartello.setActive('selectCard' + (index + 1));
+      document.getElementById('descriptionInput').value = signs[index].description;
+      document.getElementById('descPreset').value = '';
+      document.getElementById('priceInput').value = signs[index].price;
+    }
+
+    // Selettore comune CARTELLO SUPERIORE / INFERIORE (selettore-cartello.js): 1 = cartellino in alto, 2 = in basso.
+    function selectCard(cardIndex) {
+      selectSign(cardIndex - 1);
+    }
+  </script>
+  <script src="../assets/js/cursore.js?v=20261010-45"></script>
+  <script>
+    // Cursore: sopra il cartellino scelto con i pulsanti 1-2, sopra o di lato a testo e prezzo quando si usano i campi.
+    const activeTreeSign = () => document.querySelectorAll('.tree-sign')[activeSign];
+
+    Cursore.create({
+      panel: '.controls',
+      watch: '.print-sheet',
+      scope: activeTreeSign,
+      obstacles: () => activeTreeSign()?.querySelectorAll('.sign-description, .sign-price, .sign-logo') || [],
+      rules: [
+        { controls: '#selectCard1, #selectCard2', target: activeTreeSign, placement: 'above' },
+        { controls: '#descPreset, #descriptionInput', target: () => document.getElementById(`descriptionPreview${activeSign}`) },
+        { controls: '#priceInput', target: () => document.getElementById(`pricePreview${activeSign}`) }
+      ]
+    });
+  </script>
+  <script src="../assets/js/strumenti-stampa.js?v=20261010-45"></script>
+  <script defer src="../assets/js/stampa-ios.js?v=20261010-45"></script>
+</body>
+</html>

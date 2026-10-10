@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="it" data-negozio="tebe">
+<head>
+  <meta charset="UTF-8">
+  <script src="../assets/js/negozi.js?v=20261010-45"></script>
+  <!-- tema CHIARO / SCURO scelto nella dashboard (colori nella scheda del negozio) -->
+  <script src="../assets/js/theme.js?v=20261010-45"></script>
+  <link rel="stylesheet" href="../assets/css/chiudi-pagina.css?v=20261010-45">
+  <link rel="stylesheet" href="../assets/css/torna-al-menu.css?v=20261010-45">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../assets/css/font-arial.css?v=20261010-45">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600&display=swap" rel="stylesheet">
+  <title>Cartello SALE</title>
+  <link rel="stylesheet" href="../assets/css/pannello.css?v=20261010-45">
+  <script defer src="../assets/js/campi-prezzo.js?v=20261010-45"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* Sfondo principale UI */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: var(--interface-page);
+      padding: 20px;
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    /* Il pannello segue il pannello standard (../assets/css/pannello.css): blocchi, selettori, menu e campi comuni.
+       Qui solo ciò che è proprio della pagina: nella riga dei prezzi le etichette su una riga sola (come Outlet). */
+    .form-row .form-group label { white-space: nowrap; }
+
+    /* FOGLIO STAMPA */
+    .print-sheet {
+      position: relative;
+      z-index: 1;
+      width: 210mm;
+      height: 297mm;
+      background: white;
+      box-shadow: 0 20px 60px rgba(40,34,28,.18);
+      padding: 14.56mm 0 0 0; /* Bordo/distanziatore superiore identico */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    /* CARTELLO OUTLET — dimensioni 210mm x 118.35mm */
+    .card {
+      width: 210mm;
+      height: 118.35mm;
+      border: 0.34mm solid #9d9490;
+      background: #ffffff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    .card-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3.808mm;
+      transform: translateY(-6mm);
+    }
+
+    #cardBottom {
+      border-bottom: none;
+      transform: rotate(180deg);
+    }
+
+    .sale-label {
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: 400;
+      font-size: 76.23pt;
+      color: #cc9e25;
+      line-height: 1;
+      letter-spacing: -0.05em;
+    }
+
+    .price-row {
+      display: flex;
+      align-items: baseline;
+      gap: 8mm;
+    }
+
+    .price-old {
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: 400;
+      font-size: 35.69pt;
+      color: #1a1a1a;
+      line-height: 1;
+      white-space: nowrap;
+      letter-spacing: -0.05em;
+      text-decoration-line: line-through;
+      text-decoration-color: #cc9e25;
+      text-decoration-thickness: 2px;
+    }
+
+    .price-percent {
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: 400;
+      font-size: 35.69pt;
+      color: #cc9e25;
+      line-height: 1;
+      white-space: nowrap;
+      letter-spacing: -0.05em;
+    }
+
+    .desc-text {
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: 400;
+      font-size: 28.55pt;
+      color: #1a1a1a;
+      line-height: 1;
+      white-space: nowrap;
+      text-align: center;
+      letter-spacing: -0.05em;
+    }
+
+    .desc-text.long-text {
+      font-size: 23pt;
+    }
+
+    .price-final {
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: 400;
+      font-size: 105.8pt;
+      color: #1a1a1a;
+      line-height: 1;
+      white-space: nowrap;
+      letter-spacing: -0.05em;
+    }
+
+    /* NAVIGAZIONE UI */
+
+    @page {
+      size: A4 portrait;
+      margin: 0mm !important;
+    }
+
+    @media print {
+      html, body {
+        width: 210mm;
+        height: 297mm !important;
+        max-height: 297mm !important;
+        background: white !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        overflow: hidden !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      .sidebar, .app-close-btn, .floating-nav-box { display: none !important; }
+
+      .print-sheet {
+        box-shadow: none;
+        margin: 0 auto !important;
+        padding: 14.56mm 0 0 0 !important; /* Mantenuta la stessa misura anche in stampa */
+        width: 210mm;
+        height: 297mm !important;
+        max-height: 297mm !important;
+        page-break-after: avoid !important;
+        page-break-before: avoid !important;
+        page-break-inside: avoid !important;
+        break-after: avoid !important;
+        break-before: avoid !important;
+        break-inside: avoid !important;
+        overflow: hidden !important;
+      }
+
+      .sale-label, .price-percent, .price-old {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+    }
+
+  </style>
+  <link rel="stylesheet" href="../assets/css/madeinitaly.css?v=20261010-45">
+  <link rel="stylesheet" href="../assets/css/strumenti-stampa.css?v=20261010-45">
+  <link rel="stylesheet" href="../assets/css/cursore.css?v=20261010-45">
+  <link rel="stylesheet" href="../assets/css/menu-cascata.css?v=20261010-45">
+  <script defer src="../assets/js/menu-cascata.js?v=20261010-45"></script>
+  <link rel="stylesheet" href="../assets/css/responsive.css?v=20261010-45">
+  <script defer src="../assets/js/responsive.js?v=20261010-45"></script>
+</head>
+<body data-layout="cartelli">
+
+  <!-- Pulsanti e Riquadri Navigazione UI -->
+  <a href="index.html?store=tebe" class="app-close-btn" title="Chiudi e torna all'index">✕</a>
+
+  <div class="floating-nav-box">
+    <div class="floating-nav-title">TEBE</div>
+    <a href="index.html?store=tebe" class="floating-nav-btn">
+      ← Torna al Menu Principale
+    </a>
+  </div>
+
+  <div class="sidebar">
+    <div class="controls">
+      <h2>Cartello SALE</h2>
+
+      <!-- Eccezione voluta: le due metà del foglio sono fronte e retro dello stesso cartello in morsa (la metà
+           inferiore è capovolta), quindi niente CARTELLO SUPERIORE / INFERIORE, COPIA SU ALTRO CARTELLO né
+           2 / 1 CARTELLI; il cartello non ha brand né claim (blocco 2 omesso). -->
+
+      <!-- Blocco 1: selettori e pulsanti -->
+      <div class="panel-block">
+        <!-- id modeDoppia / modeDescrizione e switchMode: li usa anche il Made in Italy automatico -->
+        <div id="priceModeSelector" data-selettore-modalita-prezzo data-double-button-id="modeDoppia" data-description-button-id="modeDescrizione"></div>
+      </div>
+
+      <!-- Blocco 3: campi del cartello (prezzi, descrizione o entrambi, secondo la modalità) -->
+      <div class="panel-block">
+        <div class="form-group" id="descGroup" hidden>
+          <label class="section-label" for="descPreset">Promozioni</label>
+          <div class="preset-select">
+            <select id="descPreset" onchange="applyDescPreset()" data-testi-pronti="Promozioni" data-testi-senza-gruppi>
+              <option value="">-- Seleziona Promozione --</option>
+            </select>
+          </div>
+          <label for="descFree">Testo Libero</label>
+          <input type="text" id="descFree" value="" maxlength="37" placeholder="-- Testo Libero --" oninput="updateCard()">
+        </div>
+
+        <div class="form-group">
+          <div data-fasce-prezzo data-select-id="priceRange" data-on-change="applyPriceRange"></div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group" id="oldPriceGroup">
+            <label for="oldPrice">Prezzo Originario</label>
+            <input data-prezzo type="text" id="oldPrice" value="59,80" placeholder="59,80" oninput="updateCard()">
+          </div>
+          <div class="form-group" id="discountGroup">
+            <label for="discountValue">Sconto</label>
+            <input data-percentuale type="number" id="discountValue" value="50" min="1" max="99" placeholder="50" oninput="updateCard()">
+          </div>
+          <div class="form-group">
+            <label for="newPrice">Prezzo Finale</label>
+            <input data-prezzo type="text" id="newPrice" value="29,90" placeholder="29,90" oninput="updateCard()">
+          </div>
+        </div>
+      </div>
+
+      <!-- Blocco 4: stampa -->
+      <div class="panel-block">
+        <button type="button" class="btn-print" id="printBtn" onclick="window.print()">STAMPA CARTELLO</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- AREA STAMPA A4 -->
+  <div class="print-sheet" id="printSheet">
+    <div class="card" id="cardTop">
+      <div class="card-content">
+        <div class="sale-label">sale</div>
+        <div id="middleRowTop"></div>
+        <div class="price-final" id="finalPriceTop">€ 29,90</div>
+      </div>
+    </div>
+
+    <div class="card" id="cardBottom">
+      <div class="card-content">
+        <div class="sale-label">sale</div>
+        <div id="middleRowBottom"></div>
+        <div class="price-final" id="finalPriceBottom">€ 29,90</div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../assets/js/fasce-prezzo.js?v=20261010-45"></script>
+  <script src="../assets/js/testi-pronti.js?v=20261010-45"></script>
+  <script src="../assets/js/selettore.js?v=20261010-45"></script>
+  <script src="../assets/js/selettore-modalita-prezzo.js?v=20261010-45"></script>
+  <script src="../assets/js/madeinitaly.js?v=20261010-45" data-automatico></script>
+  <script>
+    function formatDiscount(value) {
+      const numeric = value.toString().replace(/[^0-9]/g, '').trim();
+      return '-' + (numeric || '50') + '%';
+    }
+
+    function applyDescPreset() {
+      const preset = document.getElementById('descPreset').value;
+      document.getElementById('descFree').value = preset;
+      updateCard();
+    }
+
+    function parsePrice(value) {
+      const normalized = value.replace(',', '.').replace(/[^0-9.]/g, '');
+      const price = Number.parseFloat(normalized);
+      return Number.isFinite(price) ? price : 0;
+    }
+
+    function formatPrice(value) {
+      return value.toFixed(2).replace('.', ',');
+    }
+
+    function applyPriceRange() {
+      const selectedPrice = document.getElementById('priceRange').value;
+      if (!selectedPrice) {
+        updateCard();
+        return;
+      }
+
+      document.getElementById('newPrice').value = selectedPrice;
+
+      if (document.getElementById('modeDoppia').classList.contains('active')) {
+        const discount = Number.parseInt(document.getElementById('discountValue').value, 10) || 50;
+        const oldPrice = parsePrice(selectedPrice) / (1 - discount / 100);
+        document.getElementById('oldPrice').value = formatPrice(oldPrice);
+      }
+
+      updateCard();
+    }
+
+    // DOPPIA CIFRA: Prezzo Originario e Sconto accanto al Prezzo Finale; DESCRIZIONE ARTICOLO: Promozioni e
+    // Testo Libero al loro posto. switchMode('doppia' | 'descrizione') resta per il Made in Italy automatico.
+    function switchMode(mode) {
+      const isDoppia = mode === 'doppia';
+      SelettoreModalitaPrezzo.setDescription(!isDoppia);
+      document.getElementById('descGroup').hidden = isDoppia;
+      document.getElementById('oldPriceGroup').hidden = !isDoppia;
+      document.getElementById('discountGroup').hidden = !isDoppia;
+      updateCard();
+    }
+
+    // Clic sul selettore comune DOPPIA CIFRA / DESCRIZIONE ARTICOLO (selettore-modalita-prezzo.js).
+    function setDescriptionMode(withDescription) {
+      switchMode(withDescription ? 'descrizione' : 'doppia');
+    }
+
+    function updateCard() {
+      const isDoppia = document.getElementById('modeDoppia').classList.contains('active');
+      const oldPrice = document.getElementById('oldPrice').value;
+      const newPrice = document.getElementById('newPrice').value;
+      const discount = formatDiscount(document.getElementById('discountValue').value);
+      const descText = document.getElementById('descFree').value || 'Descrizione Articolo';
+      const longDescription = [
+        'Vera Pelle • Genuine Leather',
+        'Made in Italy • Genuine Leather',
+        'Fino ad esaurimento scorte'
+      ].includes(descText);
+
+      // riga centrale costruita con nodi DOM: il testo dell'utente va con textContent
+      const middleRow = () => {
+        if (!isDoppia) {
+          const desc = document.createElement('div');
+          desc.className = 'desc-text' + (longDescription ? ' long-text' : '');
+          desc.textContent = descText;
+          return desc;
+        }
+        const row = document.createElement('div');
+        row.className = 'price-row';
+        const old = document.createElement('span');
+        old.className = 'price-old';
+        old.textContent = `€ ${oldPrice}`;
+        const percent = document.createElement('span');
+        percent.className = 'price-percent';
+        percent.textContent = discount;
+        row.append(old, percent);
+        return row;
+      };
+
+      document.getElementById('middleRowTop').replaceChildren(middleRow());
+      document.getElementById('middleRowBottom').replaceChildren(middleRow());
+      document.getElementById('finalPriceTop').textContent = `€ ${newPrice}`;
+      document.getElementById('finalPriceBottom').textContent = `€ ${newPrice}`;
+    }
+
+    switchMode('doppia');
+  </script>
+  <script src="../assets/js/cursore.js?v=20261010-45"></script>
+  <script>
+    // Cursore: indica sulla metà superiore del cartello l'elemento legato al campo in uso.
+    Cursore.create({
+      panel: '.controls',
+      watch: '#printSheet',
+      scope: '#cardTop',
+      obstacles: '#cardTop .sale-label, #cardTop .price-old, #cardTop .price-percent, #cardTop .desc-text, #cardTop .price-final',
+      rules: [
+        { controls: '#modeDoppia, #modeDescrizione', target: '#middleRowTop > *' },
+        { controls: '#oldPrice', target: '#middleRowTop .price-old' },
+        { controls: '#discountValue, .percent-stepper', target: '#middleRowTop .price-percent' },
+        { controls: '#descPreset, #descFree', target: '#middleRowTop .desc-text' },
+        { controls: '#priceRange, #newPrice', target: '#finalPriceTop' }
+      ]
+    });
+  </script>
+  <script src="../assets/js/strumenti-stampa.js?v=20261010-45"></script>
+  <script defer src="../assets/js/stampa-ios.js?v=20261010-45"></script>
+</body>
+</html>

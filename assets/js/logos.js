@@ -1,23 +1,15 @@
 // assets/js/logos.js
-const LOGO_FILES = [
-  "269TEBE.PNG",
-  "DIXIE.png",
-  "HAVEONE.png",
-  "OKKIA.png",
-  "SOUVENIR.png",
-  "Tebe269.png",
-  "Tebe.png",
-  "TENSIONEIN.png",
-  "VICOLO.png",
-  "WUSIDE.png"
-];
+// Codice comune dei menu BRAND. L'elenco dei loghi ufficiali (LOGO_FILES) e i brand prioritari (PRIORITY_BRANDS)
+// sono del negozio, in assets/logos/<negozio>/elenco.js, da caricare prima di questo file.
 
-const LOGO_PATH = "assets/logos/";
-const LOGO_ASSET_VERSION = "20260927";
+// Cartella dei loghi del negozio della pagina (<html data-negozio="…">), ricavata dalla posizione di questo file:
+// vale sia per la dashboard nella radice sia per le pagine nelle cartelle dei negozi.
+const LOGO_ASSET_PATH = new URL(`../logos/${document.documentElement.dataset.negozio}/`, document.currentScript.src).href;
+const LOGO_ASSET_VERSION = "20261005-4";
 
-// BRAND TEBE prioritari: mostrati per primi in ogni menu a cascata dei loghi,
-// subito dopo la voce di default, ed esclusi dal resto dell'elenco alfabetico.
-const PRIORITY_BRANDS = ["269TEBE.PNG", "Tebe269.png", "Tebe.png"];
+function getLogoSource(fileName) {
+  return fileName ? `${LOGO_ASSET_PATH}${fileName}?v=${LOGO_ASSET_VERSION}` : '';
+}
 
 /**
  * Restituisce l'elenco LOGO_FILES riordinato secondo la regola generale:
@@ -41,14 +33,6 @@ function getOrderedLogoFiles() {
 }
 
 /**
- * Restituisce il percorso del file originale del logo. Il nome del file resta
- * l'unica chiave condivisa tra menu, anteprime e stampa.
- */
-function getLogoSource(fileName) {
-  return fileName ? `${LOGO_PATH}${fileName}?v=${LOGO_ASSET_VERSION}` : '';
-}
-
-/**
  * Crea e appende un'opzione <option> a un elemento <select> per un menu brand,
  * evidenziando i brand prioritari (stagionali) con una stella e uno stile dedicato
  * (classe CSS "priority-brand-option"). Restituisce l'elemento creato.
@@ -56,9 +40,20 @@ function getLogoSource(fileName) {
 function appendBrandOption(selectEl, fileName, displayName, isPriority) {
   const option = document.createElement('option');
   option.value = fileName;
-  const label = isPriority ? displayName.toUpperCase() : displayName;
-  option.textContent = isPriority ? `⭐ ${label}` : label;
-  if (isPriority) option.className = 'priority-brand-option';
+  option.textContent = displayName;
+  if (isPriority && window.Negozi?.corrente()?.brandPrioritari === 'maiuscolo') {
+    // Scheda del negozio con brandPrioritari 'maiuscolo' (TEBE e OPHILYA): i brand della casa in maiuscolo con ⭐,
+    // come nel progetto TEBE
+    option.textContent = `⭐ ${displayName.toUpperCase()}`;
+    option.className = 'priority-brand-option';
+  } else if (isPriority) {
+    // brand prioritari: la stella ★ dei loghi personalizzati, ma gialla (.brand-star, colore in pannello.css)
+    const star = document.createElement('span');
+    star.className = 'brand-star';
+    star.textContent = '★ ';
+    option.prepend(star);
+    option.className = 'priority-brand-option';
+  }
   selectEl.appendChild(option);
   return option;
 }

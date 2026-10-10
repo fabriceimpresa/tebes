@@ -1,0 +1,1355 @@
+/*
+ * Dashboard dei negozi (luxury/index.html, tebe/index.html, ophilya/index.html), comune a tutti: il modello è la
+ * dashboard di Luxury Outlet. Contenuti del negozio in assets/negozi/<negozio>-dashboard.js, costruzione della pagina
+ * in assets/js/dashboard.js, Utilità Cassa in assets/js/cassa.js; tema e aspetto con theme.css / theme.js.
+ */
+:root {
+  --bg: #121110;
+  --sidebar: #181715;
+  --card: #1e1d1a;
+  --border: #2e2b27;
+  --accent: #d4a373;
+  --accent-hover: #e5ba73;
+  --text: #f4f1ea;
+  --text-muted: #8c857b;
+  --gold: #e5ba73;
+  --gold-border: #d4a373;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif; display: flex; height: 100vh; overflow: hidden; }
+
+/* Barra superiore mobile */
+.mobile-top-bar { display: contents; }
+.mobile-brand { display: none; }
+.mobile-nav-toggle { display: none; }
+.mobile-brand-footer { display: none; }
+.system-fab { display: none; }
+.voce-guida { display: none; }
+
+aside { width: 245px; background: var(--sidebar); border-right: 1px solid var(--border); padding: 34px 23px; display: flex; flex-direction: column; flex-shrink: 0; z-index: 1000; overflow-y: auto; transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+
+.sidebar-header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 8px 62px;   /* sotto STORE // CRAFT 62 px prima di CREA CARTELLI (56 fino al 10 ottobre 2026, poi 68, poi 62: 6 px in più tra intestazione e resto) */
+  width: 100%;
+}
+
+.brand { width: 100%; position: relative; font-family: 'Cinzel', serif; font-size: 17px; line-height: 1.15; letter-spacing: .16em; font-weight: 600; color: var(--accent); text-align: center; white-space: nowrap; background: transparent; border: none; cursor: pointer; }
+.brand:hover, .brand:focus-visible { animation: brand-hover 0.6s ease-in-out; outline: none; }
+
+.mobile-close-btn {
+  display: none;
+  position: absolute;
+  right: -10px;
+  top: -16px;
+  width: 28px;
+  height: 28px;
+  background-color: var(--accent);
+  color: #000000;
+  border: none;
+  border-radius: 50%;
+  font-size: 0.9rem;
+  font-weight: bold;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s, background-color 0.2s;
+}
+
+/* la ✕ disegnata con due tratti, sempre al centro del cerchio (il carattere ✕ cade un poco fuori centro), come la
+   ✕ del popup delle Utilità Cassa; il nome resta in aria-label */
+.mobile-close-btn { font-size: 0; }
+.mobile-close-btn::before,
+.mobile-close-btn::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 12px;
+  height: 2px;
+  border-radius: 1px;
+  background: currentColor;
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+.mobile-close-btn::after { transform: translate(-50%, -50%) rotate(-45deg); }
+
+.mobile-close-btn:hover {
+  background-color: var(--accent-hover);
+  transform: scale(1.1);
+}
+
+.sidebar-overlay {
+  display: none;
+}
+
+@keyframes brand-hover {
+  0%, 100% { transform: translateY(0) scale(1); }
+  45% { transform: translateY(-3px) scale(1.05); }
+  70% { transform: translateY(0) scale(0.98); }
+}
+
+/* Menu laterale: struttura del menu di TEBE, colori di StoreCraft.
+   Il clic sul titolo di una sezione (non solo sulla freccia) la apre o la chiude. */
+.sidebar-section .label {
+  position: relative;
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 9px 10px;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: .24em;
+  color: #fff;
+  cursor: pointer;
+  transition: color .18s ease;
+}
+:root[data-interface-look="standard"] .sidebar-section .label { font-size: 10px; }
+.sidebar-section + .sidebar-section .label { margin-top: 28px; }
+/* Area illuminata sotto il titolo, con 12 px sopra come le voci, così la spaziatura non cambia. */
+.sidebar-section .label::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: 0;
+  right: 0;
+  top: -12px;
+  bottom: -2px;
+  transition: background .18s ease, box-shadow .18s ease;
+}
+.sidebar-section .label:hover { color: var(--text); }
+.sidebar-section .label:hover::before { background: rgba(212, 163, 115, 0.08); box-shadow: inset 2px 0 var(--accent); }
+.section-toggle {
+  border: 0;
+  background: transparent;
+  color: var(--accent);
+  padding: 2px 4px;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  transition: transform .18s ease;
+}
+.section-toggle[aria-expanded="false"] { transform: rotate(-90deg); }
+
+.sidebar-section nav { display: grid; gap: 3px; }
+.sidebar-section.is-collapsed nav { display: none; }
+/* sul telefono la sezione che si chiude resta visibile finché le voci non sono scorse via (dashboard.js, toggleSidebarSection) */
+.sidebar-section.is-collapsed[data-chiusura] nav { display: grid; }
+.nav-btn {
+  display: block;
+  padding: 12px 10px;
+  font-size: 13px;
+  color: var(--text-muted);
+  text-decoration: none;
+  cursor: pointer;
+  transition: background .18s ease, box-shadow .18s ease, color .18s ease;
+}
+.nav-btn:hover, .nav-btn.active { background: rgba(212, 163, 115, 0.08); box-shadow: inset 2px 0 var(--accent); color: var(--text); }
+/* Gruppi di voci dentro una sezione (in CREA CARTELLI: cartelli e promo stagionali). */
+.nav-group { display: grid; gap: 3px; }
+.nav-group[hidden] { display: none; }
+/* Sottosezione PROMO STAGIONALI dentro CREA CARTELLI, chiusa all'apertura: aprendola si chiudono le voci
+   dei cartelli e sotto compaiono le promo (togglePromoSubsection). */
+.nav-subtoggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 12px 10px;
+  border: 0;
+  background: transparent;
+  color: var(--accent);
+  font: inherit;
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+  transition: background .18s ease, box-shadow .18s ease, color .18s ease;
+}
+.nav-subtoggle:hover { background: rgba(212, 163, 115, 0.08); box-shadow: inset 2px 0 var(--accent); color: var(--text); }
+.nav-subtoggle-arrow { color: var(--accent); font-size: 14px; line-height: 1; padding: 0 4px; transition: transform .18s ease; }
+.nav-subtoggle[aria-expanded="false"] .nav-subtoggle-arrow { transform: rotate(-90deg); }
+.nav-star { color: var(--gold); }
+/* Voci delle promo stagionali in oro come il titolo PROMO STAGIONALI. */
+#promoItems .nav-btn { color: var(--accent); }
+#promoItems .nav-btn:hover, #promoItems .nav-btn.active { color: var(--gold); }
+
+.sidebar-bottom {
+  margin-top: auto;
+  padding: 34px 8px 2px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.storecraft-mark {
+  width: 158px;
+  height: 76px;
+  margin: 12px auto 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.storecraft-mark img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 76px;
+  object-fit: contain;
+  opacity: .78;
+  filter: brightness(0) saturate(100%) invert(73%) sepia(29%) saturate(836%) hue-rotate(352deg) brightness(91%) contrast(87%);
+}
+
+.signature-caption {
+  display: block;
+  font-size: 8px;
+  line-height: 1.2;
+  letter-spacing: .20em;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+/* Menu laterale senza scorrimento (dashboard.js, controllaSpazioMenu): se il contenuto non entra (es. CREA CARTELLI
+   aperta) logo e scritta spariscono, senza animazione come il resto del menu, e ricompaiono quando torna lo spazio */
+#sidebar-menu.firma-nascosta .sidebar-bottom { padding-top: 12px; }
+#sidebar-menu.firma-nascosta :is(.storecraft-mark, .signature-caption) { display: none; }
+/* scomparsa: copia di logo e scritta che si rimpicciolisce verso il centro (dashboard.js); niente effetto sul menu */
+#sidebar-menu .firma-risucchio { position: absolute; z-index: 2; pointer-events: none; transform-origin: center center; }
+#sidebar-menu.firma-nascosta .firma-risucchio .storecraft-mark { display: flex; }
+#sidebar-menu.firma-nascosta .firma-risucchio .signature-caption { display: block; }
+/* Se ancora non entra, le voci del menu si avvicinano quanto serve (--menu-stretto, da 0 a 7 px calcolato da dashboard.js):
+   spazio sopra e sotto le voci da 12 a 5 px, tra i titoli delle sezioni da 28 a 14 px */
+#sidebar-menu :is(.nav-btn, .nav-subtoggle) { padding-top: calc(12px - var(--menu-stretto, 0px)); padding-bottom: calc(12px - var(--menu-stretto, 0px)); }
+#sidebar-menu .sidebar-section + .sidebar-section .label { margin-top: calc(28px - 2 * var(--menu-stretto, 0px)); }
+
+/* Il menu di sistema si apre verso l'alto sopra il richiamo in fondo alla barra laterale. */
+.sidebar-credits {
+  width: 100%;
+  margin-top: 24px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+
+/* in alto 24 px: titolo (o interruttore dei negozi) e selettore CASSIERE / CREATOR centrati sulla stessa linea del
+   marchio STORE // CRAFT del menu laterale */
+main { flex: 1; padding: 24px 3rem 2rem; overflow-y: auto; position: relative; scroll-behavior: smooth; }
+/* Come in TEBE: sugli schermi molto larghi il contenuto si ferma a 1450 px (margini compresi) e resta al centro,
+   invece di allargare le schede all'infinito; la barra di scorrimento resta sul bordo destro della finestra. */
+main > * { max-width: calc(1450px - 6rem); margin-left: auto; margin-right: auto; }
+header { position: relative; border-bottom: 1px solid var(--border); padding-bottom: 1.5rem; margin-bottom: 2rem; }
+/* Sul desktop il divisorio sotto l'intestazione cade sempre all'altezza della voce CREA CARTELLI del menu laterale
+   (24 px sopra + 100 px di intestazione = 124 px; prima del 10 ottobre 2026 94 px, 6 px più in alto), con il titolo, l'interruttore o l'aspetto che sia */
+@media screen and (min-width: 721px) { #main-content > header { min-height: 100px; } }
+/* Sotto il divisorio lo stesso spazio che c'è sopra, tra il sottotitolo e il divisorio (circa 35 px in STANDARD): nel look COMPATTO
+   il sottotitolo in Arial è più piccolo e lascia sopra 5 px in più, quindi anche sotto si aggiungono 5 px */
+@media screen and (min-width: 721px) { :root[data-interface-look="minimal"] #main-content > header { margin-bottom: calc(2rem + 5px); } }
+/* Intestazione con titolo (oggi nessun negozio): niente divisorio (dal 10 ottobre 2026), e in CREATOR la riga del logo
+   comincia dove prima c'era il divisorio, all'altezza di CREA CARTELLI come in TEBE. In CASSIERE sotto l'intestazione
+   c'è il titolo UTILITÀ CASSA e resta lo spazio di prima. Vale anche nelle finestre desktop strette; sul telefono
+   valgono le sue regole. */
+@media not screen and (max-width: 720px) and (pointer: coarse) {
+  #main-content > header:not(.solo-selettori) { border-bottom: 0; }
+  body:not(.cassiere-mode) #main-content > header:not(.solo-selettori),
+  :root[data-interface-look="minimal"] body:not(.cassiere-mode) #main-content > header:not(.solo-selettori) { margin-bottom: 0; }
+  /* riga del logo rimasta vuota (logo salito nell'intestazione, .con-logo con logo nei contenuti): si nasconde */
+  #main-content > .store-hero.is-vuota { display: none; }
+}
+.home-mark { position: fixed; top: 24px; left: calc(245px + 3rem); display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.3rem 0.65rem; background: #0a0908; border: 1px solid var(--accent); border-radius: 4px; color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.76rem; font-weight: 700; letter-spacing: 0.5px; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.5); opacity: 0; pointer-events: none; transform: translateY(4px); transition: opacity 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease, color 0.2s ease; z-index: 20; }
+
+/* Selettore CASSIERE / CREATOR (e TEBE / OPHILYA): un solo riquadro scuro arrotondato con le due voci; la voce scelta è oro. Fondo (e voce non scelta) grigio molto scuro e opaco, #24221f, invece del nero #0a0908 (dal 10 ottobre 2026).
+   In STANDARD stesse misure del look COMPATTO (riquadro 4 px, pulsanti alti 29 px): cambiano solo forma e carattere */
+.mode-switcher { position: fixed; top: 24px; right: 2rem; display: flex; gap: 4px; padding: 4px; background: #24221f; border: 1px solid var(--border); border-radius: 4px; z-index: 30; }
+.mode-btn { display: inline-flex; align-items: center; gap: 0.35rem; height: 29px; padding: 0 13px; background: transparent; border: 1px solid transparent; border-radius: 3px; color: var(--text); font-family: inherit; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; cursor: pointer; transition: all 0.2s ease; }
+.mode-btn:hover { color: var(--accent); }
+.mode-btn.active { background: var(--accent); color: #000; border-color: var(--accent-hover); box-shadow: 0 0 4px rgba(229,186,115,0.35), 0 2px 4px rgba(0,0,0,0.45); }
+
+#generators-section, #seasonal-promo-section, #tickets-section, #dymo-section, #prints-section, #prints-promo-section, #tools-title, #tools { transition: transform 0.25s ease, opacity 0.25s ease; }
+body.cassiere-mode #tools { margin-bottom: 3rem; }
+/* Vista CASSIERE: si vedono solo le Utilità Cassa (le altre sezioni si nascondono) e la riga con logo e indirizzo
+   del negozio sta sotto i widget (dashboard.js, setLayoutMode); su desktop e tablet in fondo alla pagina, con il bordo
+   più basso allineato al fondo di MENU // IMPOSTAZIONI (--hero-fondo, calcolato da dashboard.js) */
+body.cassiere-mode #main-content > div[id]:not(#tools):not(#tools-title) { display: none; }
+@media screen and (min-width: 721px) {
+  body.cassiere-mode #main-content { display: flex; flex-direction: column; }
+  body.cassiere-mode #main-content > * { width: 100%; flex-shrink: 0; }
+  body.cassiere-mode #main-content > .store-hero { margin-top: auto; padding-top: 1rem; margin-bottom: var(--hero-fondo, 0px); }
+  body.cassiere-mode #tools { margin-bottom: 2rem; row-gap: 24px; }
+  /* sotto il titolo UTILITÀ CASSA la stessa distanza che c'è sopra, tra il divisorio e il titolo (misurata sulle lettere):
+     33,5 px nello STANDARD, 36,5 px nel COMPATTO; tra le due righe di widget 24 px invece di 12 */
+  body.cassiere-mode #tools-title { margin-bottom: calc(0.8rem + 7.5px) !important; }
+  :root[data-interface-look="minimal"] body.cassiere-mode #tools-title { margin-bottom: calc(1.1rem + 10.5px) !important; }
+}
+.layout-reorder-anim { opacity: 0.6; transform: translateY(-6px); }
+body.is-scrolled .home-mark, .home-mark:hover, .home-mark:focus-visible { opacity: 1; pointer-events: auto; transform: translateY(0); outline: none; }
+.home-mark:hover { background: var(--accent); color: #000000; border-color: var(--accent-hover); box-shadow: 0 0 4px rgba(229,186,115,0.5), 0 2px 5px rgba(0,0,0,0.55); transform: translateY(0) scale(1.05); }
+/* casetta disegnata (dashboard.js, casetta): alta quanto le maiuscole di HOME, al centro della scritta */
+.home-mark-icon { display: flex; width: 12px; height: 12px; }
+.home-mark-icon svg { display: block; width: 100%; height: 100%; }
+header h1 { font-family: 'Cinzel', serif; font-size: 1.8rem; font-weight: 500; }
+header p { color: var(--text-muted); font-size: 0.85rem; margin-top: 0.3rem; }
+
+.section-title { font-family: 'Cinzel', serif; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent); margin-bottom: 0.8rem; }
+.promo-lightning {
+  color: var(--gold);
+  font-family: Georgia, serif;
+  font-size: 1.1em;
+  font-weight: 400;
+  text-shadow: 0 0 6px rgba(229, 186, 115, 0.35);
+  line-height: 1;
+}
+
+/* Stessa distanza tra titolo e schede in tutte le sezioni (0,4rem, come la griglia Cartellini di prima); nel padding, perché un margine si fonderebbe con quello del titolo */
+.section-title + .carousel-wrapper { padding-top: 0.4rem; }
+.section-title + .carousel-wrapper .carousel-arrow { top: calc(50% + 0.2rem); }
+.tools-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; padding-top: 0.4rem; margin-bottom: 3rem; }
+
+.card, .carousel-card { --card-pad: 20px; }
+
+/* Anteprima nel riquadro 16:9 come le card-thumb di TEBE: l'immagine resta intera, senza tagli né deformazioni.
+   I lati vuoti restano scuri (nelle promo con la sfumatura dorata scura) nel tema scuro. */
+.preview { position: relative; aspect-ratio: 16 / 9; margin: 0 var(--card-pad); background: #0a0908; border: 1px solid var(--border); border-radius: 4px; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+.preview-image { display: block; width: 100%; height: 100%; object-fit: contain; object-position: center; }
+/* Pagine con il menu su misura (Promo Multibrand, Xmas Ball): etichetta MENU SPECIALE in basso a destra
+   nell'anteprima, con lo stile del .gold-badge della prima versione di StoreCraft (oro lucido, scritta nera) */
+.card-badge { position: absolute; bottom: 11px; right: 10px; z-index: 1; padding: 2px 7px; border-radius: 4px; background: linear-gradient(135deg, #b88d4c, #f4e3c9, #b88d4c, #e5ba73); color: #000; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5); font-size: 0.62rem; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase; white-space: nowrap; pointer-events: none; }
+
+/* Schede del corpo centrale: stessi elementi delle card di TEBE (numero e tipo in alto,
+   anteprima, titolo e pulsante + delle specifiche), con gli angoli arrotondati di StoreCraft. */
+.card-top { display: flex; justify-content: space-between; gap: 10px; padding: 16px var(--card-pad) 12px; font-size: 10px; letter-spacing: .16em; color: var(--accent); }
+.card-type { text-align: right; }
+
+.card-body { position: relative; padding: 14px var(--card-pad) 18px; }
+.card-body h3 { font-family: 'Cinzel', serif; font-size: 0.95rem; padding-right: 36px; }
+
+/* Pulsante + delle specifiche: un + oro senza contorno, diverso dal resto della scheda (che apre la pagina); passandoci sopra compare dietro un cerchio oro pieno.
+   Un clic apre le specifiche di tutte le schede e il + ruota in ×; un altro clic le richiude. */
+.spec-toggle { position: absolute; top: 12px; right: var(--card-pad); width: 24px; height: 24px; border: 0; border-radius: 50%; color: var(--accent); cursor: pointer; transition: background .18s ease, border-color .18s ease, color .18s ease, transform .3s ease; }
+.spec-toggle::before, .spec-toggle::after { content: ""; position: absolute; top: 50%; left: 50%; width: 11px; height: 1.6px; background: currentColor; border-radius: 1px; transform: translate(-50%, -50%); }
+.spec-toggle::after { transform: translate(-50%, -50%) rotate(90deg); }
+.spec-toggle:hover, .spec-toggle:focus-visible { background: var(--accent); color: #121110; outline: none; }
+.desc-open .spec-toggle { transform: rotate(45deg); }
+/* Etichetta del pulsante + (Mostra / Nascondi specifiche) sopra il pulsante, nello stile della .tool-tip
+   di strumenti-stampa.css (fondo scuro, bordo oro), con la scritta bianca nel carattere del pulsante HOME, più piccola e sottile. */
+.spec-tip { position: absolute; bottom: calc(100% - 8px); right: var(--card-pad); padding: 4px 7px; border: 1px solid #d4a373; border-radius: 5px; background: #1e1d1a; color: var(--text); box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5); font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.58rem; font-weight: 400; line-height: 1.2; text-transform: uppercase; letter-spacing: 0.6px; white-space: nowrap; opacity: 0; transform: translateY(3px); transition: opacity .15s ease, transform .15s ease; pointer-events: none; z-index: 10; }
+.spec-toggle:hover + .spec-tip, .spec-toggle:focus-visible + .spec-tip { opacity: 1; transform: translateY(0); }
+/* tema chiaro: avorio con il bordo oro e la scritta scura, come il fumetto dei pulsanti della lista di stampa nel tema chiaro */
+:root[data-interface-theme="light"] .spec-tip { background: var(--interface-surface); border-color: var(--interface-accent); color: var(--interface-text); box-shadow: 0 2px 4px var(--interface-shadow); }
+
+.card:has(.card-desc) .card-body, .carousel-card:has(.card-desc) .card-body { transition: padding-bottom .3s ease; }
+.desc-open .card-body { padding-bottom: 0.55rem; }
+/* Le schede di una fila si allungano tutte come la più alta (anche quando le specifiche vanno su tre righe),
+   con il contenuto in alto e lo spazio in più in fondo. */
+.carousel-card:has(.card-desc) { justify-content: flex-start; }
+.card-desc { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .3s ease; }
+.card-desc > div { overflow: hidden; min-height: 0; }
+/* Specifiche: i componenti del cartello divisi da | grigio come il testo, come nella versione originale. Vanno a capo
+   come un testo normale (anche dentro un componente, e il | può stare a inizio o a fine riga).
+   Almeno due righe, così le schede aperte sono uguali. */
+.card-desc p { min-height: 3.2em; margin: 0 var(--card-pad) 18px; font-size: 0.8rem; color: var(--text-muted); line-height: 1.6; letter-spacing: .01em; }
+.card-desc .spec-list { display: block; }
+/* Il separatore | sta in fondo alla specifica precedente (non all'inizio della successiva): andando a capo la riga
+   nuova comincia sempre con una parola, mai con uno spazio vuoto o con la barretta. */
+.card-desc .spec:not(:last-child)::after { content: "|"; margin: 0 0.2em 0 0.45em; color: var(--text-muted); }
+.desc-open .card-desc { grid-template-rows: 1fr; }
+
+/* STILI ESCLUSIVI WIDGET / CARD DORATA CON COLORE LOGO STORE CRAFT (#d4a373 / #e5ba73) */
+.gold-bf-card {
+  border: 1px solid var(--gold-border) !important;
+  background: linear-gradient(145deg, #1f1a14 0%, #2a2218 100%) !important;
+  box-shadow: 0 0 15px rgba(212, 163, 115, 0.25);
+  position: relative;
+}
+
+.gold-bf-card:hover {
+  border-color: var(--gold) !important;
+  box-shadow: 0 0 25px rgba(229, 186, 115, 0.45) !important;
+  transform: translateY(-4px);
+}
+
+.gold-bf-card h3 {
+  color: var(--gold) !important;
+  text-shadow: 0 0 8px rgba(212, 163, 115, 0.35);
+}
+
+#prints-promo-carousel .card-body h3 {
+  color: var(--gold);
+  text-shadow: 0 0 8px rgba(212, 163, 115, 0.35);
+}
+
+#prints-promo-carousel .carousel-card {
+  border-color: var(--gold-border);
+  background: linear-gradient(145deg, #1f1a14 0%, #2a2218 100%);
+  box-shadow: 0 0 15px rgba(212, 163, 115, 0.25);
+}
+
+#prints-promo-carousel .carousel-card:hover {
+  border-color: var(--gold);
+  box-shadow: 0 0 25px rgba(229, 186, 115, 0.45);
+}
+
+#prints-promo-carousel .compact-title {
+  white-space: nowrap;
+  font-size: 0.9rem;
+  letter-spacing: 0.2px;
+}
+
+
+/* CAROSELLI CON FRECCE FLOATING */
+#generators-section, #seasonal-promo-section, #tickets-section, #dymo-section, #prints-section, #prints-promo-section { margin-bottom: 3rem; }
+
+.carousel-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: all 0.25s ease;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+}
+.carousel-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-3px);
+}
+.carousel-card .preview-icon {
+  font-size: 3.2rem;
+  color: var(--accent);
+}
+.print-pdf-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  width: 100%;
+  margin-top: 0.9rem;
+  text-decoration: none;
+  font-size: 0.75rem;
+  padding: 0.55rem 0.5rem;
+}
+
+
+/* WIDGET ED ESPANSIONE ANIMATA */
+.widget { 
+  background: var(--card); 
+  border: 1px solid var(--border); 
+  border-radius: 8px; 
+  padding: 22px;
+  display: flex; 
+  flex-direction: column; 
+  justify-content: flex-start;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.widget-compact {
+  padding: 1rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Utilità Cassa: widget alti almeno 224 px, con gli elementi in alto a distanze fisse (spaziatura del progetto TEBE) */
+#tools .widget:not(.expanded) { min-height: 224px; }
+
+.widget:not(.expanded):hover {
+  border-color: var(--accent);
+  transform: translateY(-3px);
+}
+
+.widget h3 { font-size: 0.9rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--accent); margin-bottom: 22px; display: flex; align-items: center; gap: 0.5rem; }
+.widget-compact h3 { margin-bottom: 0.8rem; }
+
+/* Utilità Cassa (assets/js/cassa.js), come in TEBE: lo strumento scelto si apre in un popup al centro della pagina,
+   sopra un velo; si chiude con la ✕, con Esc o toccando il velo. Sul telefono gli strumenti restano pronti nella
+   pagina (vedi la vista telefono in fondo). */
+#tools.is-focused::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 1500;
+  background: rgba(10, 9, 8, 0.6);
+  backdrop-filter: blur(2px);
+}
+:root[data-interface-theme="light"] #tools.is-focused::before { background: rgba(40, 37, 34, 0.28); }
+
+.widget.expanded {
+  position: fixed;
+  z-index: 1501;
+  top: 50%;
+  left: 50%;
+  width: min(620px, calc(100vw - 40px));
+  max-height: calc(100vh - 56px);
+  overflow: auto;
+  padding: 2.5rem;
+  background: var(--card);
+  border-color: var(--accent);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.6);
+  transform: translate(-50%, -50%);
+  cursor: default;
+}
+#widget-sconto.expanded,
+#widget-aliquota.expanded,
+#widget-valuta.expanded { width: min(520px, calc(100vw - 40px)); }
+.widget.expanded h3 { padding-right: 40px; }
+
+/* ✕ del popup, in alto a destra (nascosta finché lo strumento non è aperto) */
+.widget-header-controls { display: none; }
+.widget.expanded .widget-header-controls {
+  display: block;
+  position: absolute;
+  top: 14px;
+  right: 14px;
+}
+
+.close-btn {
+  width: 32px;
+  height: 32px;
+  background-color: var(--accent);
+  color: #000000;
+  border: none;
+  border-radius: 50%;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s, background-color 0.2s;
+  position: relative;
+  font-size: 0; /* la ✕ del markup resta per i lettori di schermo; quella visibile è disegnata sotto */
+}
+/* ✕ disegnata con due tratti, sempre al centro del cerchio qualunque sia il carattere dell'aspetto */
+.close-btn::before,
+.close-btn::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 14px;
+  height: 2px;
+  border-radius: 1px;
+  background: currentColor;
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+.close-btn::after { transform: translate(-50%, -50%) rotate(-45deg); }
+
+.close-btn:hover {
+  background-color: var(--accent-hover);
+  transform: scale(1.1);
+}
+
+.tool-row { display: flex; gap: 8px; margin-bottom: 14px; }
+/* aspetto STANDARD: campi un poco più distanziati tra loro (caratteri più grandi del COMPATTO) */
+:root:not([data-interface-look="minimal"]) #tools .tool-row { gap: 12px; margin-bottom: 18px; }
+:root:not([data-interface-look="minimal"]) #tools .rate-grid-widget { gap: 8px; margin-bottom: 18px; }
+:root:not([data-interface-look="minimal"]) #tools .qr-preview-container { margin: 8px 0 26px; } /* STANDARD: 26 px sopra (18 del menu + 8) e sotto */
+/* Calcola IVA: tasti dell'aliquota, campi e Azzera IVA distribuiti con spazi uguali sull'altezza del widget, così
+   Azzera IVA sta in fondo, alla stessa altezza di Scarica / Stampa QR del widget vicino (l'ultima riga dei widget non ha
+   spazio sotto). Lo spazio minimo tra gli elementi è quello delle righe dei campi: 14 px, 18 px nello STANDARD */
+#tools .widget > .tool-row:last-child { margin-bottom: 0 !important; }
+#tools .iva-campi { flex: 1; display: flex; flex-direction: column; justify-content: space-between; gap: 14px; }
+#tools .iva-campi > * { margin-bottom: 0 !important; }
+:root:not([data-interface-look="minimal"]) #tools .iva-campi { gap: 18px; }
+/* tema chiaro + COMPATTO: elementi dei widget un poco più distanziati (fondo chiaro e caratteri sottili sembrano più fitti) */
+:root[data-interface-theme="light"][data-interface-look="minimal"] #tools .tool-row { gap: 10px; margin-bottom: 17px; }
+:root[data-interface-theme="light"][data-interface-look="minimal"] #tools .rate-grid-widget { gap: 7px; }
+:root[data-interface-theme="light"][data-interface-look="minimal"] #tools .iva-campi { gap: 17px; }
+:root[data-interface-theme="light"][data-interface-look="minimal"] #tools .qr-preview-container { margin-bottom: 17px; }
+:root[data-interface-theme="light"][data-interface-look="minimal"] #tools .tool-result { margin-top: 21px; }
+.input-group { display: flex; width: 100%; border: 1px solid var(--border); border-radius: 4px; overflow: hidden; background: #0a0908; }
+.input-prefix { padding: 0.6rem 0.7rem; background: #181715; color: var(--accent); font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; border-right: 1px solid var(--border); font-weight: bold; display: flex; align-items: center; flex-shrink: 0; }
+.input-suffix { padding: 0.6rem 0.7rem; background: #181715; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; border-left: 1px solid var(--border); font-weight: 700; display: flex; align-items: center; flex-shrink: 0; letter-spacing: 0.5px; white-space: nowrap; }
+.tool-input { width: 100%; padding: 0.6rem 0.7rem; background: transparent; border: none; color: #fff; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; outline: none; }
+.tool-input-select { width: 100%; padding: 0.6rem 0.7rem; background: #0a0908; border: 1px solid var(--border); color: #fff; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; outline: none; }
+.tool-input-select:focus, .tool-input:focus { border-color: var(--accent); }
+/* Utilità Cassa: campi, menu, simboli e pulsanti sempre su una riga sola; il testo che non entra finisce con i puntini */
+:is(.tool-input, .tool-input-select, .input-prefix, .input-suffix, .tool-btn, .rate-btn-widget) { white-space: nowrap; }
+.tool-input-select { overflow: hidden; text-overflow: ellipsis; }
+/* la freccia del menu resta sempre visibile a destra, sopra il testo troppo lungo */
+.tool-input-select { position: relative; padding-right: 2.1rem; }
+.tool-input-select::picker-icon { position: absolute; top: 0; bottom: 0; right: 0; display: flex; align-items: center; padding: 0 0.7rem 0 0.5rem; background: inherit; }
+.tool-input-select selectedcontent { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.input-group .tool-input { flex: 1 1 auto; min-width: 0; }
+.input-group :is(.input-prefix, .input-suffix, .tool-input-select) { flex: 0 0 auto; }
+
+.tool-btn { 
+  padding: 0.65rem 0.8rem; 
+  background: var(--accent); 
+  color: #000000; 
+  font-weight: 700; 
+  border: none; 
+  border-radius: 4px; 
+  cursor: pointer; 
+  transition: all 0.2s; 
+  font-size: 0.8rem; 
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.tool-btn:hover { background: var(--accent-hover); transform: translateY(-1px); }
+.tool-btn-secondary {
+  background: transparent;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+}
+.tool-btn-secondary:hover {
+  background: rgba(212, 163, 115, 0.1);
+  color: var(--accent-hover);
+}
+
+.tool-result { font-family: 'JetBrains Mono', monospace; font-size: 1.3rem; color: var(--accent); min-height: 29px; margin-top: 18px; font-weight: bold; text-align: center; }
+.tool-status { min-height: 18px; margin-top: 6px; color: var(--text-muted); font-size: 0.75rem; text-align: center; }
+
+/* STILI WIDGET IVA */
+.rate-grid-widget {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.rate-btn-widget {
+  background: #0a0908;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  padding: 8px 0;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.rate-btn-widget:hover {
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+.rate-btn-widget.active {
+  background: rgba(212, 163, 115, 0.15);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.qr-preview-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 116px;
+  margin: 0 0 14px; /* sopra c'è già lo spazio sotto il menu (14 px): il QR ha lo stesso spazio sopra e sotto */
+}
+/* pulsanti Scarica / Stampa QR subito sotto il QR, 8 px tra i due (prevale sullo stile scritto nel markup di cassa.js) */
+.qr-preview-container + .tool-row { gap: 8px !important; margin-top: 0 !important; }
+/* Anteprima del QR nel widget della dashboard: sempre 80 px, qualunque Dimensione sia scelta; la misura vera si vede
+   solo usando lo strumento (popup aperto, o sul telefono il widget in uso). Il QR scaricato o stampato resta della misura scelta */
+#tools .widget:not(.expanded):not(.mobile-active) .qr-preview-wrapper :is(img, canvas) { width: 80px !important; height: 80px !important; }
+#tools .widget:not(.expanded):not(.mobile-active) .qr-preview-container { min-height: 0; }
+
+.qr-preview-wrapper {
+  background: #ffffff;
+  padding: 8px;
+  border-radius: 6px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+#qrcode img, #qrcode canvas {
+  display: block;
+  margin: 0 auto;
+}
+
+@media screen and (max-width: 1000px) {
+  #tools { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media screen and (max-width: 1300px) and (pointer: fine) {
+  #tools { grid-template-columns: minmax(0, 1fr); }
+}
+/* Finestra stretta: il contenuto usa tutta la larghezza. */
+@media screen and (max-width: 720px) {
+  aside { display: none; }
+  main { padding: 32px 20px; min-width: 0; }
+  #tools { grid-template-columns: 1fr; }
+  .home-mark { left: auto; right: 18px; }
+}
+@media screen and (max-width: 720px) and (pointer: fine) {
+  .mobile-nav-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 16px;
+    left: 20px;
+    width: 34px;
+    height: 34px;
+    border: 1px solid var(--accent);
+    border-radius: 6px;
+    background: #181715;
+    color: var(--accent);
+    font-size: 1.1rem;
+    cursor: pointer;
+    z-index: 900;
+  }
+  main { padding-top: 76px; }
+  aside {
+    display: flex;
+    position: fixed;
+    inset: 0 auto 0 0;
+    width: min(278px, 82vw);
+    box-shadow: 3px 0 10px rgba(0,0,0,0.7);
+    transform: translateX(0);
+  }
+  /* chiuso, fuori dallo schermo, il menu non deve lasciare la sua ombra sul bordo sinistro: sparisce mentre esce */
+  aside { transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease; }
+  body.sidebar-collapsed aside { transform: translateX(-100%); box-shadow: none; }
+  .mobile-close-btn { display: flex; }
+  .sidebar-overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+    background: rgba(0,0,0,0.65);
+    opacity: 1;
+    visibility: visible;
+  }
+  body.sidebar-collapsed .sidebar-overlay {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+}
+/* Solo telefoni: stessa condizione usata dal JavaScript. */
+@media screen and (max-width: 720px) and (pointer: coarse) {
+  /* niente rimbalzo di Safari su iPhone: trascinando oltre il bordo la pagina non si sposta (lo zoom con due dita resta);
+     i caroselli non passano lo scorrimento alla pagina */
+  html, body { overscroll-behavior: none; }
+  .carousel-container { overscroll-behavior-x: contain; }
+  body {
+    display: block;
+    height: auto;
+    min-height: 100vh;
+    overflow: visible;
+  }
+
+  .section-title {
+    text-align: center;
+    font-size: 0.95rem;
+    letter-spacing: 2px;
+    margin-bottom: 1rem;
+  }
+
+
+  .mobile-top-bar {
+    display: flex;
+    position: sticky;
+    top: 0;
+    width: 100%;
+    height: 64px;
+    background: #0a0908;
+    border-bottom: 1px solid var(--border);
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 0.6rem;
+    z-index: 900;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+  }
+
+  .mobile-nav-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: static;
+    /* più grande (40 px invece di 34): con il pulsante IMPOSTAZIONI sono i due comandi principali del telefono */
+    width: 40px;
+    height: 40px;
+    background: #181715;
+    border: 1px solid var(--accent);
+    border-radius: 7px;
+    color: var(--accent);
+    font-size: 1.3rem;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .mobile-brand {
+    display: block;
+    font-family: 'Cinzel', serif;
+    font-size: 0.98rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: var(--accent);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+    white-space: nowrap;
+    padding: 0 0.2rem;
+  }
+
+  /* selettori della barra alti 40 px come ☰, in tutti i negozi e in tutti e due gli aspetti */
+  .mobile-top-bar .mode-switcher {
+    position: static;
+    display: flex;
+    box-sizing: border-box;
+    height: 40px;
+    align-items: center;
+    gap: 3px;
+    padding: 2px !important;
+    flex-shrink: 0;
+  }
+
+  /* pulsanti alti 30 px come nel COMPATTO, non schiacciati (la barra è alta 64 px) */
+  .mobile-top-bar .mode-btn {
+    height: 30px;
+    padding: 0 0.45rem;
+    font-size: 0.62rem;
+    border-radius: 3px;
+    letter-spacing: 0.3px;
+  }
+
+  /* il menu parte dal bordo alto dello schermo e copre anche la barra in alto (mentre è aperto la barra non serve):
+     più spazio per le voci */
+  aside {
+    display: flex;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: min(278px, 82vw);
+    padding: max(16px, env(safe-area-inset-top)) 14px 18px;
+    box-shadow: 3px 0 10px rgba(0,0,0,0.7);
+    transform: translateX(0);
+    z-index: 1000;
+  }
+  /* MENU // IMPOSTAZIONI sul telefono non sta nel menu laterale: lo sostituisce il pulsante tondo IMPOSTAZIONI (.system-fab) */
+  #sidebar-menu .sidebar-credits { display: none; }
+  /* titoli delle sezioni un poco più grandi che su desktop (11 px nel COMPATTO, 12 nello STANDARD invece di 9 e 10), con
+     le lettere un poco meno spaziate, così le scritte non si allungano troppo; freccia in proporzione */
+  #sidebar-menu .sidebar-section .label { font-size: 11px; letter-spacing: .18em; }
+  :root[data-interface-look="standard"] #sidebar-menu .sidebar-section .label { font-size: 12px; }
+  #sidebar-menu .section-toggle { font-size: 16px; }
+  /* logo e scritta più staccati dal bordo basso dello schermo (circa 48 px invece di 20): c'è lo spazio di MENU // IMPOSTAZIONI */
+  #sidebar-menu .sidebar-bottom { padding-bottom: 30px; }
+  /* Rotella delle sezioni con almeno 4 voci (classe ruota, dashboard.js): riquadro alto 5 voci (voci alte 44 px) che scorre
+     da solo con lo scatto al centro; sopra e sotto mezzo riquadro vuoto, così anche la prima e l'ultima voce arrivano al
+     centro; i bordi sfumano. La voce al centro è ingrandita di un terzo e oro, le altre più piccole e più tenui (--vicino);
+     sopra la prima voce la voce guida (— Trova il tuo cartello —), solo decorativa */
+  #sidebar-menu .sidebar-section.ruota:not(.is-collapsed) > nav {
+    display: block;
+    max-height: 220px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scroll-snap-type: y mandatory;
+    scrollbar-width: none;
+    padding: 44px 0 88px;   /* sopra la voce guida (44 px) e mezzo riquadro, sotto mezzo riquadro */
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 32%, #000 68%, transparent 100%);
+    mask-image: linear-gradient(to bottom, transparent 0, #000 32%, #000 68%, transparent 100%);
+  }
+  #sidebar-menu .sidebar-section.ruota > nav::-webkit-scrollbar { display: none; }
+  /* sul telefono niente sottosezione PROMO STAGIONALI dentro CREA CARTELLI: le promo seguono subito le voci dei
+     cartelli (in oro, come sempre), nella stessa rotella; su desktop e tablet la sottosezione resta */
+  #sidebar-menu .nav-subtoggle[aria-controls="promoItems"] { display: none !important; }
+  #sidebar-menu :is(#cartelliItems, #promoItems)[hidden] { display: grid; }
+  /* sezioni con 1–3 voci (senza rotella): voci cliccabili direttamente, più spaziate e alte almeno 48 px */
+  #sidebar-menu .sidebar-section:not(.ruota) > nav { gap: 6px; padding: 4px 0; }
+  #sidebar-menu .sidebar-section:not(.ruota) > nav .nav-btn { display: flex; align-items: center; min-height: 48px; }
+  #sidebar-menu .sidebar-section.ruota > nav .nav-group { gap: 0; }
+  #sidebar-menu .sidebar-section.ruota > nav :is(.nav-btn, .nav-subtoggle) {
+    display: flex;
+    align-items: center;
+    height: 44px;
+    padding-top: 0;
+    padding-bottom: 0;
+    scroll-snap-align: center;
+    /* ingrandita resta larga quanto il menu (la freccia di Promo Stagionali non esce) */
+    width: calc(100% / (.85 + .5 * var(--vicino, 1)));
+    transform: scale(calc(.85 + .5 * var(--vicino, 1)));
+    transform-origin: left center;
+    opacity: calc(.45 + .55 * var(--vicino, 1));
+  }
+  #sidebar-menu .sidebar-section.ruota > nav .voce-guida {
+    display: flex;
+    align-items: center;
+    height: 44px;
+    padding: 0 10px;
+    color: var(--text-muted);
+    font-size: 11px;
+    font-style: italic;
+    letter-spacing: .06em;
+    white-space: nowrap;
+    pointer-events: none;
+    transform: scale(calc(.85 + .5 * var(--vicino, 1)));
+    transform-origin: left center;
+    opacity: calc(.45 + .55 * var(--vicino, 1));
+  }
+  #sidebar-menu .sidebar-section.ruota > nav .is-centro { color: var(--accent); }
+  :root[data-interface-theme="light"] body #sidebar-menu .sidebar-section.ruota > nav .is-centro { color: var(--interface-accent) !important; }
+  /* Pulsante IMPOSTAZIONI: tondo, tutto oro con un riflesso leggero, in tutti e due i
+     temi, fisso in basso a sinistra, sempre presente; ingranaggio pieno in bronzo scuro. Aperto, l'oro si scurisce */
+  .system-fab {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    /* allineato a sinistra con ☰ della barra in alto (stesso margine della barra) */
+    left: 0.6rem;
+    bottom: calc(max(10px, env(safe-area-inset-bottom)) + var(--fab-alza, 0px));
+    z-index: 1100;
+    width: 54px;
+    height: 54px;
+    padding: 0;
+    border: 1px solid #b88d4c;
+    border-radius: 50%;
+    /* l'oro pieno dei pulsanti della dashboard (#d4a373), appena sfumato, come gli altri colori pieni */
+    background: linear-gradient(135deg, #d0a06d 0%, #dcb385 50%, #d4a373 100%);
+    color: #4a3510;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, .45), inset 0 1px 0 rgba(255, 255, 255, .2);
+    cursor: pointer;
+    /* in fondo alla pagina più piccolo, dentro la fascia dei pulsanti (--fab-scala, dashboard.js); toccato si abbassa */
+    transform: translateX(var(--fab-x, 0px)) scale(calc(var(--fab-scala, 1) * var(--fab-premuto, 1)));
+    transition: filter .18s ease;
+  }
+  .system-fab svg { transition: transform .3s ease; }
+  /* con il menu di sinistra aperto il pulsante passa sotto il menu e sotto il velo (aside 1000, velo 999) */
+  body:not(.sidebar-collapsed) .system-fab { z-index: 998; }
+  .system-fab[aria-expanded="true"] { filter: brightness(.88); }
+  .system-fab[aria-expanded="true"] svg { transform: rotate(60deg); }
+  .system-fab:active { --fab-premuto: .95; }
+  .system-fab:focus-visible { outline: 2px solid #8f6a1f; outline-offset: 3px; }
+  :root[data-interface-theme="light"] .system-fab { box-shadow: 0 2px 5px rgba(80, 60, 20, .3), inset 0 1px 0 rgba(255, 255, 255, .2); }
+  /* il menu di sistema compare sopra il pulsante, come unito a lui: il bordo basso del menu passa per il centro del
+     pulsante, che ne copre l'angolo in basso a sinistra; sotto le voci lo spazio per il pulsante */
+  body > .system-menu {
+    position: fixed;
+    left: 16px;
+    right: auto;
+    bottom: calc(max(10px, env(safe-area-inset-bottom)) + 27px + var(--fab-alza, 0px));
+    z-index: 1099;
+    width: min(300px, calc(100vw - 32px));
+    max-height: calc(100dvh - 64px - 16px - max(10px, env(safe-area-inset-bottom)) - 26px);
+    padding-bottom: 42px;
+    /* si srotola dal pulsante IMPOSTAZIONI: cresce dal centro del pulsante verso l'alto e verso destra */
+    transform-origin: 27px 100%;
+    animation: menu-dal-pulsante .3s cubic-bezier(.2, .8, .2, 1);
+  }
+   menu-dal-pulsante {
+    from { opacity: 0; transform: scale(.8, .45); }
+    60% { opacity: 1; }
+    to { opacity: 1; transform: none; }
+  }
+  /* ☰ toccato per aprire il menu di sinistra: si riempie d'oro e si abbassa un attimo (dashboard.js, classe si-apre) */
+  .mobile-nav-toggle.si-apre { animation: tasto-menu-apre .32s ease-out; }
+   tasto-menu-apre {
+    0% { transform: scale(1); }
+    35% { transform: scale(.84); background: var(--accent); border-color: var(--accent); color: #121110; }
+    100% { transform: scale(1); }
+  }
+   (prefers-reduced-motion: reduce) {
+    body > .system-menu, .mobile-nav-toggle.si-apre { animation: none; }
+  }
+  /* largo quanto lo schermo (16 px ai lati), con le scritte e le voci più grandi, e sotto la pagina velata: mentre si
+     usa il menu la pagina non serve. Grandezze con !important perché valgano anche sul COMPATTO di theme.css */
+  body > .system-menu {
+    right: 16px;
+    width: auto;
+    padding: 16px 14px 46px;
+    box-shadow: 0 0 0 100vmax rgba(0, 0, 0, .55), 0 2px 5px rgba(0, 0, 0, .3);
+  }
+  body > .system-menu .system-menu-title { font-size: .95rem !important; margin-bottom: 22px; }
+  body > .system-menu .system-menu-item { min-height: 52px; font-size: .86rem !important; }
+  body > .system-menu .system-menu-icon { flex-basis: 26px; font-size: 1.3rem; }
+  body > .system-menu .system-menu-item-label { gap: 12px; }
+  body > .system-menu .system-menu-badge { font-size: .64rem !important; }
+  body > .system-menu .system-store-current { font-size: .68rem !important; }
+  body > .system-menu .system-menu-back { min-height: 44px; font-size: .8rem !important; }
+  body > .system-menu .system-credits { font-size: .86rem !important; }
+  body > .system-menu .system-setting-label { font-size: .82rem !important; margin-bottom: 11px; }
+  body > .system-menu .theme-choice { min-height: 44px; font-size: .78rem !important; }
+  body > .system-menu .system-store-choice { min-height: 50px; font-size: .82rem !important; }
+
+  /* chiuso, fuori dallo schermo, il menu non deve lasciare la sua ombra sul bordo sinistro: sparisce mentre esce */
+  aside { transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease; }
+  body.sidebar-collapsed aside {
+    transform: translateX(-100%);
+    box-shadow: none;
+  }
+
+  .mobile-close-btn {
+    display: flex;
+  }
+
+  .sidebar-overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(3px);
+    z-index: 999;
+    opacity: 1;
+    transition: opacity 0.3s ease, visibility 0.3s;
+    visibility: visible;
+  }
+
+  body.sidebar-collapsed .sidebar-overlay {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  main {
+    display: block;
+    width: 100%;
+    height: auto;
+    min-height: calc(100vh - 64px);
+    padding: 24px 16px 0;
+    overflow: visible;
+    flex: none;
+  }
+  header { text-align: center; }
+  /* STORE // CRAFT al centro tra il bordo sinistro del menu e la ✕: l'intestazione parte dal bordo (oltre i 14 px di
+     margine del menu) e lascia a destra lo spazio della ✕ (28 px) */
+  .sidebar-header { margin-left: -14px; width: calc(100% + 14px); padding: 0 28px 39px 0; box-sizing: border-box; }   /* sotto il titolo 39 px prima delle sezioni */
+  /* la spaziatura delle lettere lascia uno spazio vuoto anche dopo l'ultima lettera: lo stesso spazio a sinistra tiene
+     al centro le lettere, non il loro riquadro (in tutti e due gli aspetti, con qualunque carattere) */
+  #sidebar-menu .brand { box-sizing: border-box; display: flex; justify-content: center; padding-left: .16em; padding-right: 0; }
+  /* la ✕ al centro della riga della scritta STORE // CRAFT (sotto la scritta 39 px di spazio; ✕ alta 28 px) */
+  .mobile-close-btn { top: calc(50% - 19.5px - 14px); right: 0; }
+  /* Fondo pagina: STORE // CRAFT in Cinzel e sotto tre pulsanti rettangolari a contorno oro (CREDITS, CONTATTI, torna
+     in cima), sullo stesso fondo della pagina; sotto i pulsanti poco spazio (dashboard.js, piedePagina) */
+  .mobile-brand-footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 48px;
+    margin-top: 40px;
+    /* la pagina finisce con la fascia dei pulsanti; il pulsante IMPOSTAZIONI, arrivati in fondo, sale sopra la fascia
+       (--fab-alza, dashboard.js) */
+    padding: 0;
+  }
+  /* logo e scritta stanno al centro tra l'ultimo blocco e i pulsanti (misurati sul disegno, non sui riquadri)
+     ; il margine del blocco sopra non conta */
+  #main-content > :has(+ .mobile-brand-footer) { margin-bottom: 0 !important; }
+  /* logo STORE // CRAFT e sotto CRAFTED WITH STORECRAFT, come in fondo al menu laterale; il logo sempre oro, la scritta taupe nel tema chiaro (theme.css) */
+  .mobile-brand-footer-title { display: flex; flex-direction: column; align-items: center; }
+  /* più piccolo che nel menu laterale (110 x 53 px invece di 158 x 76) */
+  .mobile-brand-footer .storecraft-mark { width: 110px; height: 53px; margin: 0 auto 5px; }
+  /* sempre oro, anche nel tema chiaro (il filtro oro di .storecraft-mark img), un poco più acceso per vedersi bene */
+  .mobile-brand-footer .storecraft-mark img { max-height: 53px; opacity: .95; }
+  /* i pulsanti stanno in un piè di pagina che ha l'aspetto della barra in alto e compare solo in fondo: a tutta
+     larghezza (oltre i 16 px di margine della pagina), alto 64 px, stesso fondo, linea sottile e margini della barra,
+     pulsanti alti 40 px come ☰; il corpo della pagina si chiude con il logo e il suo spazio libero */
+  .mobile-footer-actions {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    box-sizing: border-box;
+    width: calc(100% + 32px);
+    margin: 0 -16px;
+    /* a sinistra il posto del pulsante IMPOSTAZIONI, che in fondo entra nella fascia (40 px, allineato a ☰) */
+    padding: 12px 0.6rem max(12px, env(safe-area-inset-bottom)) calc(0.6rem + 48px);
+    border-top: 1px solid var(--border);
+    background: #0a0908;
+    box-shadow: 0 -1px 3px rgba(0, 0, 0, .5);
+  }
+  :root[data-interface-theme="light"] .mobile-footer-actions { border-top-color: var(--interface-border); background: var(--interface-page); box-shadow: 0 -1px 3px var(--interface-shadow); }
+  .mobile-footer-actions .footer-btn { flex: 1 1 0; height: 40px; }
+}
+/* Pulsanti del fondo pagina e del popup dei crediti: contorno oro come i pulsanti della lista di stampa dei cartelli,
+   rettangolari come il pulsante HOME (squadrati nel look COMPATTO) */
+.footer-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  height: 44px;
+  padding: 0 10px;
+  border: 1.5px solid var(--interface-accent, #d4a373);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--interface-accent, #d4a373);
+  font: 700 .76rem/1 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: .5px;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background .18s ease, color .18s ease;
+}
+.footer-btn:is(:hover, :active, :focus-visible) { background: var(--interface-accent, #d4a373); color: #121110; outline: none; }
+:root[data-interface-theme="light"] .footer-btn:is(:hover, :active, :focus-visible) { color: #fffdfa; }
+.footer-btn-arrow { display: flex; }
+:root[data-interface-look="minimal"] .footer-btn {
+  border-radius: 0;
+  font: 400 10px/1 Arial, Helvetica, sans-serif;
+  letter-spacing: .14em;
+}
+
+/* Popup dei crediti, nello stile della splash page: fondo della pagina, cornice oro scuro doppia, logo e titolo tra due linee */
+.credits-dialog {
+  width: min(340px, calc(100vw - 32px));
+  max-width: none;
+  margin: auto;
+  padding: 0;
+  border: 0;
+  background: var(--interface-page, #121110);
+  color: var(--interface-text, #fff);
+}
+.credits-dialog::backdrop { background: rgba(0, 0, 0, .65); backdrop-filter: blur(3px); }
+.credits-frame {
+  position: relative;
+  padding: 34px 24px 26px;
+  border: 1px solid #8f6a1f;
+  text-align: center;
+}
+.credits-frame::before {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border: 1px solid rgba(143, 106, 31, .35);
+  pointer-events: none;
+}
+.credits-brand {
+  display: block;
+  width: 130px;
+  height: auto;
+  margin: 0 auto;
+  opacity: .9;
+  filter: brightness(0) saturate(100%) invert(73%) sepia(29%) saturate(836%) hue-rotate(352deg) brightness(91%) contrast(87%);
+}
+.credits-title {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 24px 0 18px;
+  color: var(--interface-accent, #e5ba73);
+  font: 500 .78rem/1 'Cinzel', serif;
+  letter-spacing: .32em;
+  text-transform: uppercase;
+}
+.credits-title::before, .credits-title::after { content: ''; flex: 1; height: 1px; background: rgba(143, 106, 31, .35); }
+.credits-text { margin: 0 0 8px; color: var(--interface-muted, #a8a29e); font: 400 .78rem/1.6 'Plus Jakarta Sans', sans-serif; }
+.credits-text .release-number, .credits-mail { color: var(--interface-accent, #d4a373); text-decoration: none; }
+.credits-mail { display: inline-block; margin-top: 4px; font: 400 .82rem/1.6 'Plus Jakarta Sans', sans-serif; }
+.credits-close { width: 100%; margin-top: 22px; }
+@media screen and (max-width: 720px) and (pointer: coarse) {
+  #system-menu-toggle {
+    min-height: 48px;
+    padding: 11px 10px;
+    border: 1px solid var(--interface-accent);
+    border-radius: 6px;
+    background: var(--interface-accent);
+    color: #121110;
+    font: 600 12px/1.2 var(--interface-font);
+    letter-spacing: .14em;
+    box-shadow: 0 2px 4px var(--interface-shadow);
+  }
+  #system-menu-toggle:hover,
+  #system-menu-toggle:focus-visible,
+  #system-menu-toggle[aria-expanded="true"] {
+    border-color: var(--interface-accent);
+    background: var(--interface-accent);
+    box-shadow: 0 3px 6px var(--interface-shadow);
+    transform: translateY(-1px);
+  }
+  #system-menu-toggle:focus-visible {
+    outline: 2px solid var(--interface-accent-bright);
+    outline-offset: 3px;
+  }
+  body.cassiere-mode #tools-title { display: none; }
+  /* vista CASSIERE: widget in colonna staccati come su desktop (24 px invece di 12) */
+  body.cassiere-mode #tools { row-gap: 24px; }
+  .widget { cursor: default; scroll-margin-top: 80px; }
+  .widget:hover { transform: none; }
+  .widget.mobile-active { border-color: var(--accent); }
+  .widget-header-controls { display: none !important; }
+  .tool-input, .tool-input-select { font-size: 16px; }
+
+  .home-mark {
+    left: auto;
+    right: 0.8rem;
+    top: calc(64px + 12px);
+  }
+}
+@media screen and (max-width: 360px) and (pointer: coarse) {
+  .mobile-top-bar { padding: 0 8px; }
+  .mobile-brand { font-size: 0.76rem; letter-spacing: 0.5px; }
+  .mobile-nav-toggle { width: 38px; height: 38px; }
+  .system-fab { left: 8px; }
+  .mobile-top-bar .mode-btn { font-size: 0.5rem; padding: 0.3rem; }
+  body .mobile-top-bar { --pulsante-barra: 54px; }
+}
+
+/* ===== Parti della dashboard unica (dashboard.js) ===== */
+
+/* Intestazione: titolo e sottotitolo in tutti i negozi; in TEBE e OPHILYA in più l'interruttore tra i due negozi, con
+   l'aspetto del selettore CASSIERE / CREATOR (stessi colori in tutti i temi), fisso in alto a destra alla sua sinistra
+   e largo uguale, staccato di 14 px (--larghezza-selettore: larghezza del più largo dei due, scritta da dashboard.js); i
+   pulsanti si dividono a metà lo spazio. Sul telefono l'interruttore sta sotto il titolo */
+body:has(.store-switch) .mode-switcher { width: var(--larghezza-selettore, auto); }
+body:has(.store-switch) .mode-switcher .mode-btn { flex: 1 1 0; justify-content: center; }
+.mode-switcher.store-switch { right: calc(2rem + var(--larghezza-selettore, 196px) + 14px); }
+/* titolo e sottotitolo non passano sotto i due selettori */
+#main-content > header:has(.store-switch) :is(h1, p) { padding-right: calc(var(--larghezza-selettori, 380px) - 1rem + 24px); }
+/* titolo e sottotitolo sempre su una riga: se lo spazio non basta dashboard.js rimpicciolisce il carattere */
+@media screen and (min-width: 721px) {
+  #main-content > header:has(.store-switch) :is(h1, p) { white-space: nowrap; }
+  /* finestre strette: l'interruttore dei negozi scende sotto CASSIERE / CREATOR (6 px sotto), il titolo ha lo spazio di un solo selettore */
+  body.selettori-in-colonna .mode-switcher.store-switch { right: 2rem; top: calc(24px + var(--altezza-selettore, 39px) + 6px); }
+  body.selettori-in-colonna #main-content > header:has(.store-switch) :is(h1, p) { padding-right: calc(var(--larghezza-selettore, 185px) - 1rem + 24px); }
+}
+/* Intestazione senza titolo (TEBE e OPHILYA, come nella loro dashboard originale; titolo: false nella scheda della
+   dashboard): da desktop e tablet l'interruttore dei negozi sta in alto a sinistra, al posto del titolo, e CASSIERE /
+   CREATOR a destra, sulla stessa riga dell'intestazione (24 px dall'alto), allineato al bordo destro del contenuto
+   (dashboard.js li mette nell'intestazione); scorrono con la pagina come nella dashboard originale di TEBE (sul telefono
+   restano nella barra in alto).
+   Indirizzo e descrizione stanno nell'intestazione, al centro tra i due selettori e centrati tra loro (dashboard.js li
+   sposta lì da desktop e tablet). Niente divisorio: sotto c'è solo il logo, con il bordo superiore alla stessa altezza
+   di CREA CARTELLI del menu laterale. */
+@media screen and (min-width: 721px) {
+  #main-content > header.solo-selettori,
+  :root[data-interface-look="minimal"] #main-content > header.solo-selettori { min-height: 0; padding-bottom: 42px; margin-bottom: 16px; border-bottom: 0; }
+  #main-content > header.solo-selettori { display: flex; justify-content: space-between; align-items: center; }
+  #main-content > header.solo-selettori .mode-switcher { position: static; display: inline-flex; }
+  #main-content > header.solo-selettori .store-identity { text-align: center; padding-bottom: 0; }  /* Al centro si alternano ogni 2 minuti (dashboard.js) indirizzo e descrizione e la scritta Visual Merchandising Studio:
+     la scritta in uscita sale e sparisce, quella nuova entra dal basso */
+  #main-content > header.solo-selettori .testata-centro { display: grid; align-items: center; justify-items: center; height: 40px; overflow: hidden; }
+  /* Senza interruttore dei negozi (.con-logo, Luxury dal 10 ottobre 2026): tre colonne come in TEBE, a sinistra il posto
+     dell'interruttore (vuoto, o il logo con logo nei contenuti: 140 px senza transform, un'immagine propria 205 px),
+     banner al centro esatto del contenuto, CASSIERE / CREATOR a destra */
+  #main-content > header.solo-selettori.con-logo { display: grid; grid-template-columns: 1fr auto 1fr; }
+  #main-content > header.con-logo .testata-logo { justify-self: start; display: flex; }
+  #main-content > header.con-logo .mode-switcher { justify-self: end; }
+  :root[data-negozio] #main-content > header.con-logo .store-logo { max-width: 140px; transform: none; }
+  /* immagine propria dell'intestazione (logo: 'percorso'), larga come il logo di TEBE */
+  :root[data-negozio] #main-content > header.con-logo .store-logo.logo-testata { max-width: 205px; }
+  /* data e ora (dataOra nei contenuti, Luxury): riquadro uguale a CASSIERE / CREATOR, largo uguale (dashboard.js), scritta al
+     centro come una voce non scelta, senza effetti al passaggio del mouse perché non è un comando */
+  #main-content > header.con-logo .orologio-testata { justify-content: center; }
+  #main-content > header.con-logo .orologio-testata .mode-btn { justify-content: center; cursor: default; pointer-events: none; font-variant-numeric: tabular-nums; }
+  /* la data in oro, l'ora in bianco (nel tema chiaro scura, come la voce scelta del selettore), il puntino tenue */
+  #main-content > header.con-logo .orologio-testata .orologio-data { color: var(--interface-accent, var(--accent)); }
+  #main-content > header.con-logo .orologio-testata .orologio-ora { color: #fff; }
+  :root[data-interface-theme="light"] #main-content > header.con-logo .orologio-testata .orologio-ora { color: #282522; }
+  #main-content > header.con-logo .orologio-testata .orologio-punto { color: var(--text-muted); opacity: .7; }
+  /* scritta più grande che nel selettore: 0,8rem nello STANDARD (invece di 0,65), 12 px nel COMPATTO (invece di 10) */
+  #main-content > header.con-logo .orologio-testata .mode-btn { font-size: 0.8rem; }
+  :root[data-interface-look="minimal"] #main-content > header.con-logo .orologio-testata .mode-btn { font-size: 12px; }
+  /* come il titolo della pagina operatore: Cinzel 500 in maiuscolo, lettere molto spaziate, tra due linee sottili oro */
+  .testata-titolo { display: flex; align-items: center; gap: 16px; font-family: 'Cinzel', serif; font-size: 15px; font-weight: 500; letter-spacing: .32em; text-transform: uppercase; color: var(--interface-accent, var(--accent)); white-space: nowrap; }
+  .testata-titolo::before,
+  .testata-titolo::after { content: ''; width: 36px; height: 1px; background: currentColor; opacity: .45; }
+  .testata-titolo::after { margin-left: -.32em; }   /* la spaziatura dopo l'ultima lettera non allontana la linea destra */
+}
+.testata-centro { display: none; }   /* sul telefono indirizzo e descrizione stanno nella riga del logo, nascosti */
+.orologio-testata { display: none; }   /* data e ora solo da desktop e tablet (regole sopra) */
+/* Luxury (intestazione con titolo): il titolo (e il sottotitolo, se c'è) si alterna ogni 10 secondi (dashboard.js) con la riga di
+   indirizzo e descrizione, allineata a sinistra e al centro dell'altezza del titolo */
+#main-content > header .testata-sinistra { display: grid; align-items: center; justify-items: start; overflow: hidden; }
+#main-content > header .testata-sinistra .store-identity { text-align: left; padding-bottom: 0; }
+/* scorrimento delle scritte: quella in uscita sale e sparisce, quella nuova entra dal basso */
+.testata-centro > * { grid-area: 1 / 1; transition: transform .8s cubic-bezier(.22, .61, .36, 1), opacity .8s ease; }
+.testata-centro > .is-visibile { transform: translateY(0); opacity: 1; }
+.testata-centro > .is-sotto { transform: translateY(100%); opacity: 0; }
+.testata-centro > .is-sopra { transform: translateY(-100%); opacity: 0; }
+.testata-centro > .senza-animazione { transition: none; }
+@media (prefers-reduced-motion: reduce) {
+  .testata-centro > * { transform: none !important; transition: opacity .6s ease; }
+}
+
+/* Titolo VISUAL MERCHANDISING STUDIO in oro (il sottotitolo resta com'è): TEBE e OPHILYA in tutti e due i temi, Luxury nel tema chiaro */
+:root[data-negozio="tebe"] #main-content > header h1,
+:root[data-negozio="ophilya"] #main-content > header h1,
+:root[data-negozio="luxury"][data-interface-theme="light"] #main-content > header h1 { color: var(--interface-accent, var(--accent)); }
+
+/* Sotto il divisorio: logo del negozio (bianco su fondo scuro, nero su fondo chiaro) e indirizzo */
+.store-hero { display: flex; justify-content: space-between; align-items: flex-end; gap: 30px; margin-bottom: 2.75rem; }
+/* nel tema scuro bianco un poco spento (opacità 85%), meno acceso sul fondo scuro */
+.store-logo { display: block; width: 100%; max-width: var(--store-logo-larghezza, 205px); height: auto; filter: brightness(0) invert(1); opacity: .85; }
+:root[data-interface-theme="light"] .store-logo { filter: brightness(0); opacity: 1; }
+/* Luxury, tema chiaro: logo taupe scuro (#544e44 circa) invece del nero, meno duro sul fondo avorio */
+:root[data-negozio="luxury"][data-interface-theme="light"] .store-logo { filter: brightness(0) invert(28%) sepia(50%) saturate(110%); }
+.store-identity { text-align: right; padding-bottom: 3px; }
+.store-identity strong { display: block; font-size: 12px; font-weight: 400; letter-spacing: .2em; color: var(--accent); }
+.store-identity span { display: block; margin-top: 8px; font-size: 10px; letter-spacing: .16em; color: var(--text-muted); }
+
+/* Miniature a due immagini (come in TEBE): al passaggio del mouse si alternano con una dissolvenza */
+.preview.slideshow .preview-image { position: absolute; inset: 0; opacity: 0; }
+.preview.slideshow .preview-image:first-child { opacity: 1; }
+.carousel-card:hover .preview.slideshow .preview-image { animation-duration: 4.2s; animation-iteration-count: infinite; }
+.carousel-card:hover .preview.slideshow .preview-image:first-child { animation-name: thumbnail-fade-first; }
+.carousel-card:hover .preview.slideshow .preview-image:nth-child(2) { animation-name: thumbnail-fade-second; }
+@keyframes thumbnail-fade-first { 0%, 42.86% { opacity: 1; } 50%, 92.86% { opacity: 0; } 100% { opacity: 1; } }
+@keyframes thumbnail-fade-second { 0%, 42.86% { opacity: 0; } 50%, 92.86% { opacity: 1; } 100% { opacity: 0; } }
+
+/* Schede e voci non ancora disponibili per il negozio (Coming Soon): visibili ma spente */
+.carousel-card.is-soon { position: relative; pointer-events: none; cursor: default; }
+.carousel-card.is-soon > * { visibility: hidden; }
+.carousel-card.is-soon::after {
+  content: "Coming Soon";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 4px 9px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text-muted);
+  font-size: 10px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.nav-btn.is-soon { opacity: .45; cursor: default; pointer-events: none; }
+
+/* Utilità Cassa che il negozio mostra solo in modalità CASSIERE (es. OPHILYA); sul telefono si vedono anche in CREATOR,
+   come negli altri negozi */
+@media not screen and (max-width: 720px) and (pointer: coarse) {
+  body.cassa-solo-cassiere:not(.cassiere-mode) #tools-title,
+  body.cassa-solo-cassiere:not(.cassiere-mode) #tools { display: none; }
+}
+
+@media (max-width: 720px) {
+  .store-hero { display: block; }
+  .store-identity { text-align: left; margin-top: 24px; }
+}
+@media screen and (max-width: 720px) and (pointer: coarse) {
+  /* sul telefono non c'è il passaggio del mouse: le miniature a due immagini si alternano da sole */
+  .preview.slideshow .preview-image { animation-duration: 4.2s; animation-iteration-count: infinite; }
+  .preview.slideshow .preview-image:first-child { animation-name: thumbnail-fade-first; }
+  .preview.slideshow .preview-image:nth-child(2) { animation-name: thumbnail-fade-second; }
+  /* sul telefono niente titolo, sottotitolo e divisorio, e niente righe dell'indirizzo e descrittiva: la pagina parte dal
+     logo del negozio e sotto cominciano subito le sezioni */
+  #main-content > header { border-bottom: 0; padding-bottom: 0; margin-bottom: 0; }
+  #main-content > header :is(h1, p),
+  #main-content > header .testata-sinistra { display: none; }
+  .store-identity { display: none; }
+  /* logo (largo al massimo 160 px) al centro tra la barra in alto e il titolo della prima sezione: circa 29 px sopra e
+     sotto, fino alle lettere del titolo (nello STANDARD il titolo in Cinzel ha più aria nella riga, quindi il margine
+     sotto è più piccolo) */
+  #main-content { padding-top: 29px; }
+  #main-content > .store-hero { margin-bottom: 24px; }
+  :root[data-interface-look="minimal"] #main-content > .store-hero { margin-bottom: 28px; }
+  /* TEBE e OPHILYA: nella barra in alto l'interruttore dei negozi (spostato da dashboard.js) al posto di STORE // CRAFT,
+     come nella dashboard originale di TEBE */
+  .mobile-top-bar:has(.store-switch) .mobile-brand { display: none; }
+  .mobile-top-bar { gap: 8px; --pulsante-barra: 70px; }
+  /* l'interruttore subito a destra di ☰, CASSIERE / CREATOR in fondo a destra: i due selettori si dividono a metà lo
+     spazio rimasto nella barra e tutti i pulsanti sono larghi uguale (scritta centrata), riquadri dei selettori alti
+     40 px come ☰ (pulsanti 34 px), tutta la riga alla stessa altezza, così le scritte sono più grandi
+     e si leggono meglio (COMPATTO in theme.css) */
+  body .mobile-top-bar:has(.store-switch) .mode-switcher { flex: 1 1 0; min-width: 0; box-sizing: border-box; height: 40px; padding: 2px !important; gap: 2px; }
+  body .mobile-top-bar:has(.store-switch) .mode-switcher .mode-btn { flex: 1 1 0; min-width: 0; width: auto; height: 34px; padding: 0 !important; justify-content: center; font-size: 0.72rem; }
+  .store-logo { max-width: 160px; margin: 0 auto; }
+  .mode-switcher.store-switch { position: static; display: inline-flex; margin-top: 0; z-index: auto; }
+  #main-content > header:has(.store-switch) :is(h1, p) { padding-right: 0; }
+  body:has(.store-switch) .mode-switcher { width: auto; }
+  body:has(.store-switch) .mode-switcher .mode-btn { flex: 0 1 auto; }
+}

@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="it" data-negozio="tebe">
+<head>
+  <meta charset="UTF-8">
+  <script src="../assets/js/negozi.js?v=20261010-45"></script>
+  <!-- tema CHIARO / SCURO scelto nella dashboard (colori nella scheda del negozio) -->
+  <script src="../assets/js/theme.js?v=20261010-45"></script>
+  <link rel="stylesheet" href="../assets/css/chiudi-pagina.css?v=20261010-45">
+  <link rel="stylesheet" href="../assets/css/torna-al-menu.css?v=20261010-45">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../assets/css/font-arial.css?v=20261010-45">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600&display=swap" rel="stylesheet">
+  <title>Cornice 10 X 15 · TEBE</title>
+  <script src="../assets/js/loghi-personalizzati.js?v=20261010-45"></script>
+  <script src="../assets/logos/tebe/elenco.js?v=20261010-45"></script>
+  <script src="../assets/js/logos.js?v=20261010-45"></script>
+  <script src="../assets/js/print-logo-colors.js?v=20261010-45"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Castoro&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/pannello.css?v=20261010-45">
+  <script defer src="../assets/js/campi-prezzo.js?v=20261010-45"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: var(--interface-page);
+      padding: 20px;
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      min-height: 100vh;
+      position: relative;
+    }
+
+
+
+
+    /* Il pannello segue il pannello standard (../assets/css/pannello.css): blocchi, selettori, menu e campi comuni.
+       Qui solo ciò che è proprio della pagina: le etichette della riga dei prezzi su una riga sola (come Outlet). */
+    .form-row .form-group label { white-space: nowrap; }
+
+
+    /* FOGLIO STAMPA A4 STANDARD */
+    .print-sheet {
+      position: relative;
+      z-index: 1;
+      width: 210mm;
+      height: 297mm;
+      background: white;
+      box-shadow: 0 20px 60px rgba(40,34,28,.18);
+      overflow: hidden;
+    }
+
+    /* CORNICI A4 */
+    .frame-box {
+      position: absolute;
+      width: 95mm;
+      height: 144mm;
+      top: 37mm;
+      border: 0.34mm solid #000000;
+      background: #ffffff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6mm;
+      padding: 10mm 6mm;
+    }
+
+    .frame-inner-scale {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6mm;
+      transform: scale(1.18);
+      transform-origin: center;
+    }
+
+    .frame-box:not(.layout-2-articles) .deco-img:first-child {
+      position: absolute;
+      top: 15.6mm;
+      transform: translateY(-3mm);
+    }
+
+    .frame-box:not(.layout-2-articles) .deco-img:last-child {
+      position: absolute;
+      bottom: 15.6mm;
+      transform: translateY(3mm);
+    }
+
+    .frame-box:not(.layout-2-articles) .frame-inner-scale {
+      transform: scale(1.2157);
+    }
+
+    .frame-box:not(.layout-2-articles) .frame-content {
+      transform: scale(1.03);
+    }
+
+    .frame-brand-logo-box {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 33mm;
+      height: 3.075em;
+      font-size: var(--standard-desc-font-size, 18pt);
+      flex-shrink: 0;
+    }
+
+    .frame-brand-logo {
+      max-width: 100%;
+      max-height: 13mm;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+    }
+
+    .frame-box.standard-max-lines .desc-title {
+      font-size: var(--standard-desc-font-size);
+    }
+
+    .frame-box:not(.layout-2-articles) .desc-title {
+      display: grid;
+      min-height: 3.075em;
+      place-items: center;
+    }
+
+    .desc-title.made-in-italy-title {
+      position: relative;
+    }
+
+    /* Testo su una riga: niente spazio riservato alle tre righe, il testo si avvicina ai prezzi e
+       testo + prezzi restano centrati nella cornice (la colonna centra il blocco tra i decori) */
+    .frame-box.standard-one-line-desc .desc-title {
+      min-height: 0;
+    }
+
+    .frame-box.standard-two-line-desc .price-row-frame,
+    .frame-box.standard-two-line-desc .price-final-frame {
+      transform: translateY(-3px);
+    }
+
+    /* SPECIFICO PER LAYOUT 2 ARTICOLI */
+    .frame-box.layout-2-articles {
+      padding: 6mm 6mm;
+      gap: 2mm;
+      justify-content: space-between;
+    }
+    
+    .frame-box.layout-2-articles .frame-content:first-of-type {
+      transform-origin: top center;
+      transform: scale(1.05);
+    }
+
+    .frame-box.layout-2-articles .frame-content:last-of-type {
+      transform-origin: bottom center;
+      transform: scale(1.05);
+    }
+
+    #frameLeft { left: 7.5mm; }
+    #frameRight { right: 7.5mm; }
+
+    .deco-img {
+      width: 56.25mm;
+      height: auto;
+      object-fit: contain;
+    }
+
+    .frame-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 2.5mm;
+      width: 100%;
+    }
+
+    .golden-divider {
+      width: 44mm;
+      height: 1px;
+      background-color: #c49f3f;
+      margin: 4mm 0; /* Spazio verticale leggero aggiunto sopra e sotto */
+      flex-shrink: 0;
+    }
+
+    .desc-title {
+      font-family: 'Castoro', serif;
+      font-size: 18pt;
+      color: #c49f3f;
+      letter-spacing: -0.05em;
+      line-height: 1.025; 
+      -webkit-text-stroke: 0.35px #c49f3f;
+      text-align: center;
+      white-space: pre-line;
+    }
+
+    .frame-box.layout-2-articles .desc-title {
+      font-size: 19pt;
+    }
+
+    .price-row-frame {
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .price-old-frame {
+      font-family: Arial, sans-serif;
+      font-size: 14pt;
+      color: #000000;
+      letter-spacing: -0.05em;
+      text-decoration-line: line-through;
+      text-decoration-color: #c49f3f;
+      text-decoration-thickness: 2px;
+    }
+
+    .price-percent-frame {
+      font-family: Arial, sans-serif;
+      font-size: 14pt;
+      color: #c49f3f;
+      letter-spacing: -0.05em;
+      font-weight: 700;
+    }
+
+    .price-final-frame {
+      font-family: Arial, sans-serif;
+      font-size: 34pt;
+      color: #000000;
+      letter-spacing: -0.05em;
+      line-height: 1;
+    }
+
+    .made-in-italy-flag {
+      position: absolute;
+      left: 50%;
+      bottom: calc(100% + 1mm);
+      width: 4mm;
+      height: auto;
+      transform: translate(-50%, -1mm);
+    }
+
+    .frame-box.layout-2-articles .price-final-frame {
+      font-size: 35pt;
+    }
+
+    /* MODALITA' PERCENTUALE SCONTO: gli elementi di cartellopercentuale.html
+       ridotti (circa 0,39x) per stare tra le due decorazioni della cornice.
+       Le misure sono prima dello scale(1.2157) di .frame-inner-scale. */
+    .frame-box.percent-mode .frame-content {
+      transform: none;
+      gap: 0;
+    }
+
+    /* Modalità % Standard: senza descrizione ne' brand, percentuale e logo un po' piu' grandi. */
+    .frame-box.percent-mode.percent-standard .frame-content {
+      transform: scale(1.06);
+    }
+
+    /* Modalità % Brand: il logo piu' grande spinge giu' il blocco, che si alza un poco. */
+    .frame-box.percent-mode.percent-brand .frame-content {
+      transform: translateY(-2.5mm);
+    }
+
+    .pct-desc {
+      max-width: 54mm;
+      margin-bottom: 2mm;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 10pt;
+      line-height: 1.1;
+      letter-spacing: -0.05em;
+      color: #1a1a1a;
+      text-align: center;
+      overflow-wrap: anywhere;
+    }
+
+    .pct-desc.is-long { font-size: 8.5pt; }
+
+    .pct-brand-box {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 33mm;
+      height: 13mm;
+      margin-bottom: 1.8mm;
+    }
+
+    .pct-brand-box .frame-brand-logo { max-height: 13mm; }
+
+    .pct-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2mm;
+    }
+
+    .pct-fino {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.6mm;
+    }
+
+    .pct-fino-label {
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: 700;
+      font-size: 7.1pt;
+      letter-spacing: -0.05em;
+      color: #cc9e25;
+      white-space: nowrap;
+    }
+
+    .pct-minus-bar {
+      width: 8.45mm;
+      height: 1.91mm;
+      background-color: #cc9e25;
+    }
+
+    .pct-text {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 62pt;
+      letter-spacing: -0.05em;
+      line-height: 1;
+      color: #cc9e25;
+      white-space: nowrap;
+    }
+
+    .pct-logo {
+      display: block;
+      width: 17.7mm;
+      height: auto;
+      margin-top: 2.1mm;
+    }
+
+    @page {
+      size: A4 portrait;
+      margin: 0mm !important;
+    }
+
+    @media print {
+      html, body {
+        width: 210mm;
+        height: 297mm !important;
+        max-height: 297mm !important;
+        background: white !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        overflow: hidden !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      .sidebar, .app-close-btn, .floating-nav-box { display: none !important; }
+      .print-sheet {
+        box-shadow: none;
+        margin: 0 auto !important;
+        width: 210mm !important;
+        height: 297mm !important;
+        max-height: 297mm !important;
+      }
+      .frame-box, .pct-fino-label, .pct-minus-bar, .pct-text {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+    }
+
+  </style>
+  <link rel="stylesheet" href="../assets/css/madeinitaly.css?v=20261010-45">
+  <link rel="stylesheet" href="../assets/css/strumenti-stampa.css?v=20261010-45">
+  <link rel="stylesheet" href="../assets/css/cursore.css?v=20261010-45">
+  <link rel="stylesheet" href="../assets/css/menu-cascata.css?v=20261010-45">
+  <script defer src="../assets/js/menu-cascata.js?v=20261010-45"></script>
+  <link rel="stylesheet" href="../assets/css/responsive.css?v=20261010-45">
+  <script defer src="../assets/js/responsive.js?v=20261010-45"></script>
+</head>
+<body data-layout="cartelli">
+
+  <a href="index.html?store=tebe" class="app-close-btn" title="Chiudi e torna all'index">✕</a>
+
+  <div class="floating-nav-box">
+    <div class="floating-nav-title">TEBE</div>
+    <a href="index.html?store=tebe" class="floating-nav-btn">← Torna al Menu Principale</a>
+  </div>
+
+  <div class="sidebar">
+    <div class="controls">
+      <h2>Cornice 10 X 15</h2>
+
+      <!-- Blocco 1: selettori (selettore comune selettore.js; gli id restano quelli usati da cursore e Made in Italy) -->
+      <div class="panel-block">
+        <div data-selettore id="frameSelector" data-on-change="switchActiveFrame" aria-label="Seleziona la cornice da modificare">
+          <button value="left" id="btnLeft" class="active">CORNICE<br>SINISTRA</button>
+          <button value="right" id="btnRight">CORNICE<br>DESTRA</button>
+        </div>
+
+        <div data-selettore id="frameModeSelector" data-on-change="setFrameMode" aria-label="Seleziona la modalità della cornice">
+          <button value="standard" id="standardModeBtn" class="active">STANDARD</button>
+          <button value="extra" id="extraArticleModeBtn">DOPPIO<br>ARTICOLO</button>
+          <button value="brand" id="brandModeBtn">BRAND</button>
+          <button value="percent" id="percentModeBtn">PERCENTUALE<br>SCONTO</button>
+        </div>
+
+        <!-- solo con PERCENTUALE SCONTO: cosa c'è sopra la percentuale -->
+        <div data-selettore id="percentExtraSelector" data-on-change="setPercentExtra" aria-label="Seleziona cosa mostrare sopra la percentuale" hidden>
+          <button value="standard" id="percentExtraStandardBtn" class="active">STANDARD</button>
+          <button value="descrizione" id="percentExtraDescBtn">DESCRIZIONE</button>
+          <button value="brand" id="percentExtraBrandBtn">BRAND</button>
+        </div>
+      </div>
+
+      <!-- Blocco 2: brand (ufficiali e personalizzati), con BRAND o PERCENTUALE SCONTO con BRAND -->
+      <div class="panel-block" id="brandFieldsGroup" hidden>
+        <div class="form-group">
+          <label class="section-label" for="brandSelect">BRAND</label>
+          <div class="preset-select">
+            <select id="brandSelect" onchange="updateBrandSelection()">
+              <option value="" class="brand-placeholder">-- Seleziona Brand --</option>
+            </select>
+          </div>
+          <label for="customBrandSelect">Loghi Personalizzati</label>
+          <div class="preset-select">
+            <select id="customBrandSelect" onchange="updateCustomBrandSelection()">
+              <option value="">-- Seleziona Logo Personalizzato --</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Blocco 3: campi della cornice, secondo la modalità -->
+      <div class="panel-block">
+        <!-- PERCENTUALE SCONTO -->
+        <div id="percentFieldsGroup" hidden>
+          <div class="form-group" id="percentDescGroup">
+            <label class="section-label" for="percentDescPreset">Promozioni</label>
+            <div class="preset-select">
+              <select id="percentDescPreset" onchange="applyPercentDescPreset()" data-testi-pronti="Promozioni" data-testi-senza-gruppi>
+                <option value="">-- Seleziona Promozione --</option>
+                <option data-voce-propria value="Sconto alla Cassa">Sconto alla Cassa</option>
+              </select>
+            </div>
+            <label for="percentDescValue">Testo Libero</label>
+            <input type="text" id="percentDescValue" placeholder="-- Testo Libero --" oninput="updatePercentData()">
+          </div>
+
+          <div class="form-group">
+            <label for="percentValue">Sconto</label>
+            <input data-percentuale type="number" id="percentValue" min="1" max="99" placeholder="50" oninput="updatePercentData()">
+          </div>
+        </div>
+
+        <!-- DOPPIO ARTICOLO: articolo in modifica -->
+        <div data-selettore id="rowSelectorContainer" data-on-change="selectActiveRow" aria-label="Seleziona l'articolo da modificare" hidden>
+          <button value="0" id="btnRow0" class="active">ARTICOLO 1</button>
+          <button value="1" id="btnRow1">ARTICOLO 2</button>
+        </div>
+
+        <div class="form-group" id="descriptionFieldsGroup">
+          <label class="section-label" id="descLabel" for="descPreset">TESTI PRONTI</label>
+          <div class="preset-select">
+            <select id="descPreset" onchange="applyDescPreset()" data-testi-pronti="Materiali,Articoli" data-testi-senza-gruppi data-testi-maiuscolo>
+              <option value="" selected>-- Seleziona Testo Pronto --</option>
+            </select>
+          </div>
+          <!-- TEXT AREA: fino a 4 righe (3 con DOPPIO ARTICOLO), controllate da updateData -->
+          <label for="descFree">Testo Libero</label>
+          <textarea id="descFree" rows="4" placeholder="-- Testo Libero --" oninput="updateData()"></textarea>
+        </div>
+
+        <div class="form-row" id="priceFieldsGroup">
+          <div class="form-group">
+            <label for="oldPrice">Prezzo Originario</label>
+            <input data-prezzo type="text" id="oldPrice" placeholder="34,90" oninput="updateData()">
+          </div>
+          <div class="form-group">
+            <label for="discountValue">Sconto</label>
+            <input data-percentuale type="number" id="discountValue" min="1" max="99" placeholder="50" oninput="updateData()">
+          </div>
+          <div class="form-group">
+            <label for="newPrice">Prezzo Finale</label>
+            <input data-prezzo type="text" id="newPrice" placeholder="17,90" oninput="updateData()">
+          </div>
+        </div>
+      </div>
+
+      <!-- Blocco 4: stampa -->
+      <div class="panel-block">
+        <button type="button" class="btn-print" id="printBtn" onclick="printFrames()">STAMPA CORNICI</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- AREA STAMPA A4 -->
+  <div class="print-sheet" id="printSheet">
+    <!-- CORNICE SINISTRA -->
+    <div class="frame-box" id="frameLeft">
+      <div class="frame-inner-scale" id="innerLeft"></div>
+    </div>
+
+    <!-- CORNICE DESTRA -->
+    <div class="frame-box" id="frameRight">
+      <div class="frame-inner-scale" id="innerRight"></div>
+    </div>
+  </div>
+
+  <script src="../assets/js/testi-pronti.js?v=20261010-45"></script>
+  <script src="../assets/js/selettore.js?v=20261010-45"></script>
+  <script src="../assets/js/madeinitaly.js?v=20261010-45" data-automatico></script>
+  <script>
+    // Stato indipendente per ciascuna cornice (Lana Merinos impostata su due righe)
+    const framesState = {
+      left: {
+        twoArticlesActive: false,
+        brandActive: false,
+        percentActive: false,
+        percent: { discount: '50', extra: 'standard', desc: 'Sconto alla Cassa' },
+        brand: { officialFile: '', customLogoId: '' },
+        activeRow: 0,
+        articles: [
+          { desc: "PURO\nCOTONE", oldPrice: "34,90", discount: "50", newPrice: "17,90" },
+          { desc: "LANA\nMERINOS", oldPrice: "39,90", discount: "50", newPrice: "19,90" }
+        ]
+      },
+      right: {
+        twoArticlesActive: false,
+        brandActive: false,
+        percentActive: false,
+        percent: { discount: '50', extra: 'standard', desc: 'Sconto alla Cassa' },
+        brand: { officialFile: '', customLogoId: '' },
+        activeRow: 0,
+        articles: [
+          { desc: "LANA &\nCACHEMIRE", oldPrice: "34,90", discount: "50", newPrice: "17,90" },
+          { desc: "LANA\nMERINOS", oldPrice: "39,90", discount: "50", newPrice: "19,90" }
+        ]
+      }
+    };
+
+    let currentActiveFrame = 'left';
+
+    function switchActiveFrame(side) {
+      currentActiveFrame = side;
+      Selettore.attiva('frameSelector', side);
+      syncSidebarWithState();
+      if (typeof window.refreshTemaItaliaButton === 'function') window.refreshTemaItaliaButton();
+    }
+
+    function setFrameMode(mode) {
+      const state = framesState[currentActiveFrame];
+
+      state.brandActive = mode === 'brand';
+      state.twoArticlesActive = mode === 'extra';
+      state.percentActive = mode === 'percent';
+      state.activeRow = 0;
+
+      if (state.twoArticlesActive) {
+        state.articles.forEach(article => {
+          article.desc = limitDescriptionLines(article.desc);
+        });
+      } else if (mode === 'standard') {
+        state.articles.forEach(article => {
+          article.desc = limitDescriptionLines(article.desc, 4);
+        });
+      }
+      if (usesBrandLogo(state)) ensureBrandSelected(state);
+      syncSidebarWithState();
+      updateAll();
+    }
+
+    // Il logo brand serve in modalità Brand e in Percentuale Sconto con l'opzione Brand.
+    function usesBrandLogo(state) {
+      return state.brandActive || (state.percentActive && state.percent.extra === 'brand');
+    }
+
+    function ensureBrandSelected(state) {
+      if (!state.brand.officialFile && !state.brand.customLogoId) {
+        state.brand.officialFile = getDefaultBrandFile();
+      }
+    }
+
+    function setPercentExtra(extra) {
+      const state = framesState[currentActiveFrame];
+      state.percent.extra = extra;
+      if (usesBrandLogo(state)) ensureBrandSelected(state);
+      syncSidebarWithState();
+      updateAll();
+    }
+
+    function updatePercentData() {
+      const percent = framesState[currentActiveFrame].percent;
+      percent.discount = document.getElementById('percentValue').value;
+      percent.desc = document.getElementById('percentDescValue').value;
+      updateAll();
+    }
+
+    function applyPercentDescPreset() {
+      const preset = document.getElementById('percentDescPreset').value;
+      document.getElementById('percentDescValue').value = preset;
+      updatePercentData();
+    }
+
+    function limitDescriptionLines(value, maxLines = 3) {
+      return value.split(/\r?\n/).slice(0, maxLines).join('\n');
+    }
+
+    function selectActiveRow(rowIndex) {
+      framesState[currentActiveFrame].activeRow = Number(rowIndex);
+      syncSidebarWithState();
+    }
+
+    function syncSidebarWithState() {
+      const state = framesState[currentActiveFrame];
+      const mode = state.percentActive ? 'percent' : state.brandActive ? 'brand' : state.twoArticlesActive ? 'extra' : 'standard';
+      Selettore.attiva('frameModeSelector', mode);
+      document.getElementById('rowSelectorContainer').hidden = !state.twoArticlesActive;
+      document.getElementById('descriptionFieldsGroup').hidden = state.brandActive || state.percentActive;
+      document.getElementById('priceFieldsGroup').hidden = state.percentActive;
+      document.getElementById('percentFieldsGroup').hidden = !state.percentActive;
+      document.getElementById('percentExtraSelector').hidden = !state.percentActive;
+      document.getElementById('brandFieldsGroup').hidden = !usesBrandLogo(state);
+
+      const percentExtra = state.percent.extra;
+      Selettore.attiva('percentExtraSelector', percentExtra);
+      document.getElementById('percentDescGroup').hidden = percentExtra !== 'descrizione';
+      document.getElementById('percentValue').value = state.percent.discount;
+      document.getElementById('percentDescValue').value = state.percent.desc;
+      const percentPreset = document.getElementById('percentDescPreset');
+      // il menu sta sulla voce di partenza: il testo della percentuale è nel Testo Libero
+      percentPreset.value = '';
+
+      if (state.twoArticlesActive) Selettore.attiva('rowSelectorContainer', state.activeRow);
+
+      document.getElementById('brandSelect').value = state.brand.officialFile;
+      document.getElementById('customBrandSelect').value = state.brand.customLogoId;
+      const art = state.articles[state.activeRow];
+      document.getElementById('descFree').value = art.desc;
+      document.getElementById('oldPrice').value = art.oldPrice;
+      document.getElementById('discountValue').value = art.discount;
+      document.getElementById('newPrice').value = art.newPrice;
+    }
+
+    function cleanBrandName(fileName) {
+      return fileName.replace(/\.[^.]+$/, '').replace(/([a-z])([A-Z])/g, '$1 $2');
+    }
+
+    function readCustomLogos() {
+      try {
+        const logos = LoghiPersonalizzati.elenco();
+        return Array.isArray(logos) ? logos.filter(logo => logo && logo.id && logo.name && logo.data) : [];
+      } catch (error) {
+        console.error('Lettura dei loghi personalizzati fallita.', error);
+        return [];
+      }
+    }
+
+    function loadBrandSelect() {
+      const select = document.getElementById('brandSelect');
+      const { priorityFiles, remainingFiles } = getSortedLogoFiles();
+      [...priorityFiles, ...remainingFiles].forEach(fileName => {
+        appendBrandOption(select, fileName, cleanBrandName(fileName), priorityFiles.includes(fileName));
+      });
+    }
+
+    function loadCustomBrandSelect() {
+      const select = document.getElementById('customBrandSelect');
+      readCustomLogos()
+        .slice()
+        .sort((first, second) => first.name.localeCompare(second.name, 'it', { sensitivity: 'base' }))
+        .forEach(logo => {
+          const option = document.createElement('option');
+          option.value = logo.id;
+          option.textContent = `★ ${logo.name}`;
+          select.appendChild(option);
+        });
+    }
+
+    function getDefaultBrandFile() {
+      const orderedFiles = getOrderedLogoFiles();
+      return orderedFiles.find(fileName => fileName.toLowerCase().startsWith('269')) || orderedFiles[0] || '';
+    }
+
+    function updateBrandSelection() {
+      const state = framesState[currentActiveFrame];
+      state.brand.officialFile = document.getElementById('brandSelect').value;
+      state.brand.customLogoId = '';
+      document.getElementById('customBrandSelect').value = '';
+      updateAll();
+    }
+
+    function updateCustomBrandSelection() {
+      const state = framesState[currentActiveFrame];
+      state.brand.customLogoId = document.getElementById('customBrandSelect').value;
+      state.brand.officialFile = '';
+      document.getElementById('brandSelect').value = '';
+      updateAll();
+    }
+
+    function getBrandLogoSource(brand) {
+      const customLogo = readCustomLogos().find(logo => logo.id === brand.customLogoId);
+      if (brand.customLogoId && !customLogo) {
+        return Promise.reject(new Error(`Logo personalizzato non trovato: ${brand.customLogoId}`));
+      }
+
+      return PrintLogoColors.getBrandLogoSrc(
+        customLogo?.data || '',
+        brand.customLogoId ? '' : brand.officialFile,
+        '',
+        'gold'
+      );
+    }
+
+    function printFrames() {
+      const logoPreparation = ['left', 'right']
+        .filter(side => usesBrandLogo(framesState[side]))
+        .map(side => {
+          const box = document.getElementById(`frame${side.charAt(0).toUpperCase() + side.slice(1)}`);
+          const brandImage = box.querySelector('.frame-brand-logo');
+          if (!brandImage) {
+            return Promise.reject(new Error(`Logo brand non presente nella cornice ${side}.`));
+          }
+          return getBrandLogoSource(framesState[side].brand).then(source => {
+            if (source) brandImage.src = source;
+          });
+        });
+
+      Promise.all(logoPreparation)
+        .then(() => PrintLogoColors.prepareForPrint('.frame-brand-logo, .pct-logo'))
+        .then(() => window.print())
+        .catch(error => console.error('Preparazione dei loghi per la stampa fallita.', error));
+    }
+
+    function applyDescPreset() {
+      const preset = document.getElementById('descPreset').value;
+      if (!preset) return;
+      const formatted = preset === 'MADE IN ITALY'
+        ? 'MADE\nIN ITALY'
+        : preset === 'BORSA VERA PELLE'
+          ? 'BORSA\nVERA PELLE'
+          : preset.replace(' & ', ' &\n').replace(' COTONE', '\nCOTONE').replace(' CACHEMIRE', '\nCACHEMIRE').replace(' SETA', '\nSETA').replace(' PURO', '\nPURO').replace(' PELLICCIA', '\nPELLICCIA').replace(' MERINOS', '\nMERINOS');
+      document.getElementById('descFree').value = formatted;
+      updateData();
+    }
+
+    function updateData() {
+      const state = framesState[currentActiveFrame];
+      const art = state.articles[state.activeRow];
+      const descInput = document.getElementById('descFree');
+      if (!state.brandActive) {
+        const maxLines = state.twoArticlesActive ? 3 : 4;
+        const limitedDesc = limitDescriptionLines(descInput.value, maxLines);
+        if (limitedDesc !== descInput.value) {
+          const selectionStart = descInput.selectionStart;
+          const selectionEnd = descInput.selectionEnd;
+          descInput.value = limitedDesc;
+          descInput.setSelectionRange(
+            Math.min(selectionStart, limitedDesc.length),
+            Math.min(selectionEnd, limitedDesc.length)
+          );
+        }
+      }
+      art.desc = descInput.value.trim().replace(/\s+/g, ' ').toUpperCase() === 'MADE IN ITALY'
+        ? 'MADE\nIN ITALY'
+        : descInput.value;
+      if (art.desc === 'MADE\nIN ITALY') {
+        descInput.value = art.desc;
+        document.getElementById('descPreset').value = 'MADE IN ITALY';
+      }
+      art.oldPrice = document.getElementById('oldPrice').value;
+      art.discount = document.getElementById('discountValue').value;
+      art.newPrice = document.getElementById('newPrice').value;
+      updateAll();
+    }
+
+    function renderFrameContent(side) {
+      const state = framesState[side];
+      const box = document.getElementById(`frame${side.charAt(0).toUpperCase() + side.slice(1)}`);
+      const container = document.getElementById(`inner${side.charAt(0).toUpperCase() + side.slice(1)}`);
+      // Contenuto costruito con nodi DOM: il testo dell'utente va con textContent (a capo con white-space: pre-line).
+      const node = (tag, className, text) => {
+        const element = document.createElement(tag);
+        if (className) element.className = className;
+        if (text !== undefined) element.textContent = text;
+        return element;
+      };
+      const image = (className, src, alt) => {
+        const img = node('img', className);
+        img.src = src;
+        img.alt = alt;
+        return img;
+      };
+      const renderDescription = article => {
+        if (article.desc !== 'MADE\nIN ITALY') return node('div', 'desc-title', article.desc || '');
+        const title = node('div', 'desc-title made-in-italy-title');
+        title.append(image('made-in-italy-flag', '../assets/img/tebe/madeinitaly.png', 'Bandiera italiana'),
+          'MADE', document.createElement('br'), 'IN ITALY');
+        return title;
+      };
+      const articleContent = (article, titleElement) => {
+        const content = node('div', 'frame-content');
+        const row = node('div', 'price-row-frame');
+        row.append(node('span', 'price-old-frame', `€ ${article.oldPrice}`), node('span', 'price-percent-frame', `-${article.discount}%`));
+        content.append(titleElement, row, node('div', 'price-final-frame', `€ ${article.newPrice}`));
+        return content;
+      };
+
+      box.classList.toggle('percent-mode', state.percentActive);
+      if (!state.percentActive) box.classList.remove('percent-standard', 'percent-brand');
+      if (state.percentActive) {
+        renderPercentContent(state, box, container);
+        return;
+      }
+
+      if (!state.twoArticlesActive) {
+        box.classList.remove('layout-2-articles');
+        const art = state.articles[0];
+        box.classList.toggle('brand-mode', state.brandActive);
+        const lineCount = art.desc.split(/\r?\n/).length;
+        box.classList.toggle('standard-max-lines', lineCount > 3);
+        box.classList.toggle('standard-two-line-desc', lineCount === 2);
+        box.classList.toggle('standard-one-line-desc', lineCount === 1 && !state.brandActive && art.desc.trim() !== '');
+        if (lineCount > 3) {
+          box.style.setProperty('--standard-desc-font-size', `${54 / lineCount}pt`);
+        } else {
+          box.style.removeProperty('--standard-desc-font-size');
+        }
+        let titleContent;
+        if (state.brandActive) {
+          titleContent = node('div', 'frame-brand-logo-box');
+          const logo = node('img', 'frame-brand-logo');
+          logo.alt = 'Logo brand';
+          titleContent.append(logo);
+        } else {
+          titleContent = renderDescription(art);
+        }
+        container.replaceChildren(
+          image('deco-img', '../assets/img/tebe/decoup.png', 'Decoro Superiore'),
+          articleContent(art, titleContent),
+          image('deco-img', '../assets/img/tebe/decodown.png', 'Decoro Inferiore')
+        );
+        if (state.brandActive) {
+          loadBrandImage(container.querySelector('.frame-brand-logo'), state.brand);
+        }
+        if (box.classList.contains('standard-one-line-desc')) fitOneLineDesc(container);
+      } else {
+        box.classList.add('layout-2-articles');
+        box.classList.remove('brand-mode');
+        box.classList.remove('standard-max-lines');
+        box.classList.remove('standard-two-line-desc', 'standard-one-line-desc');
+        box.style.removeProperty('--standard-desc-font-size');
+        const art1 = state.articles[0];
+        const art2 = state.articles[1];
+        container.replaceChildren(
+          articleContent(art1, renderDescription(art1)),
+          node('div', 'golden-divider'),
+          articleContent(art2, renderDescription(art2))
+        );
+      }
+    }
+
+    // Percentuale Sconto: descrizione o logo brand, "FINO AL" con la barra del meno
+    // e la percentuale, logo TEBE oro; il tutto tra le due decorazioni della cornice.
+    function renderPercentContent(state, box, container) {
+      box.classList.remove('layout-2-articles', 'brand-mode', 'standard-max-lines', 'standard-two-line-desc', 'standard-one-line-desc');
+      box.style.removeProperty('--standard-desc-font-size');
+
+      const element = (tag, className, text) => {
+        const node = document.createElement(tag);
+        node.className = className;
+        if (text !== undefined) node.textContent = text;
+        return node;
+      };
+      const deco = (src, alt) => {
+        const img = element('img', 'deco-img');
+        img.src = src;
+        img.alt = alt;
+        return img;
+      };
+
+      const content = element('div', 'frame-content');
+      // In Standard ci sono solo percentuale e logo TEBE, un po' piu' grandi.
+      box.classList.toggle('percent-standard', state.percent.extra === 'standard');
+      box.classList.toggle('percent-brand', state.percent.extra === 'brand');
+      if (state.percent.extra === 'brand') {
+        const brandBox = element('div', 'pct-brand-box');
+        const brandImage = element('img', 'frame-brand-logo');
+        brandImage.alt = 'Logo brand';
+        brandBox.appendChild(brandImage);
+        content.appendChild(brandBox);
+        loadBrandImage(brandImage, state.brand);
+      } else if (state.percent.extra === 'descrizione' && state.percent.desc.trim()) {
+        const desc = element('div', 'pct-desc', state.percent.desc);
+        desc.classList.toggle('is-long', state.percent.desc.trim().length > 22);
+        content.appendChild(desc);
+      }
+
+      const row = element('div', 'pct-row');
+      const fino = element('div', 'pct-fino');
+      fino.append(element('div', 'pct-fino-label', 'FINO AL'), element('div', 'pct-minus-bar'));
+      const numeric = String(state.percent.discount).replace(/[^0-9]/g, '');
+      row.append(fino, element('div', 'pct-text', `${numeric || '50'}%`));
+      content.appendChild(row);
+
+      const logo = element('img', 'pct-logo');
+      logo.src = '../assets/img/tebe/footer_tebe.png';
+      logo.alt = 'TEBE';
+      content.appendChild(logo);
+
+      container.replaceChildren(
+        deco('../assets/img/tebe/decoup.png', 'Decoro Superiore'),
+        content,
+        deco('../assets/img/tebe/decodown.png', 'Decoro Inferiore')
+      );
+    }
+
+    function loadBrandImage(brandImage, brand) {
+      if (!brand.customLogoId && !brand.officialFile) return;
+      getBrandLogoSource(brand).then(source => {
+        if (brandImage.isConnected) brandImage.src = source;
+      }).catch(error => {
+        console.error('Caricamento del logo brand fallito.', error);
+      });
+      const customLogo = readCustomLogos().find(logo => logo.id === brand.customLogoId);
+      brandImage.alt = customLogo?.name || cleanBrandName(brand.officialFile);
+    }
+
+    // Testo su una riga troppo lungo (es. PANTALONCINO): il corpo si riduce finché il testo non supera
+    // il 70% della larghezza dei decori. Le misure sono a schermo, il rapporto vale anche in stampa.
+    const ONE_LINE_MAX_RATIO = 0.7;
+    function fitOneLineDesc(container) {
+      const title = container.querySelector('.desc-title');
+      const deco = container.querySelector('.deco-img');
+      if (!title || !deco) return;
+      title.style.fontSize = '';
+      const range = document.createRange();
+      range.selectNodeContents(title);
+      const textWidth = range.getBoundingClientRect().width;
+      const maxWidth = deco.getBoundingClientRect().width * ONE_LINE_MAX_RATIO;
+      if (!textWidth || !maxWidth || textWidth <= maxWidth) return;
+      const fontSize = parseFloat(getComputedStyle(title).fontSize);
+      title.style.fontSize = `${fontSize * maxWidth / textWidth}px`;
+    }
+
+    function updateAll() {
+      renderFrameContent('left');
+      renderFrameContent('right');
+    }
+
+    // Il carattere Castoro arriva da Google Fonts: a caricamento finito si rimisurano i testi.
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => updateAll());
+
+    // Tema Made in Italy indipendente per ciascuna cornice: per ogni lato si
+    // conserva lo stato di prima dell'attivazione (null = tema spento).
+    const temaItaliaFrames = { left: null, right: null };
+
+    window.temaItaliaIsActive = () => temaItaliaFrames[currentActiveFrame] !== null;
+
+    window.applyTemaItaliaDescription = () => {
+      const state = framesState[currentActiveFrame];
+      temaItaliaFrames[currentActiveFrame] = {
+        frame: JSON.parse(JSON.stringify(state)),
+        descPreset: document.getElementById('descPreset').value
+      };
+
+      state.brandActive = false;
+      state.twoArticlesActive = false;
+      state.percentActive = false;
+      state.activeRow = 0;
+      state.articles[0].desc = 'MADE\nIN ITALY';
+      document.getElementById('descPreset').value = 'MADE IN ITALY';
+      syncSidebarWithState();
+      updateAll();
+    };
+
+    window.temaItaliaDeactivate = () => {
+      const saved = temaItaliaFrames[currentActiveFrame];
+      temaItaliaFrames[currentActiveFrame] = null;
+      if (!saved) return;
+
+      framesState[currentActiveFrame] = saved.frame;
+      document.getElementById('descPreset').value = saved.descPreset;
+      syncSidebarWithState();
+      updateAll();
+    };
+
+    // Inizializzazione
+    loadBrandSelect();
+    LoghiPersonalizzati.pronto.then(loadCustomBrandSelect);
+    syncSidebarWithState();
+    updateAll();
+  </script>
+  <script src="../assets/js/cursore.js?v=20261010-45"></script>
+  <script>
+    // Cursore: sopra la cornice scelta (sinistra/destra) e sugli elementi della cornice legati al campo in uso.
+    const activeFrameBox = () => document.getElementById(currentActiveFrame === 'left' ? 'frameLeft' : 'frameRight');
+    const activeFrameArticle = () => {
+      const state = framesState[currentActiveFrame];
+      return activeFrameBox()?.querySelectorAll('.frame-content')[state.twoArticlesActive ? state.activeRow : 0];
+    };
+    const inFrame = selector => () => activeFrameBox()?.querySelector(selector);
+    const inFrameArticle = selector => () => activeFrameArticle()?.querySelector(selector);
+
+    const cursore = Cursore.create({
+      panel: '.controls',
+      watch: '#printSheet',
+      // di lato il cursore può uscire dalla cornice (restando sul foglio), purché non copra testi e decori
+      scope: '#printSheet',
+      obstacles: '#printSheet .deco-img, #printSheet .desc-title, #printSheet .frame-brand-logo, #printSheet .price-old-frame, #printSheet .price-percent-frame, #printSheet .price-final-frame, #printSheet .pct-desc, #printSheet .pct-fino-label, #printSheet .pct-text, #printSheet .pct-logo',
+      rules: [
+        { controls: '#btnLeft, #btnRight, #standardModeBtn, #extraArticleModeBtn, #brandModeBtn, #percentModeBtn', target: activeFrameBox, placement: 'above' },
+        { controls: '#brandSelect, #customBrandSelect, #percentExtraBrandBtn', target: inFrame('.frame-brand-logo') },
+        { controls: '#percentExtraStandardBtn, #percentValue, #percentValue ~ .percent-stepper', target: inFrame('.pct-row') },
+        { controls: '#percentExtraDescBtn, #percentDescPreset, #percentDescValue', target: inFrame('.pct-desc') },
+        { controls: '#rowSelectorContainer', target: activeFrameArticle },
+        { controls: '#descPreset, #descFree', target: inFrameArticle('.desc-title') },
+        { controls: '#oldPrice', target: inFrameArticle('.price-old-frame') },
+        { controls: '#discountValue, #discountValue ~ .percent-stepper', target: inFrameArticle('.price-percent-frame') },
+        { controls: '#newPrice', target: inFrameArticle('.price-final-frame') }
+      ]
+    });
+
+    // Pulsante Made in Italy (fuori dal pannello): acceso indica di lato il testo "MADE IN ITALY" (sopra c'è la bandierina),
+    // spento torna sopra la cornice, come i pulsanti di modalità (la modalità di prima viene ripristinata).
+    document.addEventListener('click', event => {
+      const button = event.target.closest('.made-in-italy-btn');
+      if (!button) return;
+      if (button.classList.contains('is-active')) cursore.point({ target: () => activeFrameBox()?.querySelector('.desc-title'), placement: 'side' });
+      else cursore.point({ target: activeFrameBox, placement: 'above' });
+    });
+  </script>
+  <script src="../assets/js/strumenti-stampa.js?v=20261010-45"></script>
+  <script defer src="../assets/js/stampa-ios.js?v=20261010-45"></script>
+</body>
+</html>

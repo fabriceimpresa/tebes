@@ -1,0 +1,1124 @@
+:root {
+  --interface-page: #121110;
+  --interface-sidebar: #181715;
+  --interface-surface: #1e1d1a;
+  --interface-control: #0a0908;
+  --interface-border: #2e2b27;
+  --interface-accent: #d4a373;
+  --interface-accent-bright: #e5ba73;
+  --interface-option-hover: #2e2b27;
+  --interface-text: #f4f1ea;
+  --interface-muted: #8c857b;
+  --interface-font: 'Plus Jakarta Sans', Arial, sans-serif;
+  --interface-display-font: 'Cinzel', Georgia, serif;
+  --interface-shadow: rgba(0, 0, 0, .22);
+  --interface-dropdown-shadow: rgba(0, 0, 0, .6);
+}
+
+:root[data-interface-theme="light"] {
+  --interface-page: #f8f6f1;
+  --interface-sidebar: #eee8dd;
+  --interface-surface: #fffdfa;
+  --interface-control: #fffdfa;
+  --interface-border: rgba(60, 52, 44, .18);
+  --interface-accent: #ad8a3e;
+  --interface-accent-bright: #8e702f;
+  --interface-option-hover: #eee8dd;
+  --interface-text: #282522;
+  --interface-muted: #665e54;
+  --interface-shadow: rgba(40, 37, 34, .14);
+  --interface-dropdown-shadow: rgba(40, 37, 34, .14);
+}
+
+:root[data-interface-look="minimal"] {
+  --interface-font: Arial, Helvetica, sans-serif;
+  --interface-display-font: 'Fraunces', Georgia, serif;
+}
+
+@media screen {
+  :root[data-interface-theme="light"] body:not([data-layout]),
+  :root[data-interface-theme="light"] body[data-layout] :is(
+    aside, .sidebar, .controls, .editor-section, .widget, .panel, .settings-panel,
+    .viewer-toolbar, .viewer-sidebar, .tool-buttons, .sidebar-bottom, .sidebar-credits
+  ) {
+    color-scheme: light;
+    --bg: var(--interface-page);
+    --sidebar: var(--interface-sidebar);
+    --card: var(--interface-surface);
+    --border: var(--interface-border);
+    --accent: var(--interface-accent);
+    --accent-hover: var(--interface-accent-bright);
+    --text: var(--interface-text);
+    --text-muted: var(--interface-muted);
+    --gold: var(--interface-accent);
+  }
+
+  :root[data-interface-theme="light"] body {
+    background-color: var(--interface-page) !important;
+  }
+
+  :root[data-interface-look="minimal"] body:not([data-layout]) :is(button, input, select, textarea) {
+    font-family: var(--interface-font) !important;
+  }
+
+  :root[data-interface-look="minimal"] body:not([data-layout]) #sidebar-menu .brand,
+  :root[data-interface-look="minimal"] body:not([data-layout]) .mobile-top-bar .mobile-brand {
+    font-family: 'Cinzel', Georgia, serif !important;
+  }
+
+  :root[data-interface-look="minimal"] body:not([data-layout]) #sidebar-menu .brand {
+    font-weight: 600;
+  }
+
+  :root[data-interface-look="minimal"] body:not([data-layout]) .mobile-top-bar .mobile-brand {
+    font-weight: 700;
+  }
+
+  :root[data-interface-look="minimal"] body:not([data-layout]) {
+    font-family: var(--interface-font) !important;
+  }
+
+  :root[data-interface-look="minimal"] body:not([data-layout]) :is(
+    h1, h2, h3, h4
+  ) {
+    font-family: var(--interface-display-font) !important;
+  }
+
+  :root[data-interface-look="minimal"] body:not([data-layout]) .section-title {
+    font-family: Arial, Helvetica, sans-serif !important;
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: .25em;
+  }
+
+  :root[data-interface-look="minimal"] body:not([data-layout]) #sidebar-menu .nav-btn,
+  :root[data-interface-look="minimal"] body:not([data-layout]) #sidebar-menu .nav-subtoggle {
+    font-family: var(--interface-display-font) !important;
+    font-size: 12.5px;
+  }
+
+  /* COMPATTO: Fraunces e Arial sembrano più grandi dei font STANDARD a parità di misura,
+     quindi nel menu laterale e nel menu di sistema le scritte sono un poco più piccole */
+  :root[data-interface-look="minimal"] body:not([data-layout]) :is(#sidebar-menu, body > .system-menu) {
+    @media not screen and (max-width: 720px) and (pointer: coarse) {
+      & #system-menu-toggle { font-size: 10px; }
+    }
+    & .system-menu-heading.system-menu-title { font-size: .72rem; }
+    & :is(.system-menu-item, .system-menu-back) { font-size: .59rem; }   /* .62rem fino al 10 ottobre 2026 */
+    & .system-menu-badge { font-size: .48rem; }
+    & .system-store-current { font-size: .52rem; }
+    & .system-setting-label { font-size: .62rem; }
+    & .theme-choice { font-size: .62rem; }
+    & .system-credits { font-size: .64rem; }
+    & .system-store-choice { font-size: .62rem; }
+    & .system-store-status { font-size: .44rem; }
+  }
+
+  :root[data-interface-look="minimal"] body:not([data-layout]) #main-content > header h1,
+  :root[data-interface-look="minimal"] body:not([data-layout]) #main-content .card-body h3 {
+    font-family: var(--interface-display-font) !important;
+    font-weight: 400;
+  }
+
+  /* sottotitolo sotto il titolo: un poco più piccolo e con le lettere appena spaziate, più leggero da leggere */
+  :root[data-interface-look="minimal"] body:not([data-layout]) #main-content > header p {
+    font-size: 12.5px;
+    letter-spacing: .05em;
+  }
+
+  :root[data-interface-look="minimal"] body:not([data-layout]) #main-content .section-title {
+    margin-bottom: 1.1rem;
+  }
+
+  :root[data-interface-look="minimal"] body:not([data-layout]) #main-content .card-body h3 {
+    color: var(--interface-text);
+    font-size: 17px;
+    letter-spacing: 0;
+  }
+
+  :root[data-interface-look="minimal"] body:not([data-layout]) #main-content :is(.card, .carousel-card) {
+    border-radius: 0;
+  }
+
+  :root[data-interface-look="minimal"] body:not([data-layout]) #dymo-section .carousel-card {
+    border-radius: 8px;
+  }
+
+  :root[data-interface-look="minimal"] body:not([data-layout]) #tools .widget {
+    border-radius: 0;
+  }
+
+  :root[data-interface-look="minimal"] body:not([data-layout]) #tools .widget h3 {
+    color: var(--interface-text);
+    font-family: var(--interface-display-font) !important;
+    font-size: 18px;
+    font-weight: 400;
+    letter-spacing: 0;
+    text-transform: none;
+  }
+
+  /* nel tema scuro i titoli dei widget sono bianchi (il bianco caldo dei testi della dashboard), come nello STANDARD;
+     nel chiaro sono taupe #665e54, come nello STANDARD (regola più sotto) */
+  :root[data-interface-theme="dark"][data-interface-look="minimal"] body:not([data-layout]) #tools .widget h3 {
+    color: var(--text);
+  }
+
+  :root[data-interface-look="minimal"] body:not([data-layout]) #tools :is(.input-group, .tool-input-select, .rate-btn-widget) {
+    border-radius: 0;
+  }
+
+  :root[data-interface-look="minimal"] body:not([data-layout]) #tools .tool-input-select {
+    font: 12px Arial, Helvetica, sans-serif;
+  }
+
+  :root[data-interface-look="minimal"] body:not([data-layout]) #tools :is(.input-prefix, .input-suffix, .tool-input) {
+    font-family: Arial, Helvetica, sans-serif;
+  }
+
+  :root[data-interface-look="minimal"] body:not([data-layout]) #tools .input-prefix {
+    font-size: 12px;
+  }
+
+  :root[data-interface-look="minimal"] body:not([data-layout]) #tools .input-suffix {
+    font-size: 10px;
+  }
+
+  :root[data-interface-look="minimal"] body:not([data-layout]) #tools .tool-input {
+    font-size: 12px;
+  }
+
+  :root[data-interface-look="minimal"] body:not([data-layout]) #tools .tool-btn {
+    padding: 10px;
+    border-radius: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 10px;
+    letter-spacing: .12em;
+  }
+
+  :root[data-interface-look="minimal"] body:not([data-layout]) #tools .tool-result {
+    font-family: var(--interface-display-font);
+    font-size: 22px;
+    font-weight: 400;
+  }
+
+  :root[data-interface-look="minimal"] body:not([data-layout]) #tools .rate-btn-widget {
+    font-size: 12px;
+  }
+
+  /* Utilità Cassa nel look COMPATTO come nel progetto TEBE (la spaziatura dei widget è comune a tutti gli aspetti, in
+     dashboard.css): campi alti 36 px in Arial, QR senza ombra, valuta bordata d'oro */
+  :root[data-interface-look="minimal"] body:not([data-layout]) #tools .tool-input {
+    padding: 10px;
+  }
+
+  :root[data-interface-look="minimal"] body:not([data-layout]) #tools :is(.input-prefix, .input-suffix) {
+    padding: 0 10px;
+  }
+
+  :root[data-interface-look="minimal"] body:not([data-layout]) #tools .input-suffix {
+    letter-spacing: .06em;
+  }
+
+  :root[data-interface-look="minimal"] body:not([data-layout]) #tools .tool-input-select {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 10px;
+  }
+
+  :root[data-interface-look="minimal"] body:not([data-layout]) #tools .tool-btn {
+    font-size: 10px !important;
+    font-weight: 700;
+  }
+
+  :root[data-interface-look="minimal"] body:not([data-layout]) #tools .tool-btn:hover {
+    transform: none;
+  }
+
+  :root[data-interface-look="minimal"] body:not([data-layout]) #tools .tool-status {
+    font-size: 10px;
+  }
+
+  :root[data-interface-look="minimal"] body:not([data-layout]) #tools .rate-btn-widget {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 11px;
+  }
+
+  :root[data-interface-look="minimal"] body:not([data-layout]) #tools .qr-preview-wrapper {
+    border: 1px solid var(--interface-border);
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  /* menu della valuta stretto e bordato d'oro, con la sola sigla (USD) nel widget e il nome intero nel popup (cassa.js) */
+  :root[data-interface-look="minimal"] body:not([data-layout]) #tools #val-currency {
+    flex: 0 0 96px;
+    width: 96px;
+    max-width: none !important;
+    padding: 10px 1.9rem 10px 6px;
+    border: 1px solid var(--interface-accent) !important;
+    font-size: 10px;
+  }
+
+  :root[data-interface-look="minimal"] body:not([data-layout]) #tools .widget.expanded #val-currency {
+    flex-basis: 185px;
+    width: 185px;
+    font-size: 12px;
+  }
+
+  :root[data-interface-look="minimal"] body:not([data-layout]) #tools {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+
+  @media screen and (max-width: 1000px) {
+    :root[data-interface-look="minimal"] body:not([data-layout]) #tools {
+      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+  }
+
+  @media screen and (max-width: 720px) {
+    :root[data-interface-look="minimal"] body:not([data-layout]) #tools {
+      grid-template-columns: 1fr !important;
+    }
+  }
+
+  :root[data-interface-theme="light"] body :is(
+    aside, .sidebar, .controls, .editor-section, .widget, .carousel-card,
+    .tool-tip, .tool-toast, .app-modal-dialog, .app-modal-body, .guide-item,
+    .viewer-toolbar, .viewer-sidebar, .modal-content, .panel, .settings-panel,
+    .sidebar-bottom, .sidebar-credits
+  ) {
+    background: var(--interface-surface) !important;
+    color: var(--interface-text) !important;
+    border-color: var(--interface-border) !important;
+  }
+
+  :root[data-interface-theme="light"] body #tools .widget:not(.expanded):hover {
+    border-color: var(--interface-accent) !important;
+    box-shadow: 0 0 0 1px var(--interface-accent), 0 2px 5px rgba(173, 138, 62, .2) !important;
+  }
+
+  :root[data-interface-theme="light"] body :is(
+    aside, .sidebar, .sidebar-bottom, .sidebar-credits, .viewer-sidebar
+  ) {
+    background: var(--interface-sidebar) !important;
+  }
+
+  /* I fogli di stampa restano bianchi anche quando sono un <main> (Promo Multibrand). */
+  :root[data-interface-theme="light"] body :is(
+    main:not(.print-sheet):not(.a4-sheet), .main-content, .preview-area, .viewer-main, .page-content
+  ) {
+    background-color: var(--interface-page) !important;
+  }
+
+  :root[data-interface-theme="light"] body #main-content .preview:not([style]) {
+    background: var(--interface-sidebar) !important;
+  }
+
+  :root[data-interface-theme="light"] body #seasonal-promo-carousel .preview {
+    background: var(--interface-sidebar) !important;
+  }
+
+  :root[data-interface-theme="light"] body :is(
+    .brand-title, .brand, .editor-title, .section-title, .controls h1, .controls h2,
+    .sidebar-section .label, .sidebar-section .label span, .form-group .section-label,
+    .credits-toggle, .nav-subtoggle, .nav-subtoggle-arrow, .nav-star,
+    .app-modal-header h3, .floating-nav-title, .tool-tip,
+    .guide-placeholder, .tool-toast, .status
+  ) {
+    color: var(--interface-accent) !important;
+    border-color: var(--interface-border);
+  }
+
+  :root[data-interface-theme="light"] body :is(
+    .form-group label, .nav-btn, .signature-caption, .sidebar-disclaimer,
+    .viewer-caption, .guide-text, .empty-msg, .card-desc, .muted, .text-muted
+  ) { color: var(--interface-muted) !important; }
+
+  /* tema chiaro, STANDARD e COMPATTO: titoli delle schede e dei widget delle Utilità Cassa nel taupe #665e54 */
+  :root[data-interface-theme="light"] body:not([data-layout]) :is(.card-body h3, #tools .widget h3) {
+    color: #665e54 !important;
+  }
+
+  /* titoli dei widget delle Utilità Cassa un poco più piccoli nel tema chiaro (0,82rem invece di 0,9rem) */
+  :root[data-interface-theme="light"][data-interface-look="standard"] body:not([data-layout]) #tools .widget h3 {
+    font-size: 0.82rem;
+  }
+
+  /* Scuro + STANDARD: titoli delle schede in Cinzel un poco meno pesanti (600 invece del grassetto 700) e titoli dei
+     widget delle Utilità Cassa bianchi (il bianco caldo dei testi della dashboard) e un poco più piccoli, come nel chiaro */
+  :root[data-interface-theme="dark"][data-interface-look="standard"] body:not([data-layout]) .card-body h3 {
+    font-weight: 600;
+  }
+
+  :root[data-interface-theme="dark"][data-interface-look="standard"] body:not([data-layout]) #tools .widget h3 {
+    color: var(--text);
+    font-size: 0.82rem;
+  }
+
+  /* Numero e tipo in testa alle schede: oro dei cartelli, più deciso sul fondo chiaro */
+  :root[data-interface-theme="light"][data-interface-look="standard"] body .card-top {
+    color: #b48b37 !important;
+    font-weight: 600;
+  }
+
+  :root[data-interface-theme="light"] body :is(
+    .sidebar-section .label, .nav-btn, .nav-subtoggle
+  ) {
+    background-color: var(--interface-surface) !important;
+  }
+
+  :root[data-interface-theme="light"][data-interface-look="standard"] body .sidebar-section .label,
+  :root[data-interface-theme="light"][data-interface-look="standard"] body .nav-btn,
+  :root[data-interface-theme="light"][data-interface-look="standard"] body .nav-subtoggle {
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  :root[data-interface-theme="light"][data-interface-look="minimal"] body:not([data-layout]) #sidebar-menu .sidebar-section .label,
+  :root[data-interface-theme="light"][data-interface-look="minimal"] body:not([data-layout]) #sidebar-menu .nav-btn:not(:hover):not(.active),
+  :root[data-interface-theme="light"][data-interface-look="minimal"] body:not([data-layout]) #sidebar-menu .nav-subtoggle:not(:hover) {
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  :root[data-interface-theme="light"][data-interface-look="standard"] body .sidebar-section > .label {
+    color: #8b8175 !important;
+  }
+
+  :root[data-interface-theme="light"] body #sidebar-menu .sidebar-section > .label,
+  :root[data-interface-theme="light"] body #sidebar-menu .sidebar-section > .label span {
+    color: #8b8175 !important;
+  }
+
+  :root[data-interface-theme="light"] body #sidebar-menu .sidebar-section > .label .section-toggle {
+    color: #665e54 !important;
+  }
+
+  :root[data-interface-theme="light"][data-interface-look="standard"] body #sidebar-menu .sidebar-section > .label:hover,
+  :root[data-interface-theme="light"][data-interface-look="standard"] body #sidebar-menu .sidebar-section > .label:hover span,
+  :root[data-interface-theme="light"][data-interface-look="standard"] body #sidebar-menu .sidebar-section > .label:hover .section-toggle {
+    color: #282522 !important;
+  }
+
+  :root[data-interface-theme="light"][data-interface-look="standard"] body .nav-btn,
+  :root[data-interface-theme="light"][data-interface-look="standard"] body .nav-subtoggle {
+    color: #887d70 !important;
+  }
+
+  :root[data-interface-theme="light"] body .sidebar-section .label:hover::before {
+    background: rgba(173, 138, 62, .1);
+    box-shadow: inset 2px 0 var(--interface-accent);
+  }
+
+  :root[data-interface-theme="light"][data-interface-look="standard"] body #sidebar-menu .sidebar-section .label:hover {
+    color: #282522 !important;
+  }
+
+  :root[data-interface-theme="light"][data-interface-look="standard"] body #sidebar-menu .sidebar-section .label:hover::before {
+    background: rgba(255, 253, 250, .7) !important;
+    box-shadow: inset 2px 0 var(--interface-accent) !important;
+  }
+
+  :root[data-interface-theme="light"][data-interface-look="standard"] body #sidebar-menu .nav-btn:hover,
+  :root[data-interface-theme="light"][data-interface-look="standard"] body #sidebar-menu .nav-btn.active,
+  :root[data-interface-theme="light"][data-interface-look="standard"] body #sidebar-menu .nav-subtoggle:hover {
+    background: rgba(255, 253, 250, .7) !important;
+    box-shadow: inset 2px 0 var(--interface-accent) !important;
+    color: #282522 !important;
+  }
+
+  :root[data-interface-theme="light"] body #sidebar-menu .storecraft-mark img {
+    filter: invert(43%) sepia(8%) saturate(430%) hue-rotate(350deg) brightness(88%) contrast(87%) !important;
+    opacity: .78 !important;
+    mix-blend-mode: multiply;
+  }
+
+  :root[data-interface-theme="light"] body :is(#sidebar-menu, .mobile-brand-footer) .signature-caption {
+    color: #766d62 !important;
+  }
+
+  :root[data-interface-theme="light"] body :is(
+    .form-group input:not([type="checkbox"]):not([type="radio"]),
+    .form-group select, .form-group textarea, input:not([type="checkbox"]):not([type="radio"]),
+    select, textarea, .preset-select, .input-affix, .stepper,
+    .modal-input, .search-input, .filter-input
+  ) {
+    background-color: var(--interface-control) !important;
+    color: var(--interface-text) !important;
+    border-color: var(--interface-border) !important;
+    color-scheme: light;
+  }
+
+  :root[data-interface-theme="light"] body #tools input[type="number"] {
+    appearance: textfield;
+    -moz-appearance: textfield;
+  }
+
+  :root[data-interface-theme="light"] body #tools input[type="number"]::-webkit-inner-spin-button,
+  :root[data-interface-theme="light"] body #tools input[type="number"]::-webkit-outer-spin-button {
+    margin: 0;
+    -webkit-appearance: none;
+  }
+
+  :root[data-interface-theme="light"] body #tools .input-group {
+    background: var(--interface-page) !important;
+    border-color: var(--interface-border) !important;
+  }
+
+  :root[data-interface-theme="light"] body #tools .input-prefix,
+  :root[data-interface-theme="light"] body #tools .input-suffix {
+    background: var(--interface-page) !important;
+    border-color: var(--interface-border) !important;
+  }
+
+  :root[data-interface-theme="light"] body #tools .input-prefix {
+    color: var(--interface-accent) !important;
+  }
+
+  :root[data-interface-theme="light"] body #tools .input-suffix {
+    color: #665e54 !important;
+  }
+
+  :root[data-interface-theme="light"] body #tools .tool-input {
+    background: transparent !important;
+    color: var(--interface-text) !important;
+    color-scheme: light;
+  }
+
+  :root[data-interface-theme="light"] body #tools .tool-input-select {
+    background: var(--interface-page) !important;
+    color: var(--interface-text) !important;
+    border-color: var(--interface-border) !important;
+    color-scheme: light;
+  }
+
+  :root[data-interface-theme="light"] body #tools .rate-btn-widget {
+    background: var(--interface-page) !important;
+    border-color: var(--interface-border) !important;
+    color: #665e54 !important;
+  }
+
+  :root[data-interface-theme="light"] body #tools .rate-btn-widget:hover,
+  :root[data-interface-theme="light"] body #tools .rate-btn-widget.active {
+    background: #f3ecd9 !important;
+    border-color: var(--interface-accent) !important;
+    color: var(--interface-accent) !important;
+  }
+
+  :root[data-interface-theme="light"] body .check-row input[type="checkbox"]:not(:checked) {
+    background-color: var(--interface-sidebar) !important;
+  }
+
+  :root[data-interface-theme="light"] body :is(.preset-select, .menu-cascata-options) {
+    background-color: var(--interface-control) !important;
+    color: var(--interface-text) !important;
+    border-color: var(--interface-border) !important;
+  }
+
+  :root[data-interface-theme="light"] body .preset-select::after {
+    background-color: var(--interface-sidebar) !important;
+    color: var(--interface-accent) !important;
+    border-color: var(--interface-border) !important;
+  }
+
+  :root[data-interface-theme="light"] body select {
+    color-scheme: light !important;
+  }
+
+  :root[data-interface-theme="light"] body :is(input, textarea)::placeholder {
+    color: var(--interface-muted) !important;
+    opacity: .72;
+  }
+
+  :root[data-interface-theme="light"] body .form-group select option,
+  :root[data-interface-theme="light"] body select option {
+    background: var(--interface-surface) !important;
+    color: var(--interface-text) !important;
+  }
+
+  :root[data-interface-theme="light"] body select optgroup {
+    background: var(--interface-surface) !important;
+    color: var(--interface-accent) !important;
+  }
+
+  :root[data-interface-theme="light"] body select option:hover,
+  :root[data-interface-theme="light"] body select option:focus-visible {
+    background: var(--interface-option-hover) !important;
+    color: var(--interface-text) !important;
+  }
+
+  :root[data-interface-theme="light"] body select option:checked {
+    color: var(--interface-accent) !important;
+  }
+
+  :root[data-interface-theme="light"] body :is(.input-affix .affix, .stepper button) {
+    background-color: var(--interface-sidebar) !important;
+    color: var(--interface-text) !important;
+    border-color: var(--interface-border) !important;
+  }
+
+  /* Il fondo crema del simbolo (€, %) ha lo stesso spazio ai due lati, così il simbolo non sembra tagliato. */
+  :root[data-interface-theme="light"] body .input-affix .affix {
+    padding-left: 0.45rem;
+    padding-right: 0.45rem;
+  }
+
+  :root[data-interface-theme="light"] body :is(
+    .tab-item, .mode-switch, .mode-switch button, .btn-toggle, .check-row,
+    .nav-btn:hover, .nav-btn.active, .nav-subtoggle:hover, .sidebar-section .label:hover,
+    .credits-toggle:hover, .credits-toggle:focus-visible
+  ) {
+    border-color: var(--interface-border);
+  }
+
+  :root[data-interface-theme="light"] body :is(
+    .mode-switch button.active, .tab-item.active, .btn-toggle.active,
+    .btn-toggle[aria-pressed="true"], .theme-choice.is-selected
+  ) {
+    background: var(--interface-accent) !important;
+    color: #fffdfa !important;
+    border-color: var(--interface-accent) !important;
+  }
+
+  :root[data-interface-theme="light"] body:not([data-layout]) .mode-switcher {
+    background: #eee8dd !important;
+    border-color: rgba(60, 52, 44, .14) !important;
+  }
+
+  /* Tema chiaro, STANDARD e COMPATTO: CASSIERE / CREATOR e TEBE / OPHILYA con i colori del selettore della dashboard
+     originale di TEBE: voce non scelta nel taupe chiaro #887d70, voce scelta (e al passaggio del mouse) #282522 */
+  :root[data-interface-theme="light"] body:not([data-layout]) .mode-switcher .mode-btn {
+    color: #887d70 !important;
+    box-shadow: none !important;
+  }
+
+  /* STANDARD, chiaro e scuro: il carattere della dashboard un poco più leggero (600 invece del grassetto 700) */
+  :root[data-interface-look="standard"] body:not([data-layout]) .mode-switcher .mode-btn {
+    font-weight: 600;
+  }
+
+  :root[data-interface-theme="light"] body:not([data-layout]) .mode-switcher .mode-btn:hover,
+  :root[data-interface-theme="light"] body:not([data-layout]) .mode-switcher .mode-btn.active {
+    background: #fffdfa !important;
+    color: #282522 !important;
+    border-color: transparent !important;
+    box-shadow: none !important;
+  }
+
+  /* STANDARD, chiaro e scuro, da desktop e tablet: scritte dei selettori CASSIERE / CREATOR e TEBE / OPHILYA un poco
+     più piccole (0,65rem) e spazio ai lati più largo, così i selettori restano grandi come nel COMPATTO */
+  @media screen and (min-width: 721px) {
+    :root[data-interface-look="standard"] body:not([data-layout]) .mode-switcher .mode-btn {
+      font-size: 0.65rem;
+      padding-left: 15px;
+      padding-right: 15px;
+    }
+  }
+
+  /* Pulsante HOME che torna in cima alla dashboard: avorio con bordo oro, al passaggio del mouse oro con scritta bianca */
+  :root[data-interface-theme="light"] body:not([data-layout]) .home-mark {
+    background: var(--interface-surface);
+    border-color: var(--interface-accent);
+    color: var(--interface-text);
+    box-shadow: 0 2px 4px var(--interface-shadow);
+  }
+
+  :root[data-interface-theme="light"] body:not([data-layout]) .home-mark:hover {
+    background: var(--interface-accent);
+    border-color: var(--interface-accent-bright);
+    color: #fffdfa;
+    box-shadow: 0 2px 5px var(--interface-shadow);
+  }
+
+  /* Etichetta MENU SPECIALE sulle schede: in tema chiaro oro più morbido, ombra leggera e scritta grigio scuro caldo */
+  :root[data-interface-theme="light"] body:not([data-layout]) .card-badge {
+    background: linear-gradient(135deg, #c9a35f, #f6ebd3, #c9a35f, #e2c68e);
+    color: #3d372f;
+    box-shadow: 0 1px 2px var(--interface-shadow);
+  }
+
+  /* nel look COMPATTO il pulsante HOME è come quello di TEBE: squadrato, Arial 10 px con lettere spaziate, 7 x 11 px di spazio interno, casetta più grande della scritta (14 px) */
+  :root[data-interface-look="minimal"] body:not([data-layout]) .home-mark {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: .14em;
+    border-radius: 0;
+    gap: 6px;
+    padding: 7px 11px;
+  }
+
+  /* casetta più piccola (11 px), alta come lo spazio della scritta del pulsante, così il pulsante resta alto 27 px come in TEBE */
+  :root[data-interface-look="minimal"] body:not([data-layout]) .home-mark-icon {
+    width: 11px;
+    height: 11px;
+  }
+
+  /* nel look COMPATTO l'etichetta usa Arial come gli altri testi piccoli */
+  :root[data-interface-look="minimal"] body:not([data-layout]) .card-badge {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .08em;
+  }
+
+  :root[data-interface-look="minimal"] body:not([data-layout]) .mode-switcher {
+    gap: 4px;
+    padding: 4px;
+    border-radius: 0;
+  }
+
+  :root[data-interface-look="minimal"] body:not([data-layout]) .mode-switcher .mode-btn {
+    padding: 9px 13px;
+    border: 0;
+    border-radius: 0;
+    font-family: Arial, Helvetica, sans-serif !important;
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: .14em;
+    transition: background .18s ease, color .18s ease;
+  }
+
+  /* telefono, barra in alto: con l'interruttore dei negozi (TEBE e OPHILYA) i due selettori occupano lo spazio accanto a
+     ☰ (dashboard.css), con le scritte più grandi di quelle della dashboard originale di TEBE: 10 px (9 sotto i 360 px) */
+  @media (max-width: 720px) and (pointer: coarse) {
+    :root[data-interface-look="minimal"] body:not([data-layout]) .mobile-top-bar { --pulsante-barra: 58px; }
+    :root[data-interface-look="minimal"] body:not([data-layout]) .mobile-top-bar:has(.store-switch) .mode-switcher .mode-btn {
+      height: 34px;
+      font-size: 10px;
+      letter-spacing: .08em;
+    }
+  }
+  @media (max-width: 360px) and (pointer: coarse) {
+    :root[data-interface-look="minimal"] body:not([data-layout]) .mobile-top-bar { --pulsante-barra: 52px; }
+    :root[data-interface-look="minimal"] body:not([data-layout]) .mobile-top-bar:has(.store-switch) .mode-switcher .mode-btn { font-size: 9px; }
+  }
+
+  :root[data-interface-theme="light"][data-interface-look="minimal"] body:not([data-layout]) .mode-switcher .mode-btn:hover,
+  :root[data-interface-theme="light"][data-interface-look="minimal"] body:not([data-layout]) .mode-switcher .mode-btn.active {
+    background: #fffdfa !important;
+    color: #282522 !important;
+  }
+
+  /* COMPATTO in tema scuro: forma del selettore di TEBE con i colori scuri di StoreCraft */
+  :root[data-interface-theme="dark"][data-interface-look="minimal"] body:not([data-layout]) .mode-switcher .mode-btn {
+    color: var(--text-muted);
+    box-shadow: none;
+  }
+
+  :root[data-interface-theme="dark"][data-interface-look="minimal"] body:not([data-layout]) .mode-switcher .mode-btn:hover {
+    /* un poco più chiaro del fondo grigio scuro del selettore (#24221f) */
+    background: #302d2a;
+    color: var(--text);
+  }
+
+  :root[data-interface-theme="dark"][data-interface-look="minimal"] body:not([data-layout]) .mode-switcher .mode-btn.active {
+    background: var(--accent);
+    color: #121110;
+  }
+
+  :root[data-interface-theme="light"] body[data-layout="cartelli"] .mode-switch {
+    background: #f3ede0 !important;
+    border-color: #e3dacb !important;
+  }
+
+  :root[data-interface-theme="light"] body[data-layout="cartelli"] .mode-switch button {
+    background: transparent !important;
+    color: #8a7f6e !important;
+    border-color: transparent !important;
+  }
+
+  :root[data-interface-theme="light"] body[data-layout="cartelli"] .mode-switch button:hover:not(.active):not(:disabled) {
+    color: #282522 !important;
+  }
+
+  :root[data-interface-theme="light"] body[data-layout="cartelli"] .mode-switch button.active {
+    background: #fffdfa !important;
+    color: #282522 !important;
+    border-color: transparent !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .08) !important;
+  }
+
+  :root[data-interface-theme="light"] body[data-layout="cartelli"] .btn-toggle:not(.active):not([aria-pressed="true"]) {
+    background: var(--interface-accent) !important;
+    border-color: var(--interface-accent) !important;
+    color: #fffdfa !important;
+  }
+
+  :root[data-interface-theme="light"] body[data-layout="cartelli"] .btn-toggle:not(.active):not([aria-pressed="true"]):hover {
+    background: var(--interface-accent-bright) !important;
+    border-color: var(--interface-accent-bright) !important;
+  }
+
+  :root[data-interface-theme="light"] body[data-layout="cartelli"] .btn-toggle.active,
+  :root[data-interface-theme="light"] body[data-layout="cartelli"] .btn-toggle[aria-pressed="true"] {
+    background: #5f8a55 !important;
+    border-color: #5f8a55 !important;
+    color: #fffdfa !important;
+  }
+
+  :root[data-interface-theme="light"] body :is(
+    .btn-gold, .tool-btn, .app-close-btn, .app-modal-close, .floating-nav-btn:hover
+  ) {
+    background-color: var(--interface-accent) !important;
+    color: #fffdfa !important;
+  }
+
+  :root[data-interface-theme="light"] body :is(
+    .app-close-btn:hover, .tool-btn:hover, .app-modal-close:hover
+  ) { background-color: var(--interface-accent-bright) !important; }
+
+  /* Utilità Cassa: i pulsanti secondari (Azzera IVA, Stampa QR) restano a contorno anche nel tema chiaro, come nel tema scuro */
+  :root[data-interface-theme="light"] body #tools .tool-btn-secondary {
+    background-color: transparent !important;
+    color: var(--interface-accent) !important;
+    border: 1px solid var(--interface-accent);
+  }
+
+  :root[data-interface-theme="light"] body #tools .tool-btn-secondary:hover {
+    background-color: var(--interface-accent) !important;
+    color: #fffdfa !important;
+  }
+
+  :root[data-interface-theme="light"] body :is(
+    .nav-btn:hover, .nav-btn.active, .sidebar-section .label:hover,
+    .nav-subtoggle:hover, .carousel-card:hover
+  ) {
+    background-color: rgba(173, 138, 62, .1) !important;
+    color: var(--interface-text) !important;
+    box-shadow: inset 2px 0 var(--interface-accent);
+  }
+
+  :root[data-interface-theme="light"] body :is(.btn-print, .btn-delete, .btn-clear) {
+    color: #fffdfa !important;
+  }
+
+  :root[data-interface-theme="light"] body .tool-buttons .tool-btn {
+    box-shadow: 0 1px 3px var(--interface-shadow);
+  }
+
+  @supports (appearance: base-select) {
+    :root[data-interface-theme="light"] body select::picker(select) {
+      background: var(--interface-surface) !important;
+      color: var(--interface-text) !important;
+      border-color: var(--interface-border) !important;
+      box-shadow: 0 4px 10px var(--interface-dropdown-shadow) !important;
+    }
+
+    :root[data-interface-theme="light"] body select::picker(select)::-webkit-scrollbar-track {
+      background: var(--interface-sidebar) !important;
+      border-color: var(--interface-border) !important;
+    }
+  }
+
+  :root[data-interface-theme="light"] body .floating-nav-box {
+    background-color: var(--interface-surface) !important;
+    border-color: var(--interface-accent) !important;
+  }
+
+  :root[data-interface-theme="light"] body .floating-nav-title {
+    color: var(--interface-accent) !important;
+    border-color: var(--interface-border) !important;
+  }
+
+  :root[data-interface-theme="light"] body .floating-nav-btn,
+  :root[data-interface-theme="light"] body .floating-nav-btn:hover {
+    color: var(--interface-text) !important;
+  }
+
+  :root[data-interface-theme="light"] body[data-layout="cartelli"],
+  :root[data-interface-theme="light"] body[data-layout="cartellini"],
+  :root[data-interface-theme="light"] body[data-layout="prezzi"],
+  :root[data-interface-theme="light"] body[data-layout="dymo"],
+  :root[data-interface-theme="light"] body[data-layout="loghi"] {
+    background-image: none !important;
+  }
+}
+
+.system-menu[hidden],
+.system-menu-view[hidden] { display: none; }
+
+#sidebar-menu { position: relative; }
+
+@media screen and (max-width: 720px) {
+  #sidebar-menu { position: fixed; }
+}
+
+.system-menu {
+  position: absolute;
+  z-index: 1001;
+  /* desktop e tablet: largo quasi quanto il menu laterale (12 px dai bordi, 221 px; fino al 10 ottobre 2026 23 px, 199 px),
+     così le voci hanno più spazio e vanno meno a capo */
+  left: 12px;
+  right: 12px;
+  bottom: 96px;
+  display: block;
+  width: auto;
+  max-height: calc(100% - 130px);
+  overflow: auto;
+  padding: 12px;
+  border: 1px solid var(--interface-accent);
+  border-radius: 10px;
+  background: var(--interface-sidebar);
+  color: var(--interface-text);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, .2);
+  transform-origin: bottom left;
+  animation: system-menu-open .18s ease-out;
+}
+
+.system-menu-view {
+  min-width: 0;
+  padding: 3px;
+}
+
+.system-menu-title {
+  margin-bottom: 20px;
+  font-size: .8rem;
+  font-weight: 400;
+  text-align: center;
+}
+
+@keyframes system-menu-open {
+  from { opacity: 0; transform: translateY(9px) scale(.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.system-menu-heading {
+  margin: 3px 4px 14px;
+  color: var(--interface-accent);
+  font: 400 .74rem/1.3 var(--interface-font);
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.system-menu-heading.system-menu-title {
+  margin-bottom: 20px;
+  font-size: .8rem;
+  font-weight: 400;
+  text-align: center;
+  letter-spacing: .12em;
+}
+
+/* sotto il titolo oro un separatore grigio appena visibile, sfumato ai due capi (dal 10 ottobre 2026) */
+.system-menu-heading.system-menu-title::after {
+  content: '';
+  display: block;
+  height: 1px;
+  margin: 14px 6px 0;
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--interface-muted) 45%, transparent) 20%,
+    color-mix(in srgb, var(--interface-muted) 45%, transparent) 80%, transparent);
+}
+
+.system-menu-items { display: grid; gap: 10px; }
+
+.system-menu-item {
+  display: flex;
+  width: 100%;
+  min-height: 40px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 8px 7px;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--interface-text);
+  font: inherit;
+  font-size: .64rem;   /* 0,68rem fino al 10 ottobre 2026: nel menu più largo un poco più piccola */
+  font-weight: 400;
+  letter-spacing: .08em;
+  text-align: left;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background .16s ease, border-color .16s ease, color .16s ease, transform .16s ease;
+}
+
+.system-menu-item:not(:disabled):hover,
+.system-menu-item:focus-visible {
+  border-color: transparent;
+  background: var(--interface-surface);
+  color: var(--interface-accent);
+  box-shadow: inset 2px 0 var(--interface-accent);
+  outline: none;
+}
+
+.system-menu-item:disabled { color: var(--interface-muted); cursor: not-allowed; opacity: .72; }
+.system-menu-item-label { display: flex; min-width: 0; align-items: center; gap: 7px; }
+.system-menu-label-text { min-width: 0; line-height: 1.3; }
+.system-menu-icon {
+  font-variant-emoji: text;   /* simboli come caratteri, non emoji colorate (iPhone) */
+  display: inline-flex;
+  flex: 0 0 18px;
+  align-items: center;
+  justify-content: center;
+  height: 1em;
+  color: var(--interface-accent);
+  font-size: .92rem;
+  line-height: 1;
+  text-align: center;
+}
+.system-menu-badge { flex: 0 0 auto; color: var(--interface-muted); font-size: .52rem; letter-spacing: .03em; }
+/* sigla del negozio attivo accanto a PROFILO UTENTE: solo la scritta oro, senza riquadro (tolto il 10 ottobre 2026) */
+.system-store-current {
+  flex: 0 0 auto;
+  padding: 0;
+  color: var(--interface-accent);
+  font-size: .57rem;
+  letter-spacing: .08em;
+}
+
+.system-menu-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--interface-border);
+}
+
+.system-menu-back {
+  min-height: 36px;
+  padding: 7px 9px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--interface-accent);
+  font: 400 .64rem/1.3 var(--interface-font);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.system-menu-back:hover,
+.system-menu-back:focus-visible {
+  background: var(--interface-surface);
+  border-color: transparent;
+  box-shadow: inset 2px 0 var(--interface-accent);
+  color: var(--interface-text);
+  outline: none;
+}
+
+.system-credits {
+  padding: 8px 5px 14px;
+  color: var(--interface-muted);
+  font: 400 .71rem/1.7 var(--interface-font);
+  text-align: center;
+}
+
+.system-credits .release-number,
+.system-credits a { color: var(--interface-accent); text-decoration: none; }
+.system-credits a:hover { text-decoration: underline; }
+
+.system-setting-row + .system-setting-row { margin-top: 24px; }
+.system-setting-label { display: block; margin-bottom: 9px; color: var(--interface-text); font: 400 .71rem/1.3 var(--interface-font); letter-spacing: .12em; text-align: center; }
+.theme-choices { display: flex; width: 100%; gap: 4px; padding: 4px; border: 1px solid var(--interface-border); border-radius: 7px; background: var(--interface-control); }
+.theme-choice { min-height: 34px; padding: 7px 4px; flex: 1 1 0; border: 1px solid transparent; border-radius: 4px; background: transparent; color: var(--interface-muted); font: 400 .61rem/1.2 var(--interface-font); letter-spacing: .04em; white-space: nowrap; cursor: pointer; transition: background .16s ease, color .16s ease, border-color .16s ease, box-shadow .16s ease; }
+.theme-choice:hover, .theme-choice:focus-visible { background: var(--interface-surface); border-color: transparent; box-shadow: inset 2px 0 var(--interface-accent); color: var(--interface-text); outline: none; }
+.theme-choice.is-selected { background: var(--interface-accent); color: #fffdfa; border-color: var(--interface-accent); }
+:root[data-interface-theme="dark"] .theme-choice.is-selected { color: #121110; }
+.system-menu-view[data-system-view="settings"] .system-menu-footer { margin-top: 20px; }
+
+.system-store-list { display: grid; gap: 12px; }
+.system-store-choice {
+  display: flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 9px 8px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--interface-muted);
+  font: 400 .66rem/1.3 var(--interface-font);
+  letter-spacing: .07em;
+  text-align: left;
+  text-transform: uppercase;
+}
+.system-store-choice.is-active {
+  border-color: var(--interface-accent);
+  color: var(--interface-text);
+  background: var(--interface-surface);
+}
+.system-store-choice:disabled { cursor: default; }
+/* Negozio che si può aprire: come le voci del menu di sistema, al passaggio del mouse fondo, oro e linea a sinistra */
+.system-store-choice:not(:disabled) { cursor: pointer; transition: background .16s ease, color .16s ease; }
+.system-store-choice:not(:disabled):hover,
+.system-store-choice:not(:disabled):focus-visible {
+  background: var(--interface-surface);
+  color: var(--interface-accent);
+  box-shadow: inset 2px 0 var(--interface-accent);
+  outline: none;
+}
+.system-store-status {
+  flex: 0 0 auto;
+  padding: 4px 6px;
+  border: 1px solid var(--interface-accent);
+  border-radius: 4px;
+  color: var(--interface-accent);
+  font-size: .48rem;
+  letter-spacing: .03em;
+}
+
+.system-menu-toggle {
+  width: 100%;
+  min-height: 38px;
+  padding: 7px 9px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--interface-accent);
+  font: inherit;
+  font-size: 11px;
+  letter-spacing: .18em;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease, background .18s ease;
+}
+
+.system-menu-toggle:hover,
+.system-menu-toggle:focus-visible,
+.system-menu-toggle[aria-expanded="true"] {
+  border-color: var(--interface-accent);
+  background: var(--interface-surface);
+  box-shadow: 0 3px 8px var(--interface-shadow);
+  transform: translateY(-2px);
+  outline: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .system-menu { animation: none; }
+  .system-menu-item { transition: none; }
+}
+
+/* Barra superiore del telefono in tema chiaro: avorio come la topbar mobile di TEBE. */
+:root[data-interface-theme="light"] body .mobile-top-bar {
+  background: var(--interface-page);
+  border-bottom-color: var(--interface-border);
+  box-shadow: 0 1px 3px var(--interface-shadow);
+}
+
+:root[data-interface-theme="light"] body .mobile-nav-toggle {
+  background: var(--interface-sidebar);
+  border-color: var(--interface-border);
+  color: var(--interface-muted);
+}
+
+/* Menu di sistema: tutte le voci uguali, nel possibile. Stessa grandezza delle scritte in tutte le viste (voci, negozi,
+   TEMA / ASPETTO e le loro scelte: .68rem, nell'aspetto COMPATTO .62rem), lettere un poco meno spaziate (le voci lunghe, come
+   PROFILO UTENTE con la sigla del negozio, vanno comunque a capo: non devono uscire dal menu), voce spenta solo grigia (senza trasparenza) e simboli tutti della stessa larghezza,
+   centrati sulla loro scritta (i caratteri li disegnano di larghezze diverse: ⌂ è più stretto, ♙ più largo). */
+.system-menu-item,
+.system-store-choice,
+.system-setting-label,
+.theme-choice { letter-spacing: .05em; }
+.system-store-choice,
+.system-setting-label,
+.theme-choice { font-size: .68rem; }
+.system-menu-item:disabled { opacity: 1; }
+.system-menu-icon { flex-basis: 20px; font-size: 1.05rem; --icona-scala: 1; --icona-y: 0px; transform: translateY(var(--icona-y)) scale(var(--icona-scala)); }
+/* simbolo un poco staccato dalla sua scritta, per leggere meglio */
+.system-menu-item-label { gap: 9px; }
+[data-system-menu-item="settings"] .system-menu-icon { --icona-scala: 1.08; }
+[data-system-menu-item="profile"] .system-menu-icon { --icona-scala: .92; }
+[data-system-menu-item="contacts"] .system-menu-icon { --icona-scala: .9; }
+[data-system-menu-item="home"] .system-menu-icon { --icona-scala: 1.45; --icona-y: -2px; }

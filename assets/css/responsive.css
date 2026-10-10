@@ -1,0 +1,506 @@
+/* Le regole telefono richiedono sia uno schermo stretto sia un puntatore touch.
+   Tablet e finestre desktop strette conservano la disposizione desktop. */
+.phone-lens-btn,
+.phone-theme-toolbar,
+.phone-action-bar,
+.mobile-brand-footer { display: none; }
+
+@media screen {
+  body[data-layout="cartelli"] { justify-content: safe center; }
+  body[data-layout="cartelli"] > .sidebar { flex-shrink: 0; }
+  body[data-layout="cartelli"] > .print-sheet,
+  body[data-layout="cartelli"] > .a4-sheet { flex-shrink: 0; }
+}
+
+@media screen and (max-width: 760px) and (pointer: coarse) {
+  body[data-layout="cartelli"] .cursore,
+  body[data-layout="cartellini"] .cursore,
+  body[data-layout="prezzi"] .cursore,
+  body[data-layout="dymo"] .cursore { display: none !important; }
+  .phone-theme-group {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    pointer-events: auto;
+  }
+  .phone-theme-group[hidden] { display: none; }
+  body .phone-theme-toolbar :is(button, a) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    inset: auto;
+    width: 44px;
+    height: 44px;
+    margin: 0;
+    flex-shrink: 0;
+  }
+  body[data-layout="cartelli"] .floating-nav-box,
+  body[data-layout="cartellini"] .floating-nav-box,
+  body[data-layout="prezzi"] .floating-nav-box { display: none; }
+  body[data-layout="dymo"] .app-close-btn { top: 10px; right: 10px; z-index: 10000; }
+}
+
+/* Vista telefono comune delle pagine cartelli e promo stagionali (body[data-layout="cartelli"]): in alto il cartello
+   in modifica resta fisso, al centro il pannello scorre, in fondo la barra di stampa. Regole e comportamento in un solo
+   posto (questo file e assets/js/responsive.js); le pagine non hanno copie locali.
+   Fuori dal telefono i contenitori aggiunti non esistono per l'impaginazione. */
+.phone-preview-head,
+.form-group > .phone-only-label,
+.phone-line-space { display: none; }
+.phone-preview,
+.phone-preview-frame { display: contents; }
+
+@media screen and (max-width: 760px) and (pointer: coarse) {
+  body[data-layout="cartelli"] {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    height: 100vh;
+    height: 100dvh;
+    min-height: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+  body[data-layout="cartelli"] > .phone-preview {
+    display: block;
+    position: relative;
+    flex: none;
+    order: 1;
+    border-bottom: 1px solid var(--interface-border, #2e2b27);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, .28);
+    z-index: 2;
+  }
+  /* Il riquadro esterno resta fermo (qui stanno i pulsanti dei temi); scorre solo il foglio dentro. */
+  body[data-layout="cartelli"] .phone-preview-frame {
+    display: block;
+    padding: 8px;
+    overflow: hidden;
+  }
+  body[data-layout="cartelli"] .phone-preview-frame > .print-sheet,
+  body[data-layout="cartelli"] .phone-preview-frame > .a4-sheet {
+    margin: 0 auto;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .35);
+  }
+  body[data-layout="cartelli"] > .sidebar {
+    order: 2;
+    flex: 1 1 auto;
+    width: 100%;
+    max-width: none;
+    min-height: 0;
+    padding: 10px 10px 16px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+  body[data-layout="cartelli"] .form-group input,
+  body[data-layout="cartelli"] .form-group select { font-size: 16px; }
+  /* il simbolo fisso del campo (€ davanti al prezzo, % dopo lo sconto) nello stesso carattere e grande come le cifre, sulla stessa linea */
+  body[data-layout="cartelli"] .input-affix .affix { font-family: Arial, Helvetica, sans-serif; font-size: 16px; }
+  /* I tre temi del cartello in modifica, in basso a destra dell'anteprima, dove il cartello non ha contenuti. */
+  body:is([data-layout="cartelli"], [data-layout="cartellini"], [data-layout="prezzi"]) .phone-theme-toolbar {
+    display: block;
+    position: absolute;
+    inset: auto 14px 14px auto;
+    z-index: 3;
+  }
+  body:is([data-layout="cartelli"], [data-layout="cartellini"], [data-layout="prezzi"]) .phone-theme-group { position: static; gap: 6px; }
+  body:is([data-layout="cartelli"], [data-layout="cartellini"], [data-layout="prezzi"]) .phone-theme-toolbar :is(button, a) {
+    width: 38px;
+    height: 38px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, .35);
+  }
+  /* Barra di stampa fissa in fondo: lista di stampa e tasto STAMPA. */
+  body:is([data-layout="cartelli"], [data-layout="cartellini"], [data-layout="prezzi"]) > .phone-action-bar {
+    display: flex;
+    order: 3;
+    flex: none;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+    background: var(--interface-sidebar, #181715);
+    border-top: 1px solid var(--interface-border, #2e2b27);
+    box-shadow: 0 -6px 14px rgba(0, 0, 0, .28);
+    z-index: 2;
+  }
+  body:is([data-layout="cartelli"], [data-layout="cartellini"], [data-layout="prezzi"]) .phone-action-bar .tool-buttons { margin: 0 !important; gap: 6px; flex: none; }
+  body:is([data-layout="cartelli"], [data-layout="cartellini"], [data-layout="prezzi"]) .phone-action-bar .tool-btn { width: 40px; height: 40px; box-shadow: none; }
+  body:is([data-layout="cartelli"], [data-layout="cartellini"], [data-layout="prezzi"]) .phone-action-bar .tool-tip { display: none; }
+  /* La guida "Dove montare la stampa?" sul telefono non serve. */
+  body:is([data-layout="cartelli"], [data-layout="cartellini"], [data-layout="prezzi"]) .phone-action-bar .tool-btn[aria-label="Dove montare la stampa?"] { display: none; }
+  body:is([data-layout="cartelli"], [data-layout="cartellini"], [data-layout="prezzi"]) .phone-action-bar .btn-print:focus-visible {
+    outline: 2px solid #e5ba73;
+    outline-offset: 2px;
+  }
+  body:is([data-layout="cartelli"], [data-layout="cartellini"], [data-layout="prezzi"]) .phone-action-bar .btn-print {
+    flex: 1 1 0;
+    min-width: 0;
+    min-height: 44px;
+    margin: 0 !important;
+    padding: 4px 10px;
+    font-size: 0.85rem;
+    line-height: 1.1;
+  }
+  /* ANTEPRIMA: contorno oro, per distinguersi dal rosso della stampa; apre il foglio A4 intero. */
+  body:is([data-layout="cartelli"], [data-layout="cartellini"], [data-layout="prezzi"]) .phone-preview-btn {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+
+    min-height: 44px;
+    padding: 4px 12px;
+    border: 1.5px solid var(--interface-accent, #d4a373);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--interface-accent, #d4a373);
+    font: 700 0.78rem/1.1 Arial, sans-serif;
+    letter-spacing: .06em;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body:is([data-layout="cartelli"], [data-layout="cartellini"], [data-layout="prezzi"]) .phone-preview-btn svg { width: 20px; height: 20px; flex: none; }
+  body:is([data-layout="cartelli"], [data-layout="cartellini"], [data-layout="prezzi"]) .phone-preview-btn:active { transform: scale(.97); }
+  body:is([data-layout="cartelli"], [data-layout="cartellini"], [data-layout="prezzi"]) .phone-preview-btn:focus-visible,
+  body:is([data-layout="cartelli"], [data-layout="cartellini"], [data-layout="prezzi"]) .phone-preview-close:focus-visible {
+    outline: 2px solid #e5ba73;
+    outline-offset: 2px;
+  }
+  body[data-layout="cartelli"] .form-group > .phone-only-label { display: block; }
+  body.phone-full-preview > .phone-preview {
+    position: fixed;
+    inset: 0;
+    z-index: 3000;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border: 0;
+    background: #0a0908;
+  }
+  body.phone-full-preview .phone-preview-head {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 10px 8px 16px;
+    color: #e5ba73;
+    font: 600 0.75rem/1 Arial, sans-serif;
+    letter-spacing: .12em;
+  }
+  body.phone-full-preview .phone-preview-frame { padding-top: 60px; }
+  body.phone-full-preview .phone-preview-close {
+    width: 44px;
+    height: 44px;
+    border: 0;
+    border-radius: 50%;
+    background: #d4a373;
+    color: #121110;
+    font: 400 20px/1 Arial, sans-serif;
+    cursor: pointer;
+  }
+  body.phone-full-preview .app-close-btn,
+  body.phone-full-preview .phone-theme-toolbar { display: none !important; }
+  /* Titoli dei campi (BRAND, Loghi Personalizzati, Prezzo…) un poco più grandi che nel pannello desktop. */
+  body[data-layout="cartelli"] .sidebar .form-group label {
+    font-size: 0.78rem;
+    margin-bottom: 0.25rem;
+  }
+  /* Selettori a pulsanti (CARTELLO SUPERIORE / INFERIORE…) su una riga, con la scritta più grande. */
+  body[data-layout="cartelli"] .sidebar .mode-switch button {
+    min-height: 44px;
+    padding: 6px 8px;
+    font-size: clamp(0.66rem, 3vw, 0.78rem);
+    letter-spacing: 0.02em;   /* su una riga la spaziatura del desktop (0,08em) farebbe uscire DESCRIZIONE ARTICOLO */
+    white-space: nowrap;
+  }
+  body[data-layout="cartelli"] .sidebar .mode-switch button br { display: none; }
+  body[data-layout="cartelli"] .sidebar .mode-switch button .phone-line-space { display: inline; }
+  /* Con tre o più pulsanti (es. STANDARD / DOPPIO ARTICOLO / BRAND / PERCENTUALE delle Cornici di TEBE) la scritta
+     su una riga non entra: può andare a capo, un poco più piccola, e i pulsanti si stringono quanto serve. */
+  body[data-layout="cartelli"] .sidebar .mode-switch:has(> button:nth-of-type(3)) button {
+    min-width: 0;
+    padding: 6px 4px;
+    font-size: clamp(0.6rem, 2.7vw, 0.7rem);
+    line-height: 1.15;
+    white-space: normal;
+  }
+  /* Pulsanti a due stati (+ AGGIUNGI 2° BRAND…): forma da app, più alti e con la scritta leggibile. Colori invariati. */
+  body[data-layout="cartelli"] .sidebar .btn-toggle {
+    min-height: 48px;
+    margin-bottom: 0.6rem;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    letter-spacing: .06em;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, .25);
+    -webkit-tap-highlight-color: transparent;
+  }
+  body[data-layout="cartelli"] .sidebar .btn-toggle:hover { transform: none; filter: none; }
+  body[data-layout="cartelli"] .sidebar .btn-toggle:active { transform: scale(.98); }
+  /* COPIA SU ALTRO CARTELLO come riga di impostazione da app: testo a sinistra, interruttore a destra.
+     Solo la riga creata da copia-cartello.js (.copia-cartello-row): le altre caselle restano come sono.
+     Fondo, bordo e interruttore spento derivano dal colore del testo, così valgono anche nei menu su misura
+     (oro nelle pagine standard, bianco in Xmas Ball); il colore oro ha specificità bassa per lasciarlo alle pagine. */
+  :where(body[data-layout="cartelli"] .sidebar) .copia-cartello-row { color: var(--interface-accent, #d4a373); }
+  body[data-layout="cartelli"] .sidebar .check-row.copia-cartello-row {
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 52px;
+    margin: 0 0 0.75rem;
+    padding: 8px 12px 8px 14px;
+    border: 1px solid color-mix(in srgb, currentColor 30%, transparent);
+    border-radius: 10px;
+    background: color-mix(in srgb, currentColor 6%, transparent);
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: .04em;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body[data-layout="cartelli"] .sidebar .check-row.copia-cartello-row input[type="checkbox"] {
+    --knob: currentColor;
+    width: 48px;
+    height: 28px;
+    border: 1px solid color-mix(in srgb, currentColor 35%, transparent);
+    border-radius: 14px;
+    background-color: color-mix(in srgb, currentColor 18%, transparent);
+    background-image: radial-gradient(circle, var(--knob) 0 10px, transparent 10.5px);
+    background-size: 26px 26px;
+    background-position: left center;
+    background-repeat: no-repeat;
+    box-shadow: none;
+    transition: background-color .2s ease, background-position .2s ease, border-color .2s ease;
+  }
+  body[data-layout="cartelli"] .sidebar .check-row.copia-cartello-row input[type="checkbox"]:checked {
+    --knob: #fff;
+    border-color: #5f8a55;
+    background-color: #5f8a55 !important;
+    background-image: radial-gradient(circle, var(--knob) 0 10px, transparent 10.5px);
+    background-size: 26px 26px;
+    background-position: right center;
+  }
+  body[data-layout="cartelli"] .sidebar .check-row.copia-cartello-row input[type="checkbox"]:focus-visible {
+    outline: 2px solid #e5ba73;
+    outline-offset: 2px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    body[data-layout="cartelli"] .sidebar .check-row.copia-cartello-row input[type="checkbox"] { transition: none; }
+  }
+  body[data-layout="cartelli"] .app-close-btn {
+    top: 6px;
+    right: 6px;
+    width: 36px;
+    height: 36px;
+    z-index: 10;
+  }
+}
+
+/* Vista telefono comune di cartellini e Prezzi Vetrina (body[data-layout="cartellini"] e "prezzi"): stessa
+   struttura dei cartelli. In alto la riga del foglio con il cartellino scelto (la <main>, dentro .phone-preview),
+   al centro il pannello che scorre con le linguette su una riga ferma in cima, in fondo la barra di stampa.
+   Le misure dell'anteprima le calcola assets/js/responsive.js; i fogli di stampa non cambiano. */
+@media screen and (max-width: 760px) and (pointer: coarse) {
+  body:is([data-layout="cartellini"], [data-layout="prezzi"]) {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    height: 100vh;
+    height: 100dvh;
+    min-height: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+  /* Fuori dall'anteprima a tutto schermo, che resta quella comune (body.phone-full-preview > .phone-preview). */
+  body:is([data-layout="cartellini"], [data-layout="prezzi"]):not(.phone-full-preview) > .phone-preview {
+    display: block;
+    position: relative;
+    flex: none;
+    order: 1;
+    border-bottom: 1px solid var(--interface-border, #2e2b27);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, .28);
+    z-index: 2;
+  }
+  /* Il riquadro esterno resta fermo (qui stanno il pulsante Sale e l'intestazione); scorre solo il foglio dentro. */
+  body:is([data-layout="cartellini"], [data-layout="prezzi"]) .phone-preview > main {
+    display: block;
+    flex: none;
+    width: 100%;
+    min-height: 0;
+    padding: 8px;
+    overflow: hidden;
+  }
+  body:is([data-layout="cartellini"], [data-layout="prezzi"]) .phone-preview .sheet-wrap { width: max-content; margin: 0 auto; }
+  body:is([data-layout="cartellini"], [data-layout="prezzi"]) .phone-preview :is(.a4-landscape, .a4-portrait) {
+    box-shadow: none;
+  }
+  /* Cartellino scelto (o, in Prezzi Vetrina, la colonna): bordo oro solo a schermo, mai nella stampa né
+     nell'anteprima di stampa a tutto schermo. */
+  body:is([data-layout="cartellini"], [data-layout="prezzi"]) .phone-current-card {
+    outline: 6px solid var(--interface-accent, #d4a373);
+    outline-offset: 2px;
+  }
+  body.phone-full-preview .phone-current-card { outline: none; }
+  body.phone-full-preview .phone-preview > main { padding-top: 60px; }
+  body:is([data-layout="cartellini"], [data-layout="prezzi"]) > aside {
+    order: 2;
+    flex: 1 1 auto;
+    width: 100%;
+    max-width: none;
+    max-height: none;
+    min-height: 0;
+    padding: 10px 10px 16px;
+    border-right: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+  body:is([data-layout="cartellini"], [data-layout="prezzi"]) > aside .brand-title { margin-bottom: 0.6rem; }
+  /* Linguette su una riga che scorre di lato, ferma in cima al pannello mentre i campi scorrono. */
+  body:is([data-layout="cartellini"], [data-layout="prezzi"]) .tabs-grid {
+    position: sticky;
+    flex-shrink: 0;
+    top: -10px;
+    z-index: 1;
+    display: flex;
+    gap: 6px;
+    margin: 0 -10px 0.8rem;
+    padding: 6px 10px;
+    background: inherit;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  body:is([data-layout="cartellini"], [data-layout="prezzi"]) .tabs-grid::-webkit-scrollbar { display: none; }
+  body:is([data-layout="cartellini"], [data-layout="prezzi"]) .tab-item {
+    flex: 0 0 auto;
+    flex-direction: row;
+    justify-content: center;
+    gap: 8px;
+    min-width: 72px;
+    min-height: 44px;
+    padding: 0 12px;
+    scroll-snap-align: center;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body:is([data-layout="cartellini"], [data-layout="prezzi"]) .tab-item :is(label, span) { font-size: 0.85rem; }
+  body:is([data-layout="cartellini"], [data-layout="prezzi"]) .tab-item input[type="checkbox"] { width: 20px; height: 20px; }
+  body:is([data-layout="cartellini"], [data-layout="prezzi"]) .editor-section { margin-bottom: 0.8rem; }
+  body:is([data-layout="cartellini"], [data-layout="prezzi"]) .form-group input,
+  body:is([data-layout="cartellini"], [data-layout="prezzi"]) .form-group select { font-size: 16px; }
+  body:is([data-layout="cartellini"], [data-layout="prezzi"]) .input-affix .affix { font-family: Arial, Helvetica, sans-serif; font-size: 16px; }
+  /* Come nei cartelli: titoli dei campi un poco più grandi, selettori a pulsanti su una riga alti 44 px. */
+  body:is([data-layout="cartellini"], [data-layout="prezzi"]) aside .form-group label {
+    font-size: 0.78rem;
+    margin-bottom: 0.25rem;
+  }
+  body:is([data-layout="cartellini"], [data-layout="prezzi"]) aside .form-row .form-group label { font-size: 0.72rem; }
+  body:is([data-layout="cartellini"], [data-layout="prezzi"]) aside .mode-switch button {
+    min-height: 44px;
+    padding: 6px 8px;
+    font-size: clamp(0.66rem, 3vw, 0.78rem);
+    letter-spacing: 0.02em;   /* come nei cartelli: su una riga la spaziatura del desktop non entrerebbe */
+    white-space: nowrap;
+  }
+  body:is([data-layout="cartellini"], [data-layout="prezzi"]) aside .mode-switch button br { display: none; }
+  body:is([data-layout="cartellini"], [data-layout="prezzi"]) aside .mode-switch button .phone-line-space { display: inline; }
+  body:is([data-layout="cartellini"], [data-layout="prezzi"]) aside .btn-toggle {
+    min-height: 48px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    letter-spacing: .06em;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body:is([data-layout="cartellini"], [data-layout="prezzi"]) .app-close-btn {
+    top: 6px;
+    right: 6px;
+    width: 36px;
+    height: 36px;
+    z-index: 10;
+  }
+  /* Lente in basso a sinistra dell'anteprima: tutta la pagina (lente −) o cartellino ingrandito (lente +). */
+  body:is([data-layout="cartellini"], [data-layout="prezzi"]) .phone-lens-btn {
+    position: absolute;
+    left: 14px;
+    bottom: 14px;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    border: 1.5px solid var(--interface-accent, #d4a373);
+    border-radius: 50%;
+    background: rgba(18, 17, 16, .88);
+    color: var(--interface-accent, #d4a373);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, .35);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body:is([data-layout="cartellini"], [data-layout="prezzi"]) .phone-lens-btn svg { width: 22px; height: 22px; }
+  body:is([data-layout="cartellini"], [data-layout="prezzi"]) .phone-lens-btn:active { transform: scale(.95); }
+  body:is([data-layout="cartellini"], [data-layout="prezzi"]) .phone-lens-btn:focus-visible {
+    outline: 2px solid #e5ba73;
+    outline-offset: 2px;
+  }
+  body.phone-full-preview .phone-lens-btn { display: none; }
+  /* Pulsante Sale dei Quadrati nella barra dei temi dell'anteprima: stessa forma, dimensione della barra. */
+  body:is([data-layout="cartellini"], [data-layout="prezzi"]) .phone-theme-toolbar .sale-theme-btn {
+    font-size: 0.72rem;
+    opacity: 1;
+  }
+}
+
+@media print {
+  body:is([data-layout="cartellini"], [data-layout="prezzi"]) .sheet-wrap { zoom: 1 !important; }
+  .phone-current-card { outline: none !important; }
+}
+
+@media screen and (max-width: 600px) and (pointer: coarse) {
+  body[data-layout="loghi"] .cursore { display: none !important; }
+  body[data-layout="loghi"] { padding: 64px 12px 16px; }
+  body[data-layout="loghi"] .container { padding: 16px; }
+  body[data-layout="loghi"] h1 { font-size: 1rem; letter-spacing: 1.2px; }
+  body[data-layout="loghi"] .app-close-btn { top: 10px; right: 10px; width: 44px; height: 44px; }
+  body[data-layout="loghi"] .upload-box { padding: 18px 12px; }
+  body[data-layout="loghi"] .preview-section { flex-direction: column; gap: 14px; }
+  body[data-layout="loghi"] .preview-card { width: min(200px, 100%); max-width: 100%; }
+  body[data-layout="loghi"] .saved-list-header { align-items: flex-start; flex-direction: column; }
+  body[data-layout="loghi"] .saved-item { align-items: flex-start; flex-wrap: wrap; gap: 10px; padding: 10px; }
+  body[data-layout="loghi"] .saved-item-actions,
+  body[data-layout="loghi"] .sort-actions,
+  body[data-layout="loghi"] .backup-actions,
+  body[data-layout="loghi"] .queue-item-actions { flex-wrap: wrap; }
+  body[data-layout="loghi"] .saved-item-actions > *,
+  body[data-layout="loghi"] .sort-actions > *,
+  body[data-layout="loghi"] .backup-actions > *,
+  body[data-layout="loghi"] .queue-item-actions > * { min-height: 44px; }
+  body[data-layout="loghi"] .saved-item-preview,
+  body[data-layout="loghi"] .queue-item-preview { align-self: center; }
+  body[data-layout="loghi"] .folder-bar { flex-direction: column; align-items: stretch; gap: 8px; }
+  body[data-layout="loghi"] .btn-folder { width: 100%; min-height: 44px; }
+  body[data-layout="loghi"] .queue-item,
+  body[data-layout="loghi"] .logo-item { align-items: stretch; gap: 10px; padding: 10px; }
+  body[data-layout="loghi"] .logo-item-name { min-width: 0; }
+  body[data-layout="loghi"] .btn-delete-row { min-height: 44px; }
+  body[data-layout="loghi"] .modal-box { padding: 30px 16px 16px; }
+  body[data-layout="loghi"] .modal-actions .modal-btn { flex: 1 1 100%; min-height: 44px; }
+}
+
+@media print {
+  .phone-lens-btn,
+  .phone-theme-toolbar,
+  .phone-action-bar,
+  .mobile-brand-footer { display: none !important; }
+  body[data-layout="cartelli"] :is(.print-sheet, .a4-sheet) { zoom: 1 !important; }
+}

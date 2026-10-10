@@ -17,17 +17,22 @@
  *     sideGap: 9                      // facoltativo: distanza in px della punta quando il cursore sta di lato
  *   });
  *   cursore.point({ target, scope, obstacles, placement: 'above', gap });  // puntamento da codice
- * placement: 'above' = sempre sopra; 'side' = solo di lato (prima sinistra, poi destra).
- * Ogni regola (e point) accetta anche gap: distanza in px della punta quando il cursore sta sopra.
+ * placement: 'above' = sempre sopra; 'side' = solo di lato (prima sinistra, poi destra); 'left' / 'right' = sempre da quel lato.
+ * Ogni regola (e point) accetta anche gap: distanza in px della punta quando il cursore sta sopra; può essere una
+ * funzione che riceve l'elemento indicato e restituisce la distanza (es. per portare la punta fuori dal cartello).
  * target, scope e obstacles possono essere selettori, elementi o funzioni che li restituiscono.
  * Se target restituisce più elementi compare un triangolo per ciascuno (modifiche su più colonne);
+ * i triangoli in più partono da dove era il primo e si spostano ognuno sul proprio elemento;
  * in quel caso scope e obstacles, se sono funzioni, ricevono l'elemento indicato.
  */
 (function () {
   const GAP = 96 / 25.4;      // 1 mm tra la punta e l'elemento (sopra)
   const SIDE_GAP = GAP + 10;  // di lato più spazio libero (le pagine possono cambiarlo con sideGap)
-  const LONG = 36;            // lato lungo del triangolo
-  const SHORT = 24;           // altezza del triangolo
+  // Misure del triangolo del negozio della pagina, dalla sua scheda (assets/negozi/<negozio>.css: --cursore-lungo,
+  // --cursore-corto): Luxury Outlet 40 × 27 px, TEBE e OPHILYA 36 × 24 px.
+  function size(name, fallback) {
+    return parseFloat(getComputedStyle(document.documentElement).getPropertyValue(name)) || fallback;
+  }
   const CLEAR = 3;            // distanza minima dagli altri elementi
 
   function resolveOne(value, arg) {
@@ -144,6 +149,8 @@
 
     // t: riquadro delle righe (per la posizione sopra); g: inchiostro dei caratteri (per centrare di lato)
     function candidates(t, g, aboveGap = GAP) {
+      const LONG = size('--cursore-lungo', 40);   // lato lungo del triangolo
+      const SHORT = size('--cursore-corto', 27);  // altezza del triangolo
       const cx = (t.left + t.right) / 2;
       const cy = (g.top + g.bottom) / 2;
       return {
@@ -158,8 +165,10 @@
       const rect = inkRect(target);
       if (!rect || (clipRect && !intersects(rect, clipRect))) return null;
       const glyphs = inkRect(target, true);
-      const options = candidates(rect, glyphs, request.gap);
+      const gap = typeof request.gap === 'function' ? request.gap(target) : request.gap;
+      const options = candidates(rect, glyphs, gap);
       if (request.placement === 'above') return options.above;
+      if (request.placement === 'left' || request.placement === 'right') return options[request.placement];
 
       const scope = resolveOne(request.scope, target);
       const scopeRect = scope && scope.getBoundingClientRect();
@@ -188,12 +197,29 @@
       const targets = request ? resolveMany(request.target) : [];
       const clip = resolveOne(config.clip);
       const clipRect = clip && clip.getBoundingClientRect();
+      // Quando il cursore si sdoppia o si moltiplica, i triangoli nuovi partono da dove era
+      // il primo e raggiungono ciascuno il proprio elemento, invece di comparire già al loro posto.
+      const first = markers[0];
+      const origin = animate && first.classList.contains('is-visible')
+        ? { left: first.style.left, top: first.style.top, side: ['down', 'right', 'left'].find(s => first.classList.contains(`cursore--${s}`)) }
+        : null;
       let shown = 0;
       targets.forEach(target => {
         const chosen = placementFor(target, clipRect);
         if (!chosen) return;
         const marker = markerAt(shown++);
-        marker.classList.toggle('is-instant', !animate || !marker.classList.contains('is-visible'));
+        const wasVisible = marker.classList.contains('is-visible');
+        if (!wasVisible && origin) {
+          marker.classList.add('is-instant', 'is-visible');
+          marker.classList.remove('cursore--down', 'cursore--right', 'cursore--left');
+          if (origin.side) marker.classList.add(`cursore--${origin.side}`);
+          marker.style.left = origin.left;
+          marker.style.top = origin.top;
+          marker.getBoundingClientRect(); // fissa la partenza prima di avviare il movimento
+          marker.classList.remove('is-instant');
+        } else {
+          marker.classList.toggle('is-instant', !animate || !wasVisible);
+        }
         marker.classList.remove('cursore--down', 'cursore--right', 'cursore--left');
         marker.classList.add(`cursore--${chosen.side}`);
         marker.style.left = `${chosen.left}px`;

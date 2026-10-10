@@ -1,11 +1,15 @@
-/* Cursore a triangolo rosso (#96382b, come il pulsante Sale) con ombra netta. Vedi assets/js/cursore.js.
-   Sopra l'elemento punta in giù; di lato il triangolo ruota e punta verso l'elemento. Non si stampa. */
+/* Cursore a triangolo con ombra netta. Vedi assets/js/cursore.js.
+   Sopra l'elemento punta in giù; di lato il triangolo ruota e punta verso l'elemento. Non si stampa.
+   Colore e misure sono del negozio della pagina, nella sua scheda (assets/negozi/<negozio>.css): --cursore-colore,
+   --cursore-lungo (lato lungo) e --cursore-corto (altezza), letti anche da cursore.js. Qui i valori di riserva. */
+:root { --cursore-colore: #b48b37; --cursore-lungo: 40px; --cursore-corto: 27px; }
+
 .cursore {
   position: fixed;
   left: 0;
   top: 0;
-  width: 36px;
-  height: 24px;
+  width: var(--cursore-lungo);
+  height: var(--cursore-corto);
   pointer-events: none;
   z-index: 900;
   opacity: 0;
@@ -20,13 +24,13 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: #96382b;
+  background: var(--cursore-colore);
   clip-path: polygon(0 0, 100% 0, 50% 100%);
 }
 
 /* Di lato: triangolo verticale */
 .cursore--right,
-.cursore--left { width: 24px; height: 36px; }
+.cursore--left { width: var(--cursore-corto); height: var(--cursore-lungo); }
 
 /* a sinistra dell'elemento, punta verso destra */
 .cursore--right::before { clip-path: polygon(0 0, 100% 50%, 0 100%); }

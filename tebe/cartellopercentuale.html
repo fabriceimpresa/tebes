@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="it" data-negozio="tebe">
+<head>
+  <meta charset="UTF-8">
+  <script src="../assets/js/negozi.js?v=20261010-45"></script>
+  <!-- tema CHIARO / SCURO scelto nella dashboard (colori nella scheda del negozio) -->
+  <script src="../assets/js/theme.js?v=20261010-45"></script>
+  <link rel="stylesheet" href="../assets/css/chiudi-pagina.css?v=20261010-45">
+  <link rel="stylesheet" href="../assets/css/torna-al-menu.css?v=20261010-45">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../assets/css/font-arial.css?v=20261010-45">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600&display=swap" rel="stylesheet">
+  <title>Cartello Percentuale</title>
+  <script src="../assets/js/loghi-personalizzati.js?v=20261010-45"></script>
+  <script src="../assets/logos/tebe/elenco.js?v=20261010-45"></script>
+  <script src="../assets/js/logos.js?v=20261010-45"></script>
+  <script src="../assets/js/print-logo-colors.js?v=20261010-45"></script>
+  <link rel="stylesheet" href="../assets/css/pannello.css?v=20261010-45">
+  <script defer src="../assets/js/campi-prezzo.js?v=20261010-45"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* Sfondo principale UI */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: var(--interface-page);
+      padding: 20px;
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    /* Il pannello segue il pannello standard (../assets/css/pannello.css): blocchi, selettori, menu e campi comuni. */
+
+    /* FOGLIO STAMPA */
+    .print-sheet {
+      position: relative;
+      z-index: 1;
+      width: 210mm;
+      height: 297mm;
+      background: white;
+      box-shadow: 0 20px 60px rgba(40,34,28,.18);
+      padding: 14.56mm 0 0 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    /* CARTELLO PERCENTUALE — dimensioni precise 1240px x 699px (150dpi -> 210mm x 118.35mm) */
+    .card {
+      width: 210mm;
+      height: 118.35mm;
+      border: 0.34mm solid #9d9490;
+      background: #ffffff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    /* Il secondo cartello è lo stesso contenuto, capovolto: i bordi devono coincidere in un'unica linea
+       (rimuoviamo il bordo che, dopo la rotazione di 180°, finirebbe a contatto con il cartello superiore,
+       lasciando intatto il bordo esterno inferiore necessario per il ritaglio) */
+    #cardBottom {
+      border-bottom: none;
+      transform: rotate(180deg);
+    }
+
+    .card-fields {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Quando é attiva la modalità Standard (nessuna descrizione), tutti i campi si alzano leggermente */
+    .card.standard-mode .card-fields {
+      transform: translateY(-5%);
+    }
+
+    .card-desc {
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      transform: translate(-13px, -6px);
+      transition: max-height 0.35s ease, opacity 0.3s ease, transform 0.3s ease, margin 0.35s ease;
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: 400;
+      font-size: 25.2pt;
+      color: #1a1a1a;
+      text-align: center;
+      white-space: nowrap;
+      letter-spacing: -0.05em;
+    }
+
+    .card-desc.active {
+      max-height: 40mm;
+      opacity: 1;
+      transform: translate(-13px, 0);
+      margin-bottom: 3.5mm;
+    }
+
+    .discount-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5mm;
+    }
+
+    .fino-al-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5mm;
+    }
+
+    .fino-al-label {
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: 700;
+      font-size: 17.98pt;
+      letter-spacing: -0.05em;
+      color: #cc9e25;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .minus-bar {
+      width: 21.46mm;
+      height: 4.85mm;
+      background-color: #cc9e25;
+    }
+
+    .percent-text {
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: 400;
+      font-size: 158pt;
+      letter-spacing: -0.05em;
+      color: #cc9e25;
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    /* LOGO BRAND (ufficiale o personalizzato, sempre colore oro) mostrato sopra la percentuale.
+       Il contenitore ha una dimensione fissa uguale per tutti i brand: l'immagine si adatta
+       dentro mantenendo le proporzioni, così l'area occupata non cambia mai da un logo all'altro. */
+    .card-brand-logo-box {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 46mm;
+      height: 20mm;
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      transform: scale(0.85) translateY(6px);
+      transition: max-height 0.35s ease, opacity 0.3s ease, transform 0.3s ease, margin 0.35s ease;
+    }
+
+    .card-brand-logo-box.active {
+      max-height: 20mm;
+      opacity: 1;
+      transform: scale(1) translateY(0);
+      margin-bottom: 1.5mm;
+    }
+
+    .card-brand-logo {
+      max-width: 100%;
+      max-height: 20mm;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+    }
+
+    .card-logo {
+      width: 45mm;
+      height: auto;
+      display: block;
+      margin-top: 5.5mm;
+    }
+
+    /* NAVIGAZIONE UI */
+
+    @page {
+      size: A4 portrait;
+      margin: 0mm !important;
+    }
+
+    @media print {
+      html, body {
+        width: 210mm;
+        height: 297mm !important;
+        max-height: 297mm !important;
+        background: white !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        overflow: hidden !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      .sidebar, .app-close-btn, .floating-nav-box { display: none !important; }
+
+      .print-sheet {
+        box-shadow: none;
+        margin: 0 auto !important;
+        padding: 14.56mm 0 0 0 !important;
+        width: 210mm;
+        height: 297mm !important;
+        max-height: 297mm !important;
+        page-break-after: avoid !important;
+        page-break-before: avoid !important;
+        page-break-inside: avoid !important;
+        break-after: avoid !important;
+        break-before: avoid !important;
+        break-inside: avoid !important;
+        overflow: hidden !important;
+      }
+
+      .fino-al-label, .percent-text, .minus-bar {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+    }
+
+  </style>
+  <link rel="stylesheet" href="../assets/css/madeinitaly.css?v=20261010-45">
+  <link rel="stylesheet" href="../assets/css/strumenti-stampa.css?v=20261010-45">
+  <link rel="stylesheet" href="../assets/css/cursore.css?v=20261010-45">
+  <link rel="stylesheet" href="../assets/css/menu-cascata.css?v=20261010-45">
+  <script defer src="../assets/js/menu-cascata.js?v=20261010-45"></script>
+  <link rel="stylesheet" href="../assets/css/responsive.css?v=20261010-45">
+  <script defer src="../assets/js/responsive.js?v=20261010-45"></script>
+</head>
+<body data-layout="cartelli">
+
+  <!-- Pulsanti e Riquadri Navigazione UI -->
+  <a href="index.html?store=tebe" class="app-close-btn" title="Chiudi e torna all'index">✕</a>
+
+  <div class="floating-nav-box">
+    <div class="floating-nav-title">TEBE</div>
+    <a href="index.html?store=tebe" class="floating-nav-btn">
+      ← Torna al Menu Principale
+    </a>
+  </div>
+
+  <div class="sidebar">
+    <div class="controls">
+      <h2>Cartello Percentuale</h2>
+
+      <!-- Eccezione voluta: le due metà del foglio sono fronte e retro dello stesso cartello in morsa (la metà
+           inferiore è capovolta), quindi niente CARTELLO SUPERIORE / INFERIORE, COPIA SU ALTRO CARTELLO né
+           2 / 1 CARTELLI; niente claim. Descrizione e brand si escludono: il cartello ne mostra uno solo. -->
+
+      <!-- Blocco 1: selettori e pulsanti -->
+      <div class="panel-block">
+        <!-- selettore comune (selettore.js); id modeDescrizione e switchMode li usa anche il Made in Italy automatico -->
+        <div data-selettore id="modeSelector" data-on-change="switchMode" aria-label="Seleziona la modalità del cartello">
+          <button value="standard" id="modeStandard" class="active">STANDARD</button>
+          <button value="descrizione" id="modeDescrizione">DESCRIZIONE<br>ARTICOLO</button>
+          <button value="brand" id="modeBrand">AGGIUNGI<br>BRAND</button>
+        </div>
+      </div>
+
+      <!-- Blocco 2: brand (ufficiali e personalizzati), solo con AGGIUNGI BRAND -->
+      <div class="panel-block" id="brandFieldsGroup" hidden>
+        <div class="form-group">
+          <label class="section-label" for="brandSelect">BRAND</label>
+          <div class="preset-select">
+            <select id="brandSelect" onchange="updateBrand()">
+              <option value="" class="brand-placeholder">-- Seleziona Brand --</option>
+            </select>
+          </div>
+          <label for="customBrandSelect">Loghi Personalizzati</label>
+          <div class="preset-select">
+            <select id="customBrandSelect" onchange="updateCustomBrand()">
+              <option value="">-- Seleziona Logo Personalizzato --</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Blocco 3: campi del cartello (descrizione, solo con DESCRIZIONE ARTICOLO, e sconto) -->
+      <div class="panel-block">
+        <div class="form-group" id="descGroup" hidden>
+          <label class="section-label" for="descPreset">Promozioni</label>
+          <div class="preset-select">
+            <select id="descPreset" onchange="applyDescPreset()" data-testi-pronti="Promozioni" data-testi-senza-gruppi>
+              <option value="">-- Seleziona Promozione --</option>
+              <option data-voce-propria value="Sconto alla Cassa">Sconto alla Cassa</option>
+            </select>
+          </div>
+          <label for="descValue">Testo Libero</label>
+          <input type="text" id="descValue" value="Sconto alla Cassa" maxlength="37" placeholder="-- Testo Libero --" oninput="updateCard()">
+        </div>
+
+        <div class="form-group">
+          <label for="discountValue">Sconto</label>
+          <input data-percentuale type="number" id="discountValue" value="50" min="1" max="99" placeholder="50" oninput="updateCard()">
+        </div>
+      </div>
+
+      <!-- Blocco 4: stampa -->
+      <div class="panel-block">
+        <button type="button" class="btn-print" id="printBtn" onclick="printCards()">STAMPA CARTELLO</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- AREA STAMPA A4 -->
+  <div class="print-sheet" id="printSheet">
+    <div class="card standard-mode" id="cardTop">
+      <div class="card-fields">
+        <div class="card-desc" id="descDisp">Sconto alla Cassa</div>
+        <div class="card-brand-logo-box" id="brandLogoBoxTop">
+          <img class="card-brand-logo" id="brandLogoTop" alt="">
+        </div>
+        <div class="discount-row">
+          <div class="fino-al-group">
+            <div class="fino-al-label">FINO AL</div>
+            <div class="minus-bar"></div>
+          </div>
+          <div class="percent-text" id="percentDispTop">50%</div>
+        </div>
+        <img class="card-logo" src="../assets/img/tebe/footer_tebe.png" alt="TEBE">
+      </div>
+    </div>
+
+    <div class="card standard-mode" id="cardBottom">
+      <div class="card-fields">
+        <div class="card-desc" id="descDispBottom">Sconto alla Cassa</div>
+        <div class="card-brand-logo-box" id="brandLogoBoxBottom">
+          <img class="card-brand-logo" id="brandLogoBottom" alt="">
+        </div>
+        <div class="discount-row">
+          <div class="fino-al-group">
+            <div class="fino-al-label">FINO AL</div>
+            <div class="minus-bar"></div>
+          </div>
+          <div class="percent-text" id="percentDispBottom">50%</div>
+        </div>
+        <img class="card-logo" src="../assets/img/tebe/footer_tebe.png" alt="TEBE">
+      </div>
+    </div>
+  </div>
+
+  <script src="../assets/js/testi-pronti.js?v=20261010-45"></script>
+  <script src="../assets/js/selettore.js?v=20261010-45"></script>
+  <script src="../assets/js/madeinitaly.js?v=20261010-45" data-automatico></script>
+  <script>
+    let isDescriptionActive = false;
+    let brandSectionActive = false;
+
+    function formatDiscount(value) {
+      // L'utente scrive solo il numero: il simbolo "%" viene generato automaticamente
+      // (il segno "-" è già rappresentato dal rettangolo grafico "FINO AL").
+      const numeric = value.toString().replace(/[^0-9]/g, '').trim();
+      return (numeric || '50') + '%';
+    }
+
+    function updateCard() {
+      const discountValue = document.getElementById('discountValue').value;
+      const descValue = document.getElementById('descValue').value;
+      const displayDiscount = formatDiscount(discountValue);
+
+      document.getElementById('percentDispTop').textContent = displayDiscount;
+      document.getElementById('percentDispBottom').textContent = displayDiscount;
+      document.getElementById('descDisp').textContent = descValue;
+      document.getElementById('descDispBottom').textContent = descValue;
+    }
+
+    function applyDescPreset() {
+      const preset = document.getElementById('descPreset').value;
+      document.getElementById('descValue').value = preset;
+      updateCard();
+    }
+
+    function hasSelectedBrandLogo() {
+      return brandSectionActive && (
+        Boolean(document.getElementById('brandSelect').value) ||
+        Boolean(document.getElementById('customBrandSelect').value)
+      );
+    }
+
+    // La descrizione resta visibile se la modalità descrizione è attiva e non
+    // c'è un logo effettivamente selezionato, anche con la sezione brand aperta.
+    function updateFieldsMode() {
+      const cardTop = document.getElementById('cardTop');
+      const cardBottom = document.getElementById('cardBottom');
+      const descriptionVisible = isDescriptionActive && !hasSelectedBrandLogo();
+
+      document.getElementById('descDisp').classList.toggle('active', descriptionVisible);
+      document.getElementById('descDispBottom').classList.toggle('active', descriptionVisible);
+      cardTop.classList.toggle('standard-mode', !descriptionVisible);
+      cardBottom.classList.toggle('standard-mode', !descriptionVisible);
+    }
+
+    // Tre modalità esclusive: Standard, Descrizione Articolo, Aggiungi Brand.
+    function switchMode(mode) {
+      isDescriptionActive = mode === 'descrizione';
+      brandSectionActive = mode === 'brand';
+
+      Selettore.attiva('modeSelector', mode);
+      document.getElementById('descGroup').hidden = !isDescriptionActive;
+      document.getElementById('brandFieldsGroup').hidden = !brandSectionActive;
+
+      if (!brandSectionActive) {
+        updateLogoElements('', '');
+        return;
+      }
+
+      const brandSelect = document.getElementById('brandSelect');
+      const customBrandSelect = document.getElementById('customBrandSelect');
+      if (!brandSelect.value && !customBrandSelect.value) {
+        brandSelect.value = getDefaultBrandFile();
+      }
+      if (customBrandSelect.value) {
+        updateCustomBrand();
+      } else {
+        updateBrand();
+      }
+    }
+
+    function getCurrentMode() {
+      if (brandSectionActive) return 'brand';
+      return isDescriptionActive ? 'descrizione' : 'standard';
+    }
+
+    // Hook del tema Made in Italy: alla disattivazione torna la modalità precedente, brand compreso.
+    window.captureTemaItaliaState = function captureTemaItaliaState() {
+      return { mode: getCurrentMode() };
+    };
+
+    window.restoreTemaItaliaState = function restoreTemaItaliaState(state) {
+      switchMode(state.mode);
+    };
+
+    // ----- BRAND (ufficiale o personalizzato), sempre in colore oro -----
+
+    function cleanBrandName(fileName) {
+      return fileName.replace(/\.[^.]+$/, '').replace(/([a-z])([A-Z])/g, '$1 $2');
+    }
+
+    // Loghi personalizzati: la lista di TEBE gestita da loghi-personalizzati.js (IndexedDB).
+    function readCustomLogos() {
+      return LoghiPersonalizzati.elenco().filter(logo => logo && logo.id && logo.name && logo.data);
+    }
+
+    function loadBrandSelect() {
+      const select = document.getElementById('brandSelect');
+      const { priorityFiles, remainingFiles } = getSortedLogoFiles();
+      const orderedFiles = [...priorityFiles, ...remainingFiles];
+
+      orderedFiles.forEach(fileName => {
+        appendBrandOption(select, fileName, cleanBrandName(fileName), priorityFiles.includes(fileName));
+      });
+    }
+
+    function getDefaultBrandFile() {
+      const orderedFiles = getOrderedLogoFiles();
+      return orderedFiles.find(fileName => fileName.toLowerCase().startsWith('269')) || orderedFiles[0] || '';
+    }
+
+    function loadCustomBrandSelect() {
+      const select = document.getElementById('customBrandSelect');
+      const customLogos = readCustomLogos();
+      customLogos
+        .slice()
+        .sort((first, second) => first.name.localeCompare(second.name, 'it', { sensitivity: 'base' }))
+        .forEach(logo => {
+          const option = document.createElement('option');
+          option.value = logo.id;
+          option.textContent = `★ ${logo.name}`;
+          select.appendChild(option);
+        });
+    }
+
+    function updateLogoElements(source, brandName) {
+      const pairs = [
+        { img: document.getElementById('brandLogoTop'), box: document.getElementById('brandLogoBoxTop') },
+        { img: document.getElementById('brandLogoBottom'), box: document.getElementById('brandLogoBoxBottom') }
+      ];
+      pairs.forEach(({ img, box }) => {
+        if (source) {
+          img.src = source;
+          img.alt = brandName;
+          box.classList.add('active');
+        } else {
+          box.classList.remove('active');
+          img.removeAttribute('src');
+          img.alt = '';
+        }
+      });
+      updateFieldsMode();
+    }
+
+    function updateBrand() {
+      const fileName = document.getElementById('brandSelect').value;
+      document.getElementById('customBrandSelect').value = '';
+
+      if (!brandSectionActive || !fileName) {
+        updateLogoElements('', '');
+        return;
+      }
+
+      updateFieldsMode();
+
+      PrintLogoColors.getBrandLogoSrc('', fileName, '', 'gold').then(source => {
+        updateLogoElements(source, cleanBrandName(fileName));
+      }).catch(error => {
+        console.error('Caricamento del logo brand fallito.', error);
+      });
+    }
+
+    function updateCustomBrand() {
+      const customLogoId = document.getElementById('customBrandSelect').value;
+      const customLogo = readCustomLogos().find(logo => logo.id === customLogoId);
+      const brandSelect = document.getElementById('brandSelect');
+
+      if (!customLogo) {
+        updateBrand();
+        return;
+      }
+
+      brandSelect.value = '';
+
+      if (!brandSectionActive) {
+        updateLogoElements('', '');
+        return;
+      }
+
+      updateFieldsMode();
+
+      PrintLogoColors.getBrandLogoSrc(customLogo.data, '', '', 'gold').then(source => {
+        updateLogoElements(source, customLogo.name);
+      }).catch(error => {
+        console.error('Caricamento del logo personalizzato fallito.', error);
+      });
+    }
+
+    function printCards() {
+      PrintLogoColors.prepareForPrint('.card-brand-logo, .card-logo')
+        .then(() => window.print())
+        .catch(error => console.error('Preparazione della stampa fallita.', error));
+    }
+
+    updateCard();
+    loadBrandSelect();
+    LoghiPersonalizzati.pronto.then(loadCustomBrandSelect);
+  </script>
+  <script src="../assets/js/cursore.js?v=20261010-45"></script>
+  <script>
+    // Cursore: indica sulla metà superiore del cartello l'elemento legato al campo in uso.
+    Cursore.create({
+      panel: '.controls',
+      watch: '#printSheet',
+      scope: '#cardTop',
+      obstacles: '#cardTop .card-desc, #cardTop .card-brand-logo, #cardTop .fino-al-label, #cardTop .percent-text, #cardTop .card-logo',
+      rules: [
+        { controls: '#modeStandard, #discountValue, .percent-stepper', target: '#percentDispTop' },
+        { controls: '#modeDescrizione, #descPreset, #descValue', target: '#descDisp' },
+        { controls: '#modeBrand, #brandSelect, #customBrandSelect', target: '#brandLogoTop' }
+      ]
+    });
+  </script>
+  <script src="../assets/js/strumenti-stampa.js?v=20261010-45"></script>
+  <script defer src="../assets/js/stampa-ios.js?v=20261010-45"></script>
+</body>
+</html>

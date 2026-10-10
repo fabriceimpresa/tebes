@@ -2,299 +2,23 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="assets/css/font-arial.css">
-<title>Import Loghi (uso interno) · TEBE · OPHILYA</title>
-<style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: Arial, sans-serif;
-    background-color: #f8f6f1;
-    color: #282522;
-    padding: 30px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100vh;
-  }
-
-  .container {
-    width: 100%;
-    max-width: 900px;
-    background: #fffdfa;
-    border: 1px solid #e3dacb;
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0 20px 60px rgba(40,34,28,.1);
-  }
-
-  h1 {
-    font-size: 1.2rem;
-    font-weight: 400;
-    color: #8a6a35;
-    border-bottom: 2px solid #b49a62;
-    padding-bottom: 8px;
-    margin-bottom: 8px;
-    text-align: center;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-  }
-
-  .subtitle {
-    text-align: center;
-    font-size: 0.8rem;
-    color: #665e54;
-    margin-bottom: 20px;
-  }
-
-  .folder-bar {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    background: #f8f6f1;
-    border: 1px solid #e3dacb;
-    border-radius: 6px;
-    padding: 12px 15px;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
-  }
-
-  .folder-status {
-    flex-grow: 1;
-    font-size: 0.85rem;
-    color: #665e54;
-  }
-
-  .folder-status.ok { color: #4c7a5b; }
-  .folder-status.err { color: #96382b; }
-
-  .btn-folder {
-    background: #b49a62;
-    color: #fffdfa;
-    border: none;
-    padding: 8px 14px;
-    font-weight: 400;
-    letter-spacing: .5px;
-    font-size: 0.85rem;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  .btn-folder:hover { background: #8a6a35; }
-
-  .upload-box {
-    border: 2px dashed #b49a62;
-    border-radius: 6px;
-    padding: 25px;
-    text-align: center;
-    background: #f8f6f1;
-    cursor: pointer;
-    margin-bottom: 20px;
-    transition: background 0.2s, border-color 0.2s;
-  }
-  .upload-box.dragover { background: #eee8dd; border-color: #8a6a35; }
-  .upload-box:hover { background: #eee8dd; }
-  .upload-box.disabled { opacity: 0.5; cursor: not-allowed; }
-  .upload-box input { display: none; }
-
-  .queue-list { display: flex; flex-direction: column; gap: 10px; }
-
-  .queue-item {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    background: #f8f6f1;
-    padding: 10px 15px;
-    border-radius: 4px;
-    border-left: 3px solid #b49a62;
-    flex-wrap: wrap;
-  }
-
-  .queue-item-preview {
-    width: 90px;
-    height: 45px;
-    background: repeating-conic-gradient(#eee8dd 0% 25%, #f8f6f1 0% 50%) 50% / 14px 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 3px;
-    padding: 4px;
-    flex-shrink: 0;
-    border: 1px solid #e3dacb;
-  }
-  .queue-item-preview img { max-width: 100%; max-height: 100%; object-fit: contain; }
-
-  .queue-item-name {
-    flex-grow: 1;
-    min-width: 180px;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-
-  .queue-item-name label { font-size: 0.7rem; color: #665e54; }
-
-  .queue-item-name input {
-    padding: 6px 8px;
-    background: #fffdfa;
-    border: 1px solid #e3dacb;
-    color: #282522;
-    border-radius: 3px;
-    font-size: 0.9rem;
-    text-transform: uppercase;
-  }
-
-  .queue-item-actions { display: flex; gap: 8px; align-items: center; }
-
-  .btn-save-row {
-    background: #43586b;
-    color: white;
-    border: none;
-    padding: 7px 14px;
-    border-radius: 3px;
-    cursor: pointer;
-    font-size: 0.8rem;
-    font-weight: 400;
-    letter-spacing: .5px;
-  }
-  .btn-save-row:hover { background: #344654; }
-  .btn-save-row:disabled { opacity: 0.5; cursor: not-allowed; }
-
-  .btn-delete-row {
-    background: #96382b;
-    color: white;
-    border: none;
-    padding: 7px 14px;
-    border-radius: 3px;
-    cursor: pointer;
-    font-size: 0.8rem;
-  }
-  .btn-delete-row:hover { background: #7a2d22; }
-
-  .row-status {
-    font-size: 0.78rem;
-    font-weight: bold;
-    min-width: 90px;
-  }
-  .row-status.saved { color: #4c7a5b; }
-  .row-status.saving { color: #8a6a35; }
-  .row-status.error { color: #96382b; }
-
-  .empty-msg { font-size: 0.8rem; color: #665e54; padding: 10px 0; }
-
-  .app-close-btn {
-    position: fixed;
-    top: 1.5rem;
-    right: 1.5rem;
-    width: 36px;
-    height: 36px;
-    background-color: #b49a62;
-    color: #fffdfa;
-    border-radius: 50%;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-decoration: none;
-  }
-
-  /* MODAL DI CONFERMA CONFLITTO NOME */
-  .modal-overlay {
-    display: none;
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(40,37,34,0.55);
-    z-index: 1000;
-    align-items: center;
-    justify-content: center;
-  }
-  .modal-overlay.active { display: flex; }
-
-  .modal-box {
-    position: relative;
-    width: 90%;
-    max-width: 420px;
-    background: #fffdfa;
-    border: 1px solid #e3dacb;
-    border-radius: 8px;
-    box-shadow: 0 20px 60px rgba(40,34,28,.25);
-    padding: 30px 24px 20px;
-    text-align: center;
-  }
-
-  .modal-warning-icon {
-    position: absolute;
-    top: -24px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 52px;
-    height: 52px;
-    background-color: #b49a62;
-    color: #fffdfa;
-    border-radius: 50%;
-    font-weight: bold;
-    font-size: 1.8rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 2px 10px rgba(40,34,28,.3);
-    border: 2px solid #fffdfa;
-  }
-
-  .modal-message {
-    color: #282522;
-    font-size: 0.95rem;
-    margin-top: 10px;
-    margin-bottom: 22px;
-    line-height: 1.4;
-  }
-
-  .modal-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    justify-content: center;
-  }
-
-  .modal-btn {
-    border: none;
-    border-radius: 4px;
-    padding: 9px 18px;
-    font-weight: bold;
-    font-size: 0.85rem;
-    cursor: pointer;
-  }
-  .modal-btn-cancel { background: #eee8dd; color: #282522; }
-  .modal-btn-cancel:hover { background: #e3dacb; }
-  .modal-btn-rename { background: #43586b; color: #fff; }
-  .modal-btn-rename:hover { background: #344654; }
-  .modal-btn-overwrite { background: #96382b; color: #fff; }
-  .modal-btn-overwrite:hover { background: #7a2d22; }
-
-  @media screen and (max-width: 600px) and (pointer: coarse) {
-    body { padding: 64px 12px 16px; }
-    .container { padding: 16px; }
-    h1 { font-size: 1rem; letter-spacing: 1.2px; }
-    .app-close-btn { top: 10px; right: 10px; width: 44px; height: 44px; z-index: 20; }
-    .folder-bar, .queue-item { align-items: stretch; }
-    .folder-bar { flex-direction: column; gap: 8px; }
-    .btn-folder { width: 100%; min-height: 44px; }
-    .queue-item { gap: 10px; padding: 10px; }
-    .queue-item-actions { flex-wrap: wrap; }
-    .queue-item-actions > * { min-height: 44px; }
-    .queue-item-preview { align-self: center; }
-    .modal-box { padding: 30px 16px 16px; }
-    .modal-actions .modal-btn { flex: 1 1 100%; min-height: 44px; }
-  }
-</style>
+<script src="assets/js/negozi.js?v=20261010-45"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IMPORT LOGHI (uso interno)</title>
+<link rel="stylesheet" href="assets/css/chiudi-pagina.css?v=20261010-45">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <!-- stile terminale elegante dell'area operatore; dentro la pagina operatore senza cornice, titolo e ✕ -->
+  <link rel="stylesheet" href="assets/css/operatore.css?v=20261010-45">
+  <script src="assets/js/operatore-sezione.js?v=20261010-45"></script>
+  <script src="assets/js/admin-negozio.js?v=20261010-45"></script>
 </head>
 <body>
 
-  <a href="index.html?store=tebe" class="app-close-btn" title="Torna all'index">✕</a>
+  <a href="operatore.html" class="app-close-btn" title="Torna all'area operatore" aria-label="Chiudi e torna all'area operatore">✕</a>
 
   <div class="modal-overlay" id="conflictModal">
     <div class="modal-box">
-      <div class="modal-warning-icon">⚠</div>
+      <div class="modal-warning-icon">!</div>
       <p class="modal-message" id="conflictModalMessage"></p>
       <div class="modal-actions">
         <button type="button" class="modal-btn modal-btn-cancel" onclick="resolveConflict('cancel')">Annulla</button>
@@ -305,32 +29,53 @@
   </div>
 
   <div class="container">
-    <h1>Import Loghi nel Progetto</h1>
-    <p class="subtitle">Pagina ad uso interno: aggiunge nuovi loghi ufficiali ad assets/logos, genera le 4 versioni colorate e aggiorna logos.js</p>
+    <h1>Importa loghi ufficiali</h1>
+    <p class="subtitle">aggiunge loghi ufficiali a <span data-admin-nome-negozio></span>, cioè i brand che compaiono nei menu BRAND di tutte le sue pagine. per ogni png salva l'originale in assets/logos/<span data-admin-cartella-negozio></span>/, crea le 4 varianti per la stampa (bianco, nero, rosso e oro del negozio) e lo aggiunge all'elenco dei loghi (elenco.js). alla fine i file nuovi vanno pubblicati con un commit</p>
 
-    <div class="folder-bar">
-      <span class="folder-status" id="folderStatus">Cartella progetto non collegata.</span>
-      <button type="button" class="btn-folder" onclick="connectProjectFolder()">📁 Collega cartella progetto</button>
-    </div>
+    <!-- tre passi, come Prepara copia: cartella del progetto, negozio da aggiornare, loghi -->
+    <div class="passi-op">
+      <section class="passo-op">
+        <span class="passo-num">1</span>
+        <div>
+          <p class="passo-titolo">cartella del progetto</p>
+          <p class="folder-status" id="folderStatus">non collegata: scegli la cartella STORECRAFT (con index.html e assets)</p>
+          <button type="button" class="btn-folder" id="folderBtn" onclick="connectProjectFolder()">collega cartella progetto</button>
+        </div>
+      </section>
 
-    <div class="upload-box disabled" id="dropZone" onclick="onDropZoneClick()">
-      📂 <strong>Clicca o Trascina qui i PNG trasparenti dei loghi</strong>
-      <p style="font-size:0.85rem; color:#665e54; margin-top:5px;">(Carica direttamente immagini già trasparenti, senza elaborazione automatica dei bordi)</p>
-      <input type="file" id="fileInput" accept="image/png" multiple onchange="handleFiles(this.files); this.value=''">
-    </div>
+      <section class="passo-op">
+        <span class="passo-num">2</span>
+        <div>
+          <p class="passo-titolo">negozio da aggiornare</p>
+          <div data-admin-negozio></div>
+        </div>
+      </section>
 
-    <div class="queue-list" id="queueList">
-      <p class="empty-msg" id="emptyMsg">Nessun logo in coda. Collega la cartella del progetto e trascina un PNG per iniziare.</p>
+      <section class="passo-op">
+        <span class="passo-num">3</span>
+        <div>
+          <p class="passo-titolo">loghi da importare</p>
+          <!-- la pagina non elabora le immagini (per togliere lo sfondo c'è Genera Loghi) -->
+          <p class="passo-nota">solo png pronti, già trasparenti</p>
+          <div class="upload-box disabled" id="dropZone" role="button" tabindex="0" aria-label="Scegli i png dei loghi" onclick="onDropZoneClick()" onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); onDropZoneClick(); }">
+            <strong>trascina qui i png dei loghi, o clicca per sceglierli</strong>
+            <input type="file" id="fileInput" accept="image/png" multiple onchange="handleFiles(this.files); this.value=''">
+          </div>
+          <div class="queue-list" id="queueList">
+            <p class="empty-msg" id="emptyMsg">nessun logo in coda</p>
+          </div>
+        </div>
+      </section>
     </div>
   </div>
 
 <script>
-  const PROJECT_FOLDER_NAMES = { logos: 'logos', printlogos: 'printlogos', assets: 'assets' };
+  // Colori delle 4 varianti; l'oro è quello del negozio scelto (admin-negozio.js).
   const COLORS = {
     white: [255, 255, 255],
     black: [0, 0, 0],
     red: [224, 0, 0],
-    gold: [204, 158, 37]
+    get gold() { return AdminNegozio.oro(); }
   };
 
   let projectDirHandle = null;
@@ -352,27 +97,58 @@
       return;
     }
     try {
-      projectDirHandle = await window.showDirectoryPicker();
-      // Verifica/crea sottocartelle assets/logos e assets/img/printlogos
-      const assetsDir = await projectDirHandle.getDirectoryHandle('assets', { create: true });
-      logosDirHandle = await assetsDir.getDirectoryHandle('logos', { create: true });
-      const imgDir = await assetsDir.getDirectoryHandle('img', { create: true });
-      printlogosDirHandle = await imgDir.getDirectoryHandle('printlogos', { create: true });
+      // cartella del progetto STORECRAFT (controllata), poi le sottocartelle del negozio: assets/logos/<negozio> e
+      // assets/img/<negozio>/printlogos. La riga di stato dice ogni passaggio: se qualcosa si ferma, si vede dove.
+      projectDirHandle = await AdminNegozio.scegliProgetto(passaggio => {
+        folderStatus.textContent = passaggio;
+        folderStatus.className = 'folder-status';
+      });
+      folderStatus.textContent = 'apro le cartelle dei loghi del negozio…';
+      await openStoreFolders();
 
-      const perm = await projectDirHandle.requestPermission({ mode: 'readwrite' });
-      if (perm !== 'granted') {
-        throw new Error('Permesso di scrittura negato.');
-      }
-
-      folderStatus.textContent = '✅ Cartella progetto collegata: ' + projectDirHandle.name;
+      folderStatus.textContent = 'cartella del progetto collegata: ' + projectDirHandle.name;
       folderStatus.className = 'folder-status ok';
+      // il pulsante si accende e lo dice; un clic ricollega (anche un'altra cartella)
+      const pulsanteCartella = document.getElementById('folderBtn');
+      pulsanteCartella.textContent = 'cartella collegata';
+      pulsanteCartella.classList.add('collegata');
+      pulsanteCartella.title = 'Cartella collegata: un clic per collegarne un’altra';
       dropZone.classList.remove('disabled');
     } catch (err) {
+      if (err.name === 'AbortError') return;   // finestra chiusa senza scegliere
       console.error(err);
-      folderStatus.textContent = '❌ ' + (err.message || 'Impossibile collegare la cartella.');
+      projectDirHandle = null;
+      folderStatus.textContent = 'errore: ' + (err.message || 'impossibile collegare la cartella');
       folderStatus.className = 'folder-status err';
     }
   }
+
+  async function openStoreFolders() {
+    ({ logos: logosDirHandle, printlogos: printlogosDirHandle } = await AdminNegozio.cartelle(projectDirHandle));
+  }
+
+  // Cambio di negozio: non durante un salvataggio; la coda si svuota, così i loghi preparati per un negozio non
+  // finiscono in un altro, e la cartella progetto collegata passa alle cartelle del nuovo negozio.
+  AdminNegozio.prima(() => {
+    if (queue.some(item => item.status === 'saving')) {
+      alert('Attendi la fine del salvataggio prima di cambiare negozio.');
+      return false;
+    }
+    const pending = queue.filter(item => item.status !== 'saved').length;
+    return !pending || confirm(`Cambiando negozio la coda (${pending} loghi non salvati) si svuota. Continuare?`);
+  });
+  AdminNegozio.alCambio(async () => {
+    queue = [];
+    renderQueue();
+    if (!projectDirHandle) return;
+    try {
+      await openStoreFolders();
+    } catch (err) {
+      console.error(err);
+      folderStatus.textContent = 'errore: ' + (err.message || 'impossibile aprire le cartelle del negozio');
+      folderStatus.className = 'folder-status err';
+    }
+  });
 
   function onDropZoneClick() {
     if (!logosDirHandle) {
@@ -451,10 +227,10 @@
           <input type="text" value="${escapeHtml(item.fileName)}" oninput="updateItemName('${item.id}', this.value)">
         </div>
         <span class="row-status ${item.status === 'saved' ? 'saved' : item.status === 'saving' ? 'saving' : item.status === 'error' ? 'error' : ''}">
-          ${item.status === 'saved' ? '✅ Salvato' : item.status === 'saving' ? '⏳ Salvataggio...' : item.status === 'error' ? '❌ Errore' : ''}
+          ${item.status === 'saved' ? '[ ok ] salvato' : item.status === 'saving' ? 'salvataggio…' : item.status === 'error' ? '[ errore ]' : ''}
         </span>
         <div class="queue-item-actions">
-          <button type="button" class="btn-save-row" ${item.status === 'saving' ? 'disabled' : ''} onclick="saveItem('${item.id}')">💾 Salva</button>
+          <button type="button" class="btn-save-row" ${item.status === 'saving' ? 'disabled' : ''} onclick="saveItem('${item.id}')">salva</button>
           <button type="button" class="btn-delete-row" onclick="deleteItem('${item.id}')">Elimina</button>
         </div>
       </div>
@@ -540,19 +316,17 @@
   }
 
   async function updateLogosJs(fileName) {
-    // logos.js vive in assets/js/logos.js rispetto alla cartella progetto
-    const assetsDir = await projectDirHandle.getDirectoryHandle('assets', { create: true });
-    const jsDir = await assetsDir.getDirectoryHandle('js', { create: true });
+    // L'elenco dei loghi ufficiali del negozio vive in assets/logos/<negozio>/elenco.js, accanto ai loghi
     let text = '';
     try {
-      const fileHandle = await jsDir.getFileHandle('logos.js');
+      const fileHandle = await logosDirHandle.getFileHandle('elenco.js');
       const file = await fileHandle.getFile();
       text = await file.text();
     } catch (err) {
-      text = 'const LOGO_FILES = [\n];\n';
+      text = AdminNegozio.elencoVuoto();   // primo logo del negozio: elenco completo, con PRIORITY_BRANDS
     }
 
-    const match = text.match(/const\s+LOGO_FILES\s*=\s*\[([\s\S]*?)\]\s*;/);
+    const match = text.match(/^const\s+LOGO_FILES\s*=\s*\[([\s\S]*?)\]\s*;/m);   // a inizio riga: non il commento in cima a elenco.js
     let entries = [];
     if (match) {
       entries = match[1]
@@ -580,7 +354,7 @@
       newText = (text ? text + '\n' : '') + newBlock + '\n';
     }
 
-    const fileHandle = await jsDir.getFileHandle('logos.js', { create: true });
+    const fileHandle = await logosDirHandle.getFileHandle('elenco.js', { create: true });
     const writable = await fileHandle.createWritable();
     await writable.write(newText);
     await writable.close();
@@ -638,22 +412,8 @@
         await writeFile(printlogosDirHandle, colorKey + finalName, blob);
       }
 
-      // Aggiorna assets/js/logos.js
+      // Aggiorna l'elenco del negozio (assets/logos/<negozio>/elenco.js)
       await updateLogosJs(fileName);
-
-      const customLogos = JSON.parse(localStorage.getItem('custom_brand_logos') || '[]');
-      const customLogo = {
-        id: 'custom_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8),
-        name: fileName,
-        data: await blobToDataUrl(originalBlob)
-      };
-      const existingIndex = customLogos.findIndex(logo => logo.name.toUpperCase() === fileName.toUpperCase());
-      if (existingIndex >= 0) {
-        customLogos[existingIndex] = { ...customLogos[existingIndex], ...customLogo };
-      } else {
-        customLogos.push(customLogo);
-      }
-      localStorage.setItem('custom_brand_logos', JSON.stringify(customLogos));
 
       setItemStatus(id, 'saved');
     } catch (err) {
@@ -661,15 +421,6 @@
       setItemStatus(id, 'error');
       alert('Errore durante il salvataggio: ' + (err.message || err));
     }
-  }
-
-  function blobToDataUrl(blob) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = () => reject(reader.error || new Error('Impossibile preparare il logo personalizzato.'));
-      reader.readAsDataURL(blob);
-    });
   }
 
   renderQueue();

@@ -1,5 +1,5 @@
 /*
- * Pulsanti "Dove montare la stampa?", "Gestisci lista di stampa" e "Aggiungi a lista stampa" per le pagine
+ * Pulsanti "Gestisci lista di stampa" e "Aggiungi a lista stampa" (più "Dove montare la stampa?" nei negozi che la usano) per le pagine
  * cartelli e cartellini (l'Anteprima di Stampa resta disponibile come StrumentiStampa.openPrintPreview).
  * Uso: <script src="assets/js/strumenti-stampa.js" data-panel="…" data-sheet="…"></script> in fondo al body.
  *   data-panel: elemento dopo il quale inserire i pulsanti (predefinito ".sidebar > .controls")
@@ -11,23 +11,17 @@
   const panelSelector = script?.dataset.panel || '.sidebar > .controls';
   const sheetSelector = script?.dataset.sheet || '.print-sheet';
 
-  // Foto guida per capire dove montare la stampa, per pagina: { src, caption }.
-  // Finché l'elenco di una pagina è vuoto il popup mostra dei riquadri segnaposto.
-  // Le foto stanno in assets/foto/.
-  // Cartelli in morsa sulla rastrelliera: stessa foto, con sopra il cartello della pagina.
-  const GUIDE_PHOTOS = {
-    'cartelli_semplici.html': [{ src: 'assets/foto/morsasemplice.jpg' }],
-    'cartelli_sale.html': [{ src: 'assets/foto/morsasale.jpg' }],
-    'cartelli_brand.html': [{ src: 'assets/foto/morsabrand.jpg' }],
-    'cartellopercentuale.html': [{ src: 'assets/foto/morsapercentuale.jpg' }],
-    'cartelli_multiarticolo.html': [{ src: 'assets/foto/morsamultiarticolo.jpg' }],
-    'albero.html': [{ src: 'assets/foto/albero.jpg' }],
-    'cornici10x15.html': [{ src: 'assets/foto/cornice10x15.jpg' }],
-    'paletto.html': [{ src: 'assets/foto/paletto.jpg' }],
-    'paletto18x12.html': [{ src: 'assets/foto/paletto.jpg' }],
-    'paletto-ophilya.html': [{ src: 'assets/foto/palettoophilya.jpg' }],
-    'paletto18x12-ophilya.html': [{ src: 'assets/foto/palettoophilya.jpg' }]
-  };
+  // Guida "Dove montare la stampa?" del negozio della pagina, nella sua scheda (assets/negozi/<negozio>.js, guida):
+  // null la spegne e il pulsante non compare (Luxury Outlet); altrimenti per pagina le foto in assets/foto/<negozio>/.
+  // Finché l'elenco di una pagina è vuoto il popup mostra dei riquadri segnaposto "Foto in arrivo".
+  const NEGOZIO = document.documentElement.dataset.negozio;
+  const SCHEDA = Negozi.corrente();
+  const GUIDE = SCHEDA?.guida || null;
+  const SHOW_GUIDE = Boolean(GUIDE);
+  const GUIDE_PHOTOS = Object.fromEntries(Object.entries(GUIDE || {}).map(([page, files]) =>
+    [page, files.map(file => ({ src: new URL(`../foto/${NEGOZIO}/${file}`, script.src).href }))]));
+  // Finestra della lista di stampa: una per negozio, con il nome della lista nella scheda (listaStampa).
+  const LIST_WINDOW = SCHEDA?.listaStampa || `${NEGOZIO}-lista-stampa`;
 
   const panel = document.querySelector(panelSelector);
   if (!panel) return;
@@ -70,7 +64,7 @@
   const buttons = document.createElement('div');
   buttons.className = 'tool-buttons';
   buttons.append(
-    createButton('Dove montare la stampa?', HELP_ICON, openGuide),
+    ...(SHOW_GUIDE ? [createButton('Dove montare la stampa?', HELP_ICON, openGuide)] : []),
     createButton('Gestisci lista di stampa', PRINTER_ICON, openPrintList),
     createButton('Aggiungi a lista stampa', ADD_ICON, addToPrintList)
   );
@@ -161,7 +155,7 @@
     if (window.ListaStampa) return Promise.resolve(window.ListaStampa);
     return new Promise((resolve, reject) => {
       const tag = document.createElement('script');
-      tag.src = 'assets/js/lista-stampa.js';
+      tag.src = new URL('lista-stampa.js?v=20261010-45', script.src).href;
       tag.onload = () => resolve(window.ListaStampa);
       tag.onerror = () => reject(new Error('Caricamento di lista-stampa.js non riuscito.'));
       document.head.appendChild(tag);
@@ -187,7 +181,7 @@
   }
 
   function openPrintList() {
-    window.open('lista-stampa.html', 'tebe-lista-stampa');
+    window.open('lista-stampa.html', LIST_WINDOW);
   }
 
   // Avviso in basso al centro, che sparisce da solo

@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="it" data-negozio="ophilya">
+<head>
+  <meta charset="UTF-8">
+  <script src="../assets/js/negozi.js?v=20261010-45"></script>
+  <!-- tema CHIARO / SCURO scelto nella dashboard (colori nella scheda del negozio) -->
+  <script src="../assets/js/theme.js?v=20261010-45"></script>
+  <link rel="stylesheet" href="../assets/css/chiudi-pagina.css?v=20261010-45">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../assets/css/font-arial.css?v=20261010-45">
+  <title>Lista di Stampa · OPHILYA</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      display: flex;
+      gap: 20px;
+      height: 100vh;
+      /* a destra spazio per la ✕ fissa, che altrimenti coprirebbe Stampa Lista */
+      padding: 20px 76px 20px 20px;
+      overflow: hidden;
+      background: var(--interface-page);
+      color: var(--interface-text);
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+
+    /* Colonne: miniature a sinistra, pagina in grande al centro, comandi a destra */
+    .thumbs-panel,
+    .actions-panel {
+      flex: 0 0 auto;
+      display: flex;
+      flex-direction: column;
+      padding: 1rem;
+      border: 1px solid var(--interface-border);
+      border-radius: 8px;
+      background: var(--interface-surface);
+    }
+
+    .thumbs-panel { width: 250px; }
+    .actions-panel { width: 260px; gap: 0.8rem; }
+
+    .panel-title {
+      margin-bottom: 0.8rem;
+      padding-bottom: 0.6rem;
+      border-bottom: 1px solid var(--interface-border);
+      color: var(--interface-accent);
+      font: 400 1.1rem Arial, Helvetica, sans-serif;
+      letter-spacing: 1.5px;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .page-count {
+      margin: -0.4rem 0 0.8rem;
+      color: var(--interface-muted);
+      font-size: 0.72rem;
+      text-align: center;
+    }
+
+    .thumbs {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      overflow-y: auto;
+      padding: 2px 4px 2px 2px;
+    }
+
+    .thumb {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding: 8px;
+      border: 1px solid var(--interface-border);
+      border-radius: 6px;
+      background: var(--interface-page);
+      color: var(--interface-text);
+      font: 400 0.72rem Arial, Helvetica, sans-serif;
+      text-align: left;
+      cursor: pointer;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .thumb:hover { border-color: var(--interface-accent); }
+
+    .thumb.active {
+      border-color: var(--interface-accent);
+      background: var(--interface-surface);
+      box-shadow: 0 0 0 1px var(--interface-accent);
+    }
+
+    .thumb-label { display: flex; gap: 6px; align-items: baseline; }
+    .thumb-number { color: var(--interface-accent-bright); font-weight: 700; }
+    .thumb-title { overflow: hidden; color: var(--interface-muted); text-overflow: ellipsis; white-space: nowrap; }
+
+    .thumb img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border: 1px solid var(--interface-border);
+      background: #fff;
+    }
+
+    .viewer {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 1rem;
+      border: 1px solid var(--interface-border);
+      border-radius: 8px;
+      background: var(--interface-sunken);
+    }
+
+    .viewer img {
+      display: block;
+      max-width: 100%;
+      max-height: calc(100vh - 120px);
+      background: #fff;
+      box-shadow: 0 20px 60px rgba(40, 34, 28, 0.18);
+    }
+
+    .viewer-caption { color: var(--interface-muted); font: 400 0.78rem Arial, Helvetica, sans-serif; }
+
+    .empty {
+      max-width: 340px;
+      color: var(--interface-muted);
+      font: 400 0.9rem/1.5 Arial, Helvetica, sans-serif;
+      text-align: center;
+    }
+
+    /* Comandi: rosso per stampare, oro con testo bianco per gli altri */
+    .action-btn {
+      width: 100%;
+      padding: 10px;
+      border: 0;
+      border-radius: 4px;
+      color: #fffdfa;
+      font: 700 0.78rem Arial, Helvetica, sans-serif;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: filter 0.15s ease, background 0.15s ease;
+    }
+
+    .action-btn:disabled { opacity: 0.45; cursor: default; }
+    .btn-print { background: #96382b; }
+    .btn-print:not(:disabled):hover { background: #7a2d22; }
+    .btn-gold { background: var(--interface-accent); }
+    .btn-gold:not(:disabled):hover { filter: brightness(1.1); }
+
+    .actions-spacer { flex: 1; }
+
+    /* Scelta della pagina da eliminare */
+    .delete-chooser {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      padding: 0.8rem;
+      border: 1px solid var(--interface-border);
+      border-radius: 6px;
+      background: var(--interface-page);
+    }
+
+    .delete-chooser[hidden] { display: none; }
+
+    .delete-chooser label { color: var(--interface-accent); font-size: 0.72rem; }
+
+    .delete-chooser select {
+      width: 100%;
+      padding: 0.45rem;
+      border: 1px solid var(--interface-border);
+      border-radius: 4px;
+      background: var(--interface-surface);
+      color: var(--interface-text);
+      font: 400 0.82rem Arial, Helvetica, sans-serif;
+    }
+
+    .chooser-buttons { display: flex; gap: 6px; margin-top: 0.45rem; }
+    .chooser-buttons .action-btn { padding: 8px; font-size: 0.7rem; }
+    .btn-plain { background: var(--interface-surface); color: var(--interface-accent-bright); border: 1px solid var(--interface-accent); }
+
+    .status { min-height: 1.2em; color: var(--interface-accent-bright); font: 600 0.72rem Arial, Helvetica, sans-serif; text-align: center; }
+
+    .print-frame { position: fixed; width: 0; height: 0; border: 0; visibility: hidden; }
+    /* Vista verticale per telefono (stessa soglia degli editor) e finestre desktop strette (fino a 1000 px, dove le tre
+       colonne fisse schiaccerebbero la pagina): in alto barra con titolo, numero di pagine e ✕; al centro la pagina
+       scelta; sotto le miniature in un carosello orizzontale; in fondo i comandi fissi, con la stampa a tutta larghezza.
+       Solo disposizione: struttura e logica restano quelle della pagina. I tablet conservano le tre colonne. */
+    @media screen and (max-width: 760px) and (pointer: coarse), screen and (max-width: 1000px) and (pointer: fine) {
+      body {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-rows: 56px minmax(0, 1fr) auto auto;
+        grid-template-areas:
+          "title count"
+          "viewer viewer"
+          "thumbs thumbs"
+          "actions actions";
+        gap: 0;
+        height: 100vh;
+        height: 100dvh;
+        padding: 0;
+      }
+      .thumbs-panel { display: contents; }
+      .panel-title {
+        grid-area: title;
+        align-self: stretch;
+        display: flex;
+        align-items: center;
+        margin: 0;
+        padding: 0 12px 0 16px;
+        border-bottom: 1px solid var(--interface-border, #2e2b27);
+        background: var(--interface-sidebar, #181715);
+        font-size: 1rem;
+        text-align: left;
+      }
+      .page-count {
+        grid-area: count;
+        align-self: stretch;
+        display: flex;
+        align-items: center;
+        margin: 0;
+        /* spazio a destra per la ✕ */
+        padding: 0 64px 0 8px;
+        border-bottom: 1px solid var(--interface-border, #2e2b27);
+        background: var(--interface-sidebar, #181715);
+        font-size: 0.8rem;
+        white-space: nowrap;
+      }
+      /* la ✕ da 36 px al centro della barra alta 56 px (la regola comune sotto i 1100 px la porterebbe a 44 px), con un'ombra corta che non esce dalla barra */
+      .app-close-btn:not(.app-close-btn--pdf) { top: 10px; right: 10px; width: 36px; height: 36px; font-size: 1.2rem; box-shadow: 0 1px 3px var(--chiudi-ombra); }
+      .viewer {
+        grid-area: viewer;
+        min-height: 0;
+        padding: 12px;
+        border: 0;
+        border-radius: 0;
+      }
+      .viewer img {
+        flex: 1 1 auto;
+        min-height: 0;
+        width: 100%;
+        max-height: none;
+        object-fit: contain;
+        background: transparent;
+        box-shadow: none;
+        filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.55));
+      }
+      .viewer-caption { font-size: 0.8rem; text-align: center; }
+      .thumbs {
+        grid-area: thumbs;
+        flex-direction: row;
+        gap: 8px;
+        padding: 10px 12px;
+        overflow-x: auto;
+        overflow-y: hidden;
+        border-top: 1px solid var(--interface-border, #2e2b27);
+        background: var(--interface-sidebar, #181715);
+        scroll-snap-type: x proximity;
+        scrollbar-width: none;
+      }
+      .thumbs::-webkit-scrollbar { display: none; }
+      .thumbs:empty { display: none; }
+      .thumb {
+        flex: 0 0 76px;
+        gap: 4px;
+        padding: 5px;
+        scroll-snap-align: start;
+        background: var(--interface-control, #121110);
+        border-color: var(--interface-border, #2e2b27);
+        color: var(--interface-text, #f4f1ea);
+      }
+      .thumb.active { background: var(--interface-surface, #1e1d1a); border-color: var(--interface-accent, #d4a373); }
+      .thumb-label { font-size: 0.7rem; }
+      .thumb-title { display: none; }
+      .actions-panel {
+        grid-area: actions;
+        width: auto;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 8px 10px;
+        padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+        border: 0;
+        border-top: 1px solid var(--interface-border, #2e2b27);
+        border-radius: 0;
+        background: var(--interface-sidebar, #181715);
+        box-shadow: 0 -6px 14px rgba(0, 0, 0, 0.28);
+      }
+      .actions-spacer { display: none; }
+      .delete-chooser {
+        order: 0;
+        flex: 1 1 100%;
+        border-color: var(--interface-border, #2e2b27);
+        border-radius: 10px;
+        background: var(--interface-control, #121110);
+      }
+      body .delete-chooser .btn-plain { background: transparent !important; }
+      .delete-chooser select { min-height: 44px; font-size: 16px; }
+      .chooser-buttons .action-btn { min-height: 44px; font-size: 0.8rem; }
+      #deleteBtn { order: 1; flex: 1 1 0; }
+      /* Svuota Lista con il contorno oro, come ANTEPRIMA nei cartelli (anche nel tema chiaro, che riempie i pulsanti oro). */
+      body #clearBtn {
+        order: 2;
+        flex: 1 1 0;
+        border: 1.5px solid var(--interface-accent, #d4a373) !important;
+        background: transparent !important;
+        color: var(--interface-accent, #d4a373) !important;
+      }
+      .status { order: 3; flex: 1 1 100%; }
+      .status:empty { display: none; }
+      #printBtn { order: 4; flex: 1 1 100%; font-size: 0.85rem; }
+      .action-btn { min-height: 44px; border-radius: 8px; -webkit-tap-highlight-color: transparent; }
+      .action-btn:not(:disabled):active { transform: scale(.97); }
+      .action-btn:focus-visible { outline: 2px solid var(--interface-accent-bright, #e5ba73); outline-offset: 2px; }
+    }
+
+  </style>
+</head>
+<body>
+  <button type="button" class="app-close-btn" title="Chiudi la lista di stampa" onclick="closeList()">✕</button>
+
+  <aside class="thumbs-panel" aria-label="Pagine della lista">
+    <h1 class="panel-title">Lista di Stampa</h1>
+    <div class="page-count" id="pageCount"></div>
+    <div class="thumbs" id="thumbs"></div>
+  </aside>
+
+  <main class="viewer" id="viewer"></main>
+
+  <aside class="actions-panel" aria-label="Comandi della lista">
+    <button type="button" class="action-btn btn-print" id="printBtn" onclick="printList()">Stampa Lista (.PDF)</button>
+    <button type="button" class="action-btn btn-gold" id="deleteBtn" onclick="toggleDeleteChooser(true)">Elimina Pagina</button>
+    <div class="delete-chooser" id="deleteChooser" hidden>
+      <label for="deleteSelect">Pagina da eliminare</label>
+      <select id="deleteSelect"></select>
+      <div class="chooser-buttons">
+        <button type="button" class="action-btn btn-gold" onclick="deleteChosenPage()">Elimina</button>
+        <button type="button" class="action-btn btn-plain" onclick="toggleDeleteChooser(false)">Annulla</button>
+      </div>
+    </div>
+    <div class="status" id="status" role="status"></div>
+    <div class="actions-spacer"></div>
+    <button type="button" class="action-btn btn-gold" id="clearBtn" onclick="clearList()">Svuota Lista</button>
+  </aside>
+
+  <script src="../assets/js/lista-stampa.js?v=20261010-45"></script>
+  <script>
+    // Pagina che gestisce la lista di stampa (assets/js/lista-stampa.js): miniature, pagina scelta in grande,
+    // stampa di tutta la lista come lista.pdf, eliminazione di una pagina e svuotamento della lista.
+    let pages = [];
+    let selected = 0;
+    let objectUrls = [];
+
+    const formatDate = time => new Date(time).toLocaleString('it-IT', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+
+    function setStatus(message) {
+      document.getElementById('status').textContent = message;
+    }
+
+    async function loadList() {
+      pages = await ListaStampa.getPages();
+      if (selected >= pages.length) selected = Math.max(0, pages.length - 1);
+      render();
+    }
+
+    function render() {
+      objectUrls.forEach(url => URL.revokeObjectURL(url));
+      objectUrls = [];
+      const urlFor = blob => { const url = URL.createObjectURL(blob); objectUrls.push(url); return url; };
+
+      document.getElementById('pageCount').textContent = pages.length === 1 ? '1 pagina' : `${pages.length} pagine`;
+      ['printBtn', 'deleteBtn', 'clearBtn'].forEach(id => { document.getElementById(id).disabled = !pages.length; });
+      if (!pages.length) toggleDeleteChooser(false);
+
+      const thumbs = document.getElementById('thumbs');
+      thumbs.replaceChildren(...pages.map((page, index) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'thumb' + (index === selected ? ' active' : '');
+        const label = document.createElement('div');
+        label.className = 'thumb-label';
+        const number = document.createElement('span');
+        number.className = 'thumb-number';
+        number.textContent = index + 1;
+        const title = document.createElement('span');
+        title.className = 'thumb-title';
+        title.textContent = page.title.replace(/ · .*$/, '');
+        label.append(number, title);
+        const img = document.createElement('img');
+        img.src = urlFor(page.thumb);
+        img.alt = `Pagina ${index + 1}`;
+        button.append(label, img);
+        button.addEventListener('click', () => { selected = index; render(); });
+        return button;
+      }));
+
+      const viewer = document.getElementById('viewer');
+      if (!pages.length) {
+        const empty = document.createElement('p');
+        empty.className = 'empty';
+        empty.textContent = 'La lista di stampa è vuota. Aggiungi i fogli dalle pagine dei cartelli e dei cartellini con il pulsante "Aggiungi a lista stampa".';
+        viewer.replaceChildren(empty);
+      } else {
+        const page = pages[selected];
+        const img = document.createElement('img');
+        img.src = urlFor(page.jpeg);
+        img.alt = `Pagina ${selected + 1}`;
+        const caption = document.createElement('div');
+        caption.className = 'viewer-caption';
+        caption.textContent = `Pagina ${selected + 1} di ${pages.length} · ${page.title.replace(/ · .*$/, '')} · aggiunta il ${formatDate(page.createdAt)}`;
+        viewer.replaceChildren(img, caption);
+      }
+
+      const select = document.getElementById('deleteSelect');
+      select.replaceChildren(...pages.map((page, index) => {
+        const option = document.createElement('option');
+        option.value = String(index);
+        option.textContent = `Pagina ${index + 1} · ${page.title.replace(/ · .*$/, '')}`;
+        return option;
+      }));
+      select.value = String(selected);
+    }
+
+    // Stampa: genera lista.pdf e lo stampa da un riquadro nascosto; se il browser non lo permette
+    // (alcune versioni di Safari) apre il PDF in una nuova scheda, da cui si stampa.
+    async function printList() {
+      if (!pages.length) return;
+      // Su iPhone e iPad lista.pdf non passa dalla stampa del browser (margini e riduzione di iOS):
+      // si consegna con il menu Condividi (ListaStampa.offerPdf). Sul computer resta la stampa qui sotto.
+      if (ListaStampa.isIos()) {
+        ListaStampa.offerPdf(ListaStampa.buildPdf(pages), 'lista.pdf');
+        return;
+      }
+      setStatus('Preparazione di lista.pdf…');
+      try {
+        const pdf = await ListaStampa.buildPdf(pages);
+        const url = URL.createObjectURL(new File([pdf], 'lista.pdf', { type: 'application/pdf' }));
+        const frame = document.createElement('iframe');
+        frame.className = 'print-frame';
+        frame.title = 'lista.pdf';
+        frame.src = url;
+        frame.onload = () => {
+          try {
+            frame.contentWindow.focus();
+            frame.contentWindow.print();
+            setStatus('');
+          } catch (error) {
+            window.open(url, '_blank');
+            setStatus('lista.pdf aperto in una nuova scheda: stampalo da lì.');
+          }
+        };
+        document.querySelectorAll('.print-frame').forEach(old => old.remove());
+        document.body.appendChild(frame);
+      } catch (error) {
+        console.error('Preparazione di lista.pdf non riuscita.', error);
+        setStatus('Non è stato possibile preparare lista.pdf.');
+      }
+    }
+
+    function toggleDeleteChooser(open) {
+      document.getElementById('deleteChooser').hidden = !open;
+      if (open) document.getElementById('deleteSelect').value = String(selected);
+    }
+
+    async function deleteChosenPage() {
+      const index = Number(document.getElementById('deleteSelect').value);
+      const page = pages[index];
+      if (!page) return;
+      await ListaStampa.deletePage(page.id);
+      if (selected > index || selected >= pages.length - 1) selected = Math.max(0, selected - 1);
+      toggleDeleteChooser(false);
+      setStatus(`Pagina ${index + 1} eliminata.`);
+      await loadList();
+    }
+
+    async function clearList() {
+      if (!pages.length) return;
+      if (!confirm('Svuotare la lista di stampa? Tutte le pagine verranno eliminate.')) return;
+      await ListaStampa.clearPages();
+      selected = 0;
+      setStatus('Lista svuotata.');
+      await loadList();
+    }
+
+    function closeList() {
+      window.close();
+      // se la scheda non è stata aperta da un'altra pagina, il browser non la chiude: si torna alla dashboard
+      setTimeout(() => { location.href = 'index.html?store=ophilya'; }, 150);
+    }
+
+    // La scheda resta aperta mentre si aggiungono fogli dalle altre pagine: quando torna in primo piano
+    // si rilegge la lista.
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) loadList(); });
+    window.addEventListener('focus', loadList);
+
+    loadList().catch(error => {
+      console.error('Lettura della lista di stampa non riuscita.', error);
+      setStatus('Non è stato possibile leggere la lista di stampa.');
+    });
+  </script>
+</body>
+</html>

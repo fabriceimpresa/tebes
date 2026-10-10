@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="it" data-negozio="tebe">
+<head>
+  <meta charset="UTF-8">
+  <script src="../assets/js/negozi.js?v=20261010-45"></script>
+  <!-- tema CHIARO / SCURO scelto nella dashboard (colori nella scheda del negozio) -->
+  <script src="../assets/js/theme.js?v=20261010-45"></script>
+  <link rel="stylesheet" href="../assets/css/chiudi-pagina.css?v=20261010-45">
+  <link rel="stylesheet" href="../assets/css/torna-al-menu.css?v=20261010-45">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../assets/css/font-arial.css?v=20261010-45">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600&display=swap" rel="stylesheet">
+  <title>Cartellini LXRY</title>
+    <!-- CARICAMENTO ELENCO LOGHI CENTRALIZZATO -->
+  <script src="../assets/js/loghi-personalizzati.js?v=20261010-45"></script>
+  <script src="../assets/logos/tebe/elenco.js?v=20261010-45"></script>
+  <script src="../assets/js/logos.js?v=20261010-45"></script>
+  <script src="../assets/js/print-logo-colors.js?v=20261010-45"></script>
+  <link rel="stylesheet" href="../assets/css/pannello.css?v=20261010-45">
+  <script defer src="../assets/js/campi-prezzo.js?v=20261010-45"></script>
+
+  <style>
+    /* Definizione Font Locali Bodoni Std da assets/fonts */
+    @font-face {
+      font-family: 'Bodoni Std';
+      src: url('../assets/fonts/BodoniStd.otf') format('opentype');
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    @font-face {
+      font-family: 'Bodoni Std';
+      src: url('../assets/fonts/BodoniStd-Italic.otf') format('opentype');
+      font-weight: normal;
+      font-style: italic;
+    }
+
+    @font-face {
+      font-family: 'Bodoni Std';
+      src: url('../assets/fonts/BodoniStd.otf') format('opentype');
+      font-weight: bold;
+      font-style: normal;
+    }
+
+    :root {
+      --bg: var(--interface-page);
+      --sidebar: var(--interface-sunken);
+      --card: var(--interface-surface);
+      --border: var(--interface-border);
+      --accent: var(--interface-accent);
+      --accent-hover: var(--interface-accent-bright);
+      --text: var(--interface-text);
+      --text-muted: var(--interface-muted);
+      --gold: var(--interface-accent);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: system-ui, -apple-system, sans-serif; display: flex; height: 100vh; overflow: auto; }
+
+    /* --- SIDEBAR --- */
+    aside { width: 360px; background: var(--sidebar); border-right: 1px solid var(--border); padding: 1.5rem 1rem 8rem; display: flex; flex-direction: column; flex-shrink: 0; overflow-y: auto; }
+    .brand-title { font-family: 'Cinzel', serif; font-size: 1.05rem; letter-spacing: 3px; color: var(--gold); margin-bottom: 1rem; text-align: center; font-weight: 600; text-transform: uppercase; }
+
+    .tabs-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.4rem; margin-bottom: 1.2rem; }
+    .tab-item { background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 0.4rem 0.2rem; display: flex; flex-direction: column; align-items: center; gap: 0.2rem; cursor: pointer; transition: all 0.2s; }
+    .tab-item:hover { border-color: var(--gold); }
+    .tab-item.active { border-color: var(--gold); background: rgba(180, 139, 55, 0.15); }
+    .tab-item label { font-size: 0.7rem; font-weight: 700; cursor: pointer; color: var(--text); }
+    .tab-item input[type="checkbox"] { accent-color: var(--gold); cursor: pointer; }
+
+    .editor-section { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; margin-bottom: 1.2rem; }
+    .editor-title { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--gold); margin-bottom: 0.8rem; font-weight: 700; border-bottom: 1px solid var(--border); padding-bottom: 0.4rem; }
+
+    /* Il riquadro "Modifica Cartellino" segue il pannello standard (../assets/css/pannello.css), diviso nei quattro
+       blocchi, come Cartellini Vetrina di Luxury; qui solo ciò che è proprio dei cartellini. Il riquadro che comincia
+       con un selettore ha 1rem sopra il selettore, e l'ultimo elemento (il tasto di stampa) non aggiunge spazio sotto. */
+    .editor-title + .panel-block > .mode-switch:first-child { margin-top: 1rem; }
+    .editor-section > .panel-block:last-child > :last-child { margin-bottom: 0; }
+    /* Nei cartellini i blocchi non hanno lo spazio in più dei cartelli: tra un blocco e l'altro c'è lo stesso spazio
+       che c'è tra i campi (0,65rem), così il menu resta compatto e semplice. */
+    .editor-section .panel-block + .panel-block { margin-top: 0; }
+    /* sotto il selettore MODALITÀ PROMO / DOPPIO PREZZO lo stesso spazio che c'è sopra (1rem) */
+    .editor-section .panel-block > .mode-switch:last-child { margin-bottom: 1rem; }
+    /* sotto il tasto di stampa lo stesso spazio che si vede in alto tra il bordo del riquadro e le lettere del titolo (20 px) */
+    #editorPanel { padding-bottom: 1.25rem; }
+    /* il tasto di stampa un poco più staccato dai campi (0,65rem + 0,35rem = 1rem) */
+    .editor-section .btn-print { margin-top: 0.35rem; }
+
+    /* Riga dei prezzi (Prezzo Originario, Sconto, Prezzo Finale): etichette su una riga sola, così i tre campi stanno
+       alla stessa altezza; Sconto (due cifre) un poco più stretto e Prezzo Originario un poco più largo. */
+    .form-row .form-group label { white-space: nowrap; }
+    #origGroup { flex: 1.15; }
+    #discountGroup { flex: 0.85; }
+
+    /* --- PREVIEW MAIN --- */
+    main { flex: 1; min-width: 0; padding: 1.5rem; overflow: auto; display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--border); -webkit-overflow-scrolling: touch; }
+
+    /* Griglia Foglio A4 Landscape */
+    .a4-landscape {
+      width: 282mm;
+      height: 196mm;
+      background: #ffffff;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+      padding: 5mm 16mm;
+      gap: 3mm 0mm;
+      transform-origin: top center;
+    }
+
+    /* CARTELLINO */
+    .cartellino {
+      border: 8px solid #000000;
+      box-sizing: border-box;
+      padding: 2.5mm 1.5mm 1.5mm;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      text-align: center;
+      background: #fff;
+      color: #000;
+      overflow: hidden;
+      position: relative;
+      width: 59.5mm;
+      justify-self: center;
+      height: 100%;
+    }
+    .cartellino.disabled { opacity: 0.15; filter: grayscale(1); }
+
+    /* Brand Logo in alto */
+    .brand-box { height: 21mm; display: flex; align-items: center; justify-content: center; width: 100%; margin-top: 0.5mm; flex-shrink: 0; }
+    .brand-box img { max-height: 100%; max-width: 90%; object-fit: contain; }
+
+    /* Blocco centrale */
+    .card-body-center {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      margin: 0.5mm 0;
+    }
+
+    /* Descrizione in corsivo Bodoni */
+    .desc-box { font-family: 'Bodoni Std', serif; font-style: italic; font-size: 18pt; color: #000; margin-bottom: 1.5mm; line-height: 1.1; word-break: break-word; }
+
+    .price-details-row { margin-bottom: 1mm; min-height: 5.5mm; display: flex; align-items: center; justify-content: center; }
+    
+    /* Prezzo barrato e percentuale sconto oro */
+    .orig-discount { font-family: 'Bodoni Std', serif; font-style: italic; font-size: 13pt; color: #000; display: flex; gap: 6px; align-items: center; white-space: nowrap; }
+    .orig-discount .strike { text-decoration: line-through; }
+    .orig-discount .badge-sconto { color: #b49a62; /* oro fisso di stampa: non cambia con il tema */ font-size: 13pt; font-weight: bold; font-style: normal; }
+    .currency { font-family: inherit; font-weight: inherit; }
+    /* Dicitura Oro */
+    .preset-label { font-family: 'Bodoni Std', serif; font-size: 13.5pt; font-weight: bold; color: #b49a62; /* oro fisso di stampa: non cambia con il tema */ text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; }
+
+    /* Prezzo Finale in Bodoni Std - Ingrandito a 42pt */
+    .final-price { font-family: 'Bodoni Std', serif; font-weight: normal; font-size: 42pt; color: #000; line-height: 0.95; letter-spacing: -0.04em; white-space: nowrap; }
+
+    /* Logo Aziendale in basso */
+    .card-footer-logo { height: 22mm; display: flex; align-items: center; justify-content: center; width: 100%; padding-bottom: 0.5mm; flex-shrink: 0; }
+    .card-footer-logo img { width: 36mm; max-width: 90%; height: auto; object-fit: contain; }
+
+    /* Contenitore del foglio (lo zoom della vista telefono sta qui, non sul foglio) */
+    .sheet-wrap { position: relative; flex-shrink: 0; }
+
+    /* NAVIGAZIONE */
+
+    /* REGOLA DI STAMPA */
+    @media (max-width: 1100px) {
+      .app-close-btn { width: 44px; height: 44px; font-size: 1.4rem; }
+    }
+
+    @media print {
+      html, body {
+        height: auto !important;
+        min-height: 0 !important;
+        overflow: visible !important;
+      }
+      body { background: none; display: block; }
+      aside { display: none !important; }
+      main {
+        padding: 0;
+        background: none;
+        margin: 0;
+        display: block;
+        height: auto !important;
+        min-height: 0 !important;
+        overflow: visible !important;
+      }
+      .a4-landscape { 
+        box-shadow: none; 
+        margin: 0 auto; 
+        width: 282mm !important; 
+        height: 196mm !important; 
+        max-height: 196mm !important;
+        page-break-after: avoid;
+        page-break-inside: avoid;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      .cartellino.disabled { visibility: hidden; opacity: 0; }
+      .app-close-btn, .floating-nav-box { display: none !important; }
+      @page { 
+        size: A4 landscape; 
+        margin: 4mm;
+      }
+    }
+
+    @media (max-width: 1100px) {
+      main { align-items: flex-start; justify-content: flex-start; }
+      .a4-landscape { flex: 0 0 auto; }
+    }
+
+  </style>
+  <link rel="stylesheet" href="../assets/css/strumenti-stampa.css?v=20261010-45">
+  <link rel="stylesheet" href="../assets/css/cursore.css?v=20261010-45">
+  <link rel="stylesheet" href="../assets/css/menu-cascata.css?v=20261010-45">
+  <script defer src="../assets/js/menu-cascata.js?v=20261010-45"></script>
+  <link rel="stylesheet" href="../assets/css/responsive.css?v=20261010-45">
+  <script defer src="../assets/js/responsive.js?v=20261010-45"></script>
+</head>
+<body data-layout="cartellini">
+  <a href="index.html?store=tebe" class="app-close-btn" title="Chiudi">✕</a>
+
+  <div class="floating-nav-box">
+    <div class="floating-nav-title">TEBE</div>
+    <a href="index.html?store=tebe" class="floating-nav-btn">← Torna al Menu Principale</a>
+  </div>
+
+  <aside>
+    <div class="brand-title">CARTELLINI LXRY</div>
+
+    <div class="tabs-grid" id="tabs-container"></div>
+
+    <div class="editor-section" id="editorPanel">
+      <div class="editor-title" id="editor-header">Modifica Cartellino #1</div>
+
+      <!-- Blocco 1: selettori e pulsanti (selettore comune selettore.js) -->
+      <div class="panel-block">
+        <div data-selettore id="cardModeSelector" data-on-change="onCardModeChange" aria-label="Modalità del cartellino">
+          <button value="promo" id="modePromo">MODALITÀ<br>PROMO</button>
+          <button value="doppio" id="modeDoppioPrezzo" class="active">DOPPIO<br>PREZZO</button>
+        </div>
+      </div>
+
+      <!-- Blocco 2: brand (ufficiali e personalizzati), menu comuni di menu-brand-cartellini.js -->
+      <div class="panel-block">
+        <div class="form-group" data-menu-brand-cartellini data-brand-change="updateBrandSelection" data-custom-change="updateCustomBrandSelection" data-custom-value="id" data-sort-custom="true"></div>
+      </div>
+
+      <!-- Blocco 3: campi del cartellino (descrizione e prezzi, secondo la modalità) -->
+      <div class="panel-block">
+        <div class="form-group">
+          <label class="section-label" for="descPreset">Articoli</label>
+          <div class="preset-select">
+            <select id="descPreset" onchange="applyDescPreset()" data-testi-pronti="Articoli" data-testi-senza-gruppi>
+              <option value="">-- Seleziona un articolo --</option>
+            </select>
+          </div>
+          <label for="inp-desc">Testo Libero</label>
+          <input type="text" id="inp-desc" placeholder="-- Testo Libero --" oninput="updateCurrentCard()">
+        </div>
+
+        <div class="form-group" id="presetGroup" hidden>
+          <label class="section-label" for="inp-preset">Promozioni</label>
+          <div class="preset-select">
+            <select id="inp-preset" onchange="updateCurrentCard()" data-testi-pronti="Promozioni Cartellini" data-testi-senza-gruppi>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group" id="origGroup">
+            <label for="inp-orig">Prezzo Originario</label>
+            <input data-prezzo type="text" id="inp-orig" placeholder="396,00" oninput="updateCurrentCard()">
+          </div>
+          <div class="form-group" id="discountGroup">
+            <label for="discountValue">Sconto</label>
+            <input data-percentuale type="number" id="discountValue" value="50" min="1" max="99" placeholder="50" oninput="updateCurrentCard()">
+          </div>
+          <div class="form-group">
+            <label for="inp-final">Prezzo Finale</label>
+            <input data-prezzo type="text" id="inp-final" placeholder="198,00" oninput="updateCurrentCard()">
+          </div>
+        </div>
+      </div>
+
+      <!-- Blocco 4: stampa -->
+      <div class="panel-block">
+        <button type="button" class="btn-print" onclick="printCards()">STAMPA FOGLIO A4</button>
+      </div>
+    </div>
+
+  </aside>
+
+  <main>
+    <div class="sheet-wrap">
+      <div class="a4-landscape" id="printable-grid"></div>
+    </div>
+  </main>
+
+  <script src="../assets/js/testi-pronti.js?v=20261010-45"></script>
+  <script src="../assets/js/selettore.js?v=20261010-45"></script>
+  <script src="../assets/js/menu-brand-cartellini.js?v=20261010-45"></script>
+  <script>
+
+    function cleanBrandName(fileName) {
+      return fileName.replace(/\.[^.]+$/, '').replace(/([a-z])([A-Z])/g, '$1 $2');
+    }
+
+    function readCustomLogos() {
+      try {
+        const logos = LoghiPersonalizzati.elenco();
+        return Array.isArray(logos) ? logos.filter(logo => logo && logo.id && logo.name && logo.data) : [];
+      } catch (error) {
+        console.error('Lettura dei loghi personalizzati fallita.', error);
+        return [];
+      }
+    }
+
+    function getDefaultBrandFile() {
+      const orderedFiles = getOrderedLogoFiles();
+      return orderedFiles.find(fileName => fileName.toLowerCase().startsWith('269')) || orderedFiles[0] || '';
+    }
+
+    // All'apertura i cartellini alternano i brand: il primo ha il brand predefinito,
+    // gli altri scorrono i brand ufficiali non della casa TEBE, ricominciando se finiscono.
+    function getDefaultCardBrandFile(index) {
+      const defaultFile = getDefaultBrandFile();
+      const otherFiles = getSortedLogoFiles().remainingFiles;
+      const rotation = [defaultFile].concat(otherFiles).filter(Boolean);
+      return rotation.length ? rotation[index % rotation.length] : '';
+    }
+
+    // Ogni cartellino ha il proprio brand: file ufficiale oppure id di un logo personalizzato.
+    // Modalità alternate a scacchiera sulla griglia 4×2: Doppio Prezzo e Promo non stanno mai affiancati.
+    const cardsData = [
+      { id: 1, enabled: true, desc: 'Giubbino', usePreset: false, priceOrig: '396,00', sconto: '50', presetText: '', priceFinal: '198,00' },
+      { id: 2, enabled: true, desc: 'Pantalone', usePreset: true, priceOrig: '', sconto: '', presetText: 'SPECIAL DEAL', priceFinal: '40,00' },
+      { id: 3, enabled: true, desc: 'Gonna', usePreset: false, priceOrig: '120,00', sconto: '30', presetText: '', priceFinal: '84,00' },
+      { id: 4, enabled: true, desc: 'Top', usePreset: true, priceOrig: '', sconto: '', presetText: 'WINTER SALE', priceFinal: '30,00' },
+      { id: 5, enabled: true, desc: 'Abito', usePreset: true, priceOrig: '', sconto: '', presetText: 'SPECIAL DEAL', priceFinal: '30,00' },
+      { id: 6, enabled: true, desc: 'Giubbino', usePreset: false, priceOrig: '310,00', sconto: '55', presetText: '', priceFinal: '139,50' },
+      { id: 7, enabled: true, desc: 'Pantalone', usePreset: true, priceOrig: '', sconto: '', presetText: 'WINTER SALE', priceFinal: '30,00' },
+      { id: 8, enabled: true, desc: 'Abito', usePreset: false, priceOrig: '180,00', sconto: '40', presetText: '', priceFinal: '108,00' }
+    ].map((card, index) => ({ ...card, brand: { officialFile: getDefaultCardBrandFile(index), customLogoId: '' } }));
+
+    let currentCardIdx = 0;
+
+    // I menu BRAND e Loghi Personalizzati li crea e li riempie menu-brand-cartellini.js.
+    function init() {
+      renderTabs();
+      renderGrid();
+      loadEditorData();
+    }
+
+    function renderTabs() {
+      const container = document.getElementById('tabs-container');
+      container.replaceChildren();
+      cardsData.forEach((card, index) => {
+        const item = document.createElement('div');
+        item.className = `tab-item ${index === currentCardIdx ? 'active' : ''}`;
+        item.onclick = (e) => {
+          if (e.target.type !== 'checkbox') {
+            currentCardIdx = index;
+            renderTabs();
+            loadEditorData();
+          }
+        };
+
+        // Linguetta costruita con nodi DOM: numero del cartellino e casella che lo esclude dalla stampa.
+        const label = document.createElement('label');
+        label.textContent = `#${card.id}`;
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.checked = card.enabled;
+        checkbox.onchange = () => toggleCardEnabled(index, checkbox.checked);
+        item.append(label, checkbox);
+        container.appendChild(item);
+      });
+    }
+
+    function renderGrid() {
+      const grid = document.getElementById('printable-grid');
+      grid.replaceChildren();
+
+      cardsData.forEach((card) => {
+        const el = document.createElement('div');
+        el.className = `cartellino ${!card.enabled ? 'disabled' : ''}`;
+        el.id = `card-view-${card.id}`;
+
+        // Cartellino costruito con nodi DOM: il testo dell'utente va con textContent.
+        const node = (tag, className, text) => {
+          const element = document.createElement(tag);
+          if (className) element.className = className;
+          if (text !== undefined) element.textContent = text;
+          return element;
+        };
+        const withCurrency = (className, value) => {
+          const element = node('div', className);
+          element.append(node('span', 'currency', '€'), ` ${value}`);
+          return element;
+        };
+
+        const detailsRow = node('div', 'price-details-row');
+        if (card.usePreset) {
+          detailsRow.append(node('div', 'preset-label', card.presetText));
+        } else {
+          const origDiscount = node('div', 'orig-discount');
+          if (card.priceOrig) {
+            const strike = node('span', 'strike');
+            strike.append(node('span', 'currency', '€'), ` ${card.priceOrig}`);
+            origDiscount.append(strike);
+          }
+          if (card.sconto) origDiscount.append(node('span', 'badge-sconto', `-${card.sconto}%`));
+          detailsRow.append(origDiscount);
+        }
+
+        const center = node('div', 'card-body-center');
+        center.append(node('div', 'desc-box', card.desc), detailsRow, withCurrency('final-price', card.priceFinal));
+
+        const footer = node('div', 'card-footer-logo');
+        const footerLogo = node('img');
+        footerLogo.src = '../assets/img/tebe/footer_tebe.png';
+        footerLogo.alt = 'TEBE';
+        footerLogo.onerror = () => { footerLogo.style.display = 'none'; };
+        footer.append(footerLogo);
+
+        el.append(node('div', 'brand-box'), center, footer);
+
+        grid.appendChild(el);
+        loadBrandImage(el.querySelector('.brand-box'), card.brand);
+      });
+    }
+
+    function updateBrandSelection() {
+      const card = cardsData[currentCardIdx];
+      card.brand.officialFile = document.getElementById('brandSelect').value;
+      card.brand.customLogoId = '';
+      document.getElementById('customBrandSelect').value = '';
+      renderGrid();
+    }
+
+    function updateCustomBrandSelection() {
+      const card = cardsData[currentCardIdx];
+      card.brand.customLogoId = document.getElementById('customBrandSelect').value;
+      card.brand.officialFile = '';
+      document.getElementById('brandSelect').value = '';
+
+      // Deselezionando il logo personalizzato si torna al brand predefinito, mai a un cartellino senza logo.
+      if (!card.brand.customLogoId) {
+        card.brand.officialFile = getDefaultBrandFile();
+        document.getElementById('brandSelect').value = card.brand.officialFile;
+      }
+      renderGrid();
+    }
+
+    function getBrandLogoSource(brand) {
+      const customLogo = readCustomLogos().find(logo => logo.id === brand.customLogoId);
+      if (brand.customLogoId && !customLogo) {
+        return Promise.reject(new Error(`Logo personalizzato non trovato: ${brand.customLogoId}`));
+      }
+
+      return PrintLogoColors.getBrandLogoSrc(
+        customLogo?.data || '',
+        brand.customLogoId ? '' : brand.officialFile,
+        '',
+        'gold'
+      );
+    }
+
+    // Logo brand in oro: file pregenerato per i loghi ufficiali, ricolorato via canvas per i personalizzati.
+    function loadBrandImage(brandBox, brand) {
+      if (!brand.customLogoId && !brand.officialFile) return;
+      const brandImage = document.createElement('img');
+      const customLogo = readCustomLogos().find(logo => logo.id === brand.customLogoId);
+      brandImage.alt = customLogo?.name || cleanBrandName(brand.officialFile);
+      brandBox.appendChild(brandImage);
+      getBrandLogoSource(brand).then(source => {
+        if (brandImage.isConnected) brandImage.src = source;
+      }).catch(error => {
+        console.error('Caricamento del logo brand fallito.', error);
+      });
+    }
+
+    function printCards() {
+      const logoPreparation = cardsData
+        .filter(card => card.enabled)
+        .map(card => {
+          const brandImage = document.querySelector(`#card-view-${card.id} .brand-box img`);
+          if (!brandImage) return Promise.resolve();
+          return getBrandLogoSource(card.brand).then(source => {
+            if (source) brandImage.src = source;
+          });
+        });
+
+      Promise.all(logoPreparation)
+        .then(() => PrintLogoColors.prepareForPrint('.brand-box img, .card-footer-logo img'))
+        .then(() => window.print())
+        .catch(error => console.error('Preparazione dei loghi per la stampa fallita.', error));
+    }
+
+    function loadEditorData() {
+      const card = cardsData[currentCardIdx];
+      document.getElementById('editor-header').innerText = `Modifica Cartellino #${card.id}`;
+
+      document.getElementById('brandSelect').value = card.brand.officialFile;
+      document.getElementById('customBrandSelect').value = card.brand.customLogoId;
+
+      document.getElementById('inp-desc').value = card.desc;
+      document.getElementById('descPreset').value = '';
+      document.getElementById('inp-orig').value = card.priceOrig;
+      document.getElementById('discountValue').value = card.sconto;
+      document.getElementById('inp-preset').value = card.presetText || 'SPECIAL DEAL';
+      document.getElementById('inp-final').value = card.priceFinal;
+
+      toggleMode();
+    }
+
+    function setCardMode(usePreset) {
+      cardsData[currentCardIdx].usePreset = usePreset;
+      toggleMode();
+    }
+
+    // Clic sul selettore comune MODALITÀ PROMO / DOPPIO PREZZO (selettore.js).
+    function onCardModeChange(value) {
+      setCardMode(value === 'promo');
+    }
+
+    // Mostra i campi della modalità del cartellino corrente (Promo o Doppio Prezzo).
+    function toggleMode() {
+      const usePreset = cardsData[currentCardIdx].usePreset;
+      Selettore.attiva('cardModeSelector', usePreset ? 'promo' : 'doppio');
+      document.getElementById('origGroup').hidden = usePreset;
+      document.getElementById('discountGroup').hidden = usePreset;
+      document.getElementById('presetGroup').hidden = !usePreset;
+
+      if (usePreset) {
+        const presetSelect = document.getElementById('inp-preset');
+        const finalPriceInput = document.getElementById('inp-final');
+        if (!presetSelect.value) {
+          presetSelect.value = 'SPECIAL DEAL';
+        }
+        if (!finalPriceInput.value) {
+          finalPriceInput.value = '40,00';
+        }
+      } else {
+        const origInput = document.getElementById('inp-orig');
+        const scontoInput = document.getElementById('discountValue');
+        const finalPriceInput = document.getElementById('inp-final');
+        if (!origInput.value) {
+          origInput.value = '100,00';
+        }
+        if (!scontoInput.value) {
+          scontoInput.value = '50';
+        }
+        if (!finalPriceInput.value) {
+          finalPriceInput.value = '50,00';
+        }
+      }
+
+      updateCurrentCard();
+    }
+
+    function updateCurrentCard() {
+      const card = cardsData[currentCardIdx];
+      card.desc = document.getElementById('inp-desc').value;
+      card.priceOrig = document.getElementById('inp-orig').value;
+      card.sconto = document.getElementById('discountValue').value;
+      card.presetText = document.getElementById('inp-preset').value;
+      card.priceFinal = document.getElementById('inp-final').value;
+
+      renderGrid();
+    }
+
+    // L'articolo scelto riempie la descrizione, che resta modificabile a mano.
+    function applyDescPreset() {
+      const preset = document.getElementById('descPreset').value;
+      if (preset) {
+        document.getElementById('inp-desc').value = preset;
+        updateCurrentCard();
+      }
+    }
+
+    function toggleCardEnabled(index, enabled) {
+      cardsData[index].enabled = enabled;
+      renderGrid();
+    }
+
+    function applySafariPrintFix() {
+      const ua = navigator.userAgent;
+      const isSafari = /^((?!chrome|android).)*safari/i.test(ua) && !/Edg|OPR|Brave/i.test(ua);
+      if (!isSafari) return;
+
+      const style = document.createElement('style');
+      style.textContent = `
+        @media print {
+          /* Safari, a differenza di Chrome, spesso ignora la regola globale
+             "@page { size: A4 landscape }" (parola chiave) e stampa in
+             portrait di default: il foglio (282mm di larghezza) va quindi
+             in overflow orizzontale e genera una seconda pagina fantasma
+             vuota. Il foglio 282x196mm rientra già perfettamente nell'area
+             stampabile di un A4 landscape (289x202mm con margine 4mm), per
+             cui basta forzare l'orientamento corretto con dimensioni
+             esplicite, senza scalare o tagliare nulla.
+          */
+          @page {
+            size: 297mm 210mm;
+            margin: 4mm;
+          }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+
+    init();
+    applySafariPrintFix();
+  </script>
+  <script src="../assets/js/cursore.js?v=20261010-45"></script>
+  <script>
+    // Cursore: sopra il cartellino selezionato quando si sceglie una linguetta, sopra (o di lato)
+    // all'elemento del cartellino legato al campo in uso quando si lavora sul pannello.
+    const currentCardView = () => document.getElementById(`card-view-${cardsData[currentCardIdx].id}`);
+    const inCurrentCard = selector => () => currentCardView()?.querySelector(selector);
+
+    Cursore.create({
+      panel: 'aside',
+      watch: '#printable-grid',
+      clip: 'main',
+      sideGap: 96 / 25.4 + 5,   // nei cartellini di lato basta 1 mm + 5 px
+      // di lato il cursore può uscire dal cartellino (restando sul foglio), purché non copra testi e loghi
+      scope: '#printable-grid',
+      obstacles: '#printable-grid .brand-box img, #printable-grid .desc-box, #printable-grid .orig-discount .strike, #printable-grid .orig-discount .badge-sconto, #printable-grid .preset-label, #printable-grid .final-price, #printable-grid .card-footer-logo img',
+      rules: [
+        { controls: '.tab-item', target: currentCardView, placement: 'above' },
+        { controls: '#modePromo, #inp-preset', target: inCurrentCard('.preset-label') },
+        { controls: '#modeDoppioPrezzo', target: inCurrentCard('.orig-discount') },
+        { controls: '#brandSelect, #customBrandSelect', target: inCurrentCard('.brand-box img') },
+        { controls: '#descPreset, #inp-desc', target: inCurrentCard('.desc-box') },
+        { controls: '#inp-orig', target: inCurrentCard('.orig-discount .strike') },
+        { controls: '#discountValue, .percent-stepper', target: inCurrentCard('.orig-discount .badge-sconto') },
+        { controls: '#inp-final', target: inCurrentCard('.final-price') }
+      ]
+    }).point({ target: currentCardView, placement: 'above' });
+  </script>
+  <script src="../assets/js/strumenti-stampa.js?v=20261010-45" data-panel="#editorPanel" data-sheet="#printable-grid"></script>
+  <script defer src="../assets/js/stampa-ios.js?v=20261010-45"></script>
+</body>
+</html>

@@ -2,266 +2,23 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="assets/css/font-arial.css">
-<title>Gestione Loghi (uso interno) · TEBE · OPHILYA</title>
-<style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: Arial, sans-serif;
-    background-color: #f8f6f1;
-    color: #282522;
-    padding: 30px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100vh;
-  }
-
-  .container {
-    width: 100%;
-    max-width: 900px;
-    background: #fffdfa;
-    border: 1px solid #e3dacb;
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0 20px 60px rgba(40,34,28,.1);
-  }
-
-  h1 {
-    font-size: 1.2rem;
-    font-weight: 400;
-    color: #8a6a35;
-    border-bottom: 2px solid #b49a62;
-    padding-bottom: 8px;
-    margin-bottom: 8px;
-    text-align: center;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-  }
-
-  .subtitle {
-    text-align: center;
-    font-size: 0.8rem;
-    color: #665e54;
-    margin-bottom: 20px;
-  }
-
-  .folder-bar {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    background: #f8f6f1;
-    border: 1px solid #e3dacb;
-    border-radius: 6px;
-    padding: 12px 15px;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
-  }
-
-  .folder-status { flex-grow: 1; font-size: 0.85rem; color: #665e54; }
-  .folder-status.ok { color: #4c7a5b; }
-  .folder-status.err { color: #96382b; }
-
-  .btn-folder {
-    background: #b49a62;
-    color: #fffdfa;
-    border: none;
-    padding: 8px 14px;
-    font-weight: 400;
-    letter-spacing: .5px;
-    font-size: 0.85rem;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  .btn-folder:hover { background: #8a6a35; }
-
-  .search-bar { margin-bottom: 16px; }
-  .search-bar input {
-    width: 100%;
-    padding: 9px 12px;
-    background: #f8f6f1;
-    border: 1px solid #e3dacb;
-    color: #282522;
-    border-radius: 4px;
-    font-size: 0.9rem;
-  }
-
-  .count-info {
-    font-size: 0.78rem;
-    color: #665e54;
-    margin-bottom: 12px;
-  }
-
-  .logo-list { display: flex; flex-direction: column; gap: 10px; }
-
-  .logo-item {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    background: #f8f6f1;
-    padding: 10px 15px;
-    border-radius: 4px;
-    border-left: 3px solid #b49a62;
-    flex-wrap: wrap;
-  }
-
-  .logo-item-preview {
-    width: 90px;
-    height: 45px;
-    background: repeating-conic-gradient(#eee8dd 0% 25%, #f8f6f1 0% 50%) 50% / 14px 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 3px;
-    padding: 4px;
-    flex-shrink: 0;
-    border: 1px solid #e3dacb;
-  }
-  .logo-item-preview img { max-width: 100%; max-height: 100%; object-fit: contain; }
-
-  .logo-item-name {
-    flex-grow: 1;
-    min-width: 160px;
-    font-size: 0.9rem;
-    color: #282522;
-    word-break: break-word;
-  }
-
-  .row-status {
-    font-size: 0.78rem;
-    font-weight: bold;
-    min-width: 90px;
-  }
-  .row-status.deleted { color: #4c7a5b; }
-  .row-status.deleting { color: #8a6a35; }
-  .row-status.error { color: #96382b; }
-
-  .btn-delete-row {
-    background: #96382b;
-    color: white;
-    border: none;
-    padding: 7px 14px;
-    border-radius: 3px;
-    cursor: pointer;
-    font-size: 0.8rem;
-  }
-  .btn-delete-row:hover { background: #7a2d22; }
-  .btn-delete-row:disabled { opacity: 0.5; cursor: not-allowed; }
-
-  .empty-msg { font-size: 0.8rem; color: #665e54; padding: 10px 0; }
-
-  .app-close-btn {
-    position: fixed;
-    top: 1.5rem;
-    right: 1.5rem;
-    width: 36px;
-    height: 36px;
-    background-color: #b49a62;
-    color: #fffdfa;
-    border-radius: 50%;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-decoration: none;
-  }
-
-  /* MODAL DI CONFERMA ELIMINAZIONE */
-  .modal-overlay {
-    display: none;
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(40,37,34,0.55);
-    z-index: 1000;
-    align-items: center;
-    justify-content: center;
-  }
-  .modal-overlay.active { display: flex; }
-
-  .modal-box {
-    position: relative;
-    width: 90%;
-    max-width: 420px;
-    background: #fffdfa;
-    border: 1px solid #e3dacb;
-    border-radius: 8px;
-    box-shadow: 0 20px 60px rgba(40,34,28,.25);
-    padding: 30px 24px 20px;
-    text-align: center;
-  }
-
-  .modal-warning-icon {
-    position: absolute;
-    top: -24px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 52px;
-    height: 52px;
-    background-color: #96382b;
-    color: #fff;
-    border-radius: 50%;
-    font-weight: bold;
-    font-size: 1.8rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 2px 10px rgba(40,34,28,.3);
-    border: 2px solid #fffdfa;
-  }
-
-  .modal-message {
-    color: #282522;
-    font-size: 0.95rem;
-    margin-top: 10px;
-    margin-bottom: 22px;
-    line-height: 1.4;
-  }
-
-  .modal-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    justify-content: center;
-  }
-
-  .modal-btn {
-    border: none;
-    border-radius: 4px;
-    padding: 9px 18px;
-    font-weight: bold;
-    font-size: 0.85rem;
-    cursor: pointer;
-  }
-  .modal-btn-cancel { background: #eee8dd; color: #282522; }
-  .modal-btn-cancel:hover { background: #e3dacb; }
-  .modal-btn-confirm { background: #96382b; color: #fff; }
-  .modal-btn-confirm:hover { background: #7a2d22; }
-
-@media screen and (max-width: 600px) and (pointer: coarse) {
-  body { padding: 64px 12px 16px; }
-  .container { padding: 16px; }
-  h1 { font-size: 1rem; letter-spacing: 1.2px; }
-  .app-close-btn { top: 10px; right: 10px; width: 44px; height: 44px; z-index: 20; }
-  .folder-bar, .logo-item { align-items: stretch; }
-  .folder-bar { flex-direction: column; gap: 8px; }
-  .btn-folder { width: 100%; min-height: 44px; }
-  .logo-item { gap: 10px; padding: 10px; }
-  .logo-item-name { min-width: 0; }
-  .btn-delete-row { min-height: 44px; }
-  .modal-box { padding: 30px 16px 16px; }
-  .modal-actions .modal-btn { flex: 1 1 100%; min-height: 44px; }
-}
-</style>
+<script src="assets/js/negozi.js?v=20261010-45"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GESTIONE LOGHI (uso interno)</title>
+<link rel="stylesheet" href="assets/css/chiudi-pagina.css?v=20261010-45">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <!-- stile terminale elegante dell'area operatore; dentro la pagina operatore senza cornice, titolo e ✕ -->
+  <link rel="stylesheet" href="assets/css/operatore.css?v=20261010-45">
+  <script src="assets/js/operatore-sezione.js?v=20261010-45"></script>
+  <script src="assets/js/admin-negozio.js?v=20261010-45"></script>
 </head>
 <body>
 
-  <a href="index.html?store=tebe" class="app-close-btn" title="Torna all'index">✕</a>
+  <a href="operatore.html" class="app-close-btn" title="Torna all'area operatore" aria-label="Chiudi e torna all'area operatore">✕</a>
 
   <div class="modal-overlay" id="deleteModal">
     <div class="modal-box">
-      <div class="modal-warning-icon">⚠</div>
+      <div class="modal-warning-icon">!</div>
       <p class="modal-message" id="deleteModalMessage"></p>
       <div class="modal-actions">
         <button type="button" class="modal-btn modal-btn-cancel" onclick="resolveDelete(false)">Annulla</button>
@@ -271,22 +28,41 @@
   </div>
 
   <div class="container">
-    <h1>Gestione Loghi Ufficiali</h1>
-    <p class="subtitle">Pagina ad uso interno: elimina loghi da assets/logos, dalle 4 varianti colorate in assets/img/printlogos e dall'elenco assets/js/logos.js</p>
+    <h1>Gestisci loghi ufficiali</h1>
+    <p class="subtitle">elenca i loghi ufficiali di <span data-admin-nome-negozio></span> e permette di eliminarli. eliminando un logo si tolgono l'originale da assets/logos/<span data-admin-cartella-negozio></span>/, le sue 4 varianti per la stampa e la sua riga nell'elenco dei loghi (elenco.js): il brand sparisce dai menu BRAND delle pagine. alla fine le modifiche vanno pubblicate con un commit</p>
 
-    <div class="folder-bar">
-      <span class="folder-status" id="folderStatus">Cartella progetto non collegata.</span>
-      <button type="button" class="btn-folder" onclick="connectProjectFolder()">📁 Collega cartella progetto</button>
-    </div>
+    <!-- tre passi, come Importa loghi: cartella del progetto, negozio da aggiornare, loghi -->
+    <div class="passi-op">
+      <section class="passo-op">
+        <span class="passo-num">1</span>
+        <div>
+          <p class="passo-titolo">cartella del progetto</p>
+          <p class="folder-status" id="folderStatus">non collegata: scegli la cartella STORECRAFT (con index.html e assets)</p>
+          <button type="button" class="btn-folder" id="folderBtn" onclick="connectProjectFolder()">collega cartella progetto</button>
+        </div>
+      </section>
 
-    <div class="search-bar">
-      <input type="text" id="searchInput" placeholder="Cerca logo per nome..." oninput="renderList()">
-    </div>
+      <section class="passo-op">
+        <span class="passo-num">2</span>
+        <div>
+          <p class="passo-titolo">negozio da aggiornare</p>
+          <div data-admin-negozio></div>
+        </div>
+      </section>
 
-    <p class="count-info" id="countInfo"></p>
-
-    <div class="logo-list" id="logoList">
-      <p class="empty-msg" id="emptyMsg">Collega la cartella del progetto per vedere l'elenco dei loghi.</p>
+      <section class="passo-op">
+        <span class="passo-num">3</span>
+        <div>
+          <p class="passo-titolo">loghi del negozio</p>
+          <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="cerca un logo per nome…" oninput="renderList()">
+          </div>
+          <p class="count-info" id="countInfo"></p>
+          <div class="logo-list" id="logoList">
+            <p class="empty-msg" id="emptyMsg">collega la cartella del progetto per vedere l'elenco dei loghi</p>
+          </div>
+        </div>
+      </section>
     </div>
   </div>
 
@@ -294,7 +70,6 @@
   let projectDirHandle = null;
   let logosDirHandle = null;
   let printlogosDirHandle = null;
-  let jsDirHandle = null;
   let logoEntries = []; // { name, previewUrl, status }
   let pendingDelete = null; // { resolve }
 
@@ -310,39 +85,68 @@
       return;
     }
     try {
-      projectDirHandle = await window.showDirectoryPicker();
-      const assetsDir = await projectDirHandle.getDirectoryHandle('assets', { create: true });
-      logosDirHandle = await assetsDir.getDirectoryHandle('logos', { create: true });
-      const imgDir = await assetsDir.getDirectoryHandle('img', { create: true });
-      printlogosDirHandle = await imgDir.getDirectoryHandle('printlogos', { create: true });
-      jsDirHandle = await assetsDir.getDirectoryHandle('js', { create: true });
+      // cartella del progetto STORECRAFT (controllata), poi le sottocartelle del negozio: assets/logos/<negozio> e
+      // assets/img/<negozio>/printlogos
+      projectDirHandle = await AdminNegozio.scegliProgetto(passaggio => {
+        folderStatus.textContent = passaggio;
+        folderStatus.className = 'folder-status';
+      });
+      folderStatus.textContent = 'leggo l\'elenco dei loghi del negozio…';
+      await openStoreFolders();
 
-      const perm = await projectDirHandle.requestPermission({ mode: 'readwrite' });
-      if (perm !== 'granted') {
-        throw new Error('Permesso di scrittura negato.');
-      }
-
-      folderStatus.textContent = '✅ Cartella progetto collegata: ' + projectDirHandle.name;
+      folderStatus.textContent = 'cartella del progetto collegata: ' + projectDirHandle.name;
       folderStatus.className = 'folder-status ok';
+      // il pulsante si accende e lo dice; un clic ricollega (anche un'altra cartella)
+      const pulsanteCartella = document.getElementById('folderBtn');
+      pulsanteCartella.textContent = 'cartella collegata';
+      pulsanteCartella.classList.add('collegata');
+      pulsanteCartella.title = 'Cartella collegata: un clic per collegarne un’altra';
 
       await loadLogoList();
     } catch (err) {
+      if (err.name === 'AbortError') return;   // finestra chiusa senza scegliere
       console.error(err);
-      folderStatus.textContent = '❌ ' + (err.message || 'Impossibile collegare la cartella.');
+      projectDirHandle = null;
+      folderStatus.textContent = 'errore: ' + (err.message || 'impossibile collegare la cartella');
       folderStatus.className = 'folder-status err';
     }
   }
 
+  async function openStoreFolders() {
+    ({ logos: logosDirHandle, printlogos: printlogosDirHandle } = await AdminNegozio.cartelle(projectDirHandle));
+  }
+
+  // Cambio di negozio (admin-negozio.js): non durante una cancellazione; con la cartella progetto collegata
+  // si mostra l'elenco dei loghi del nuovo negozio.
+  AdminNegozio.prima(() => {
+    if (logoEntries.some(entry => entry.status === 'deleting')) {
+      alert('Attendi la fine della cancellazione prima di cambiare negozio.');
+      return false;
+    }
+    return true;
+  });
+  AdminNegozio.alCambio(async () => {
+    if (!projectDirHandle) return;
+    try {
+      await openStoreFolders();
+      await loadLogoList();
+    } catch (err) {
+      console.error(err);
+      folderStatus.textContent = 'errore: ' + (err.message || 'impossibile aprire le cartelle del negozio');
+      folderStatus.className = 'folder-status err';
+    }
+  });
+
   async function readLogosJsEntries() {
     let text = '';
     try {
-      const fileHandle = await jsDirHandle.getFileHandle('logos.js');
+      const fileHandle = await logosDirHandle.getFileHandle('elenco.js');
       const file = await fileHandle.getFile();
       text = await file.text();
     } catch (err) {
       return [];
     }
-    const match = text.match(/const\s+LOGO_FILES\s*=\s*\[([\s\S]*?)\]\s*;/);
+    const match = text.match(/^const\s+LOGO_FILES\s*=\s*\[([\s\S]*?)\]\s*;/m);   // a inizio riga: non il commento in cima a elenco.js
     if (!match) return [];
     return match[1]
       .split(',')
@@ -354,7 +158,7 @@
   async function loadLogoList() {
     const emptyMsg = document.getElementById('emptyMsg');
     const container = document.getElementById('logoList');
-    container.innerHTML = '<p class="empty-msg">Caricamento elenco loghi...</p>';
+    container.innerHTML = '<p class="empty-msg">caricamento elenco dei loghi…</p>';
 
     const entries = await readLogosJsEntries();
     logoEntries = [];
@@ -410,9 +214,9 @@
         </div>
         <div class="logo-item-name">${escapeHtml(entry.name)}</div>
         <span class="row-status ${entry.status === 'deleted' ? 'deleted' : entry.status === 'deleting' ? 'deleting' : entry.status === 'error' ? 'error' : ''}">
-          ${entry.status === 'deleted' ? '✅ Eliminato' : entry.status === 'deleting' ? '⏳ Eliminazione...' : entry.status === 'error' ? '❌ Errore' : ''}
+          ${entry.status === 'deleted' ? '[ ok ] eliminato' : entry.status === 'deleting' ? 'eliminazione…' : entry.status === 'error' ? '[ errore ]' : ''}
         </span>
-        <button type="button" class="btn-delete-row" ${entry.status === 'deleting' ? 'disabled' : ''} onclick="deleteLogo('${entry.name.replace(/'/g, "\\'")}')">🗑 Elimina</button>
+        <button type="button" class="btn-delete-row" ${entry.status === 'deleting' ? 'disabled' : ''} onclick="deleteLogo('${entry.name.replace(/'/g, "\\'")}')">Elimina</button>
       </div>
     `).join('');
   }
@@ -445,14 +249,14 @@
   async function updateLogosJsRemove(fileName) {
     let text = '';
     try {
-      const fileHandle = await jsDirHandle.getFileHandle('logos.js');
+      const fileHandle = await logosDirHandle.getFileHandle('elenco.js');
       const file = await fileHandle.getFile();
       text = await file.text();
     } catch (err) {
-      text = 'const LOGO_FILES = [\n];\n';
+      text = AdminNegozio.elencoVuoto();
     }
 
-    const match = text.match(/const\s+LOGO_FILES\s*=\s*\[([\s\S]*?)\]\s*;/);
+    const match = text.match(/^const\s+LOGO_FILES\s*=\s*\[([\s\S]*?)\]\s*;/m);   // a inizio riga: non il commento in cima a elenco.js
     let entries = [];
     if (match) {
       entries = match[1]
@@ -475,7 +279,7 @@
       newText = (text ? text + '\n' : '') + newBlock + '\n';
     }
 
-    const fileHandle = await jsDirHandle.getFileHandle('logos.js', { create: true });
+    const fileHandle = await logosDirHandle.getFileHandle('elenco.js', { create: true });
     const writable = await fileHandle.createWritable();
     await writable.write(newText);
     await writable.close();
@@ -492,15 +296,15 @@
     renderList();
 
     try {
-      // File originale in assets/logos
+      // File originale in assets/logos/<negozio>
       await removeFileIfExists(logosDirHandle, fileName);
 
-      // 4 varianti colorate in assets/img/printlogos
+      // 4 varianti colorate in assets/img/<negozio>/printlogos
       for (const colorKey of ['white', 'black', 'red', 'gold']) {
         await removeFileIfExists(printlogosDirHandle, colorKey + fileName);
       }
 
-      // Aggiorna assets/js/logos.js rimuovendo la voce
+      // Aggiorna l'elenco del negozio (assets/logos/<negozio>/elenco.js) rimuovendo la voce
       await updateLogosJsRemove(fileName);
 
       // Rimuove la voce dalla lista in memoria

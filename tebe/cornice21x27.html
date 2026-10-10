@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="it" data-negozio="tebe">
+<head>
+  <meta charset="UTF-8">
+  <script src="../assets/js/negozi.js?v=20261010-45"></script>
+  <!-- tema CHIARO / SCURO scelto nella dashboard (colori nella scheda del negozio) -->
+  <script src="../assets/js/theme.js?v=20261010-45"></script>
+  <link rel="stylesheet" href="../assets/css/chiudi-pagina.css?v=20261010-45">
+  <link rel="stylesheet" href="../assets/css/torna-al-menu.css?v=20261010-45">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../assets/css/font-arial.css?v=20261010-45">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600&display=swap" rel="stylesheet">
+  <title>Cornice 21 X 27 · TEBE</title>
+  <script src="../assets/js/loghi-personalizzati.js?v=20261010-45"></script>
+  <script src="../assets/logos/tebe/elenco.js?v=20261010-45"></script>
+  <script src="../assets/js/logos.js?v=20261010-45"></script>
+  <script src="../assets/js/print-logo-colors.js?v=20261010-45"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Castoro&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/pannello.css?v=20261010-45">
+  <script defer src="../assets/js/campi-prezzo.js?v=20261010-45"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: var(--interface-page);
+      padding: 20px;
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      min-height: 100vh;
+      position: relative;
+    }
+
+
+
+
+    /* Il pannello segue il pannello standard (../assets/css/pannello.css): blocchi, selettori, menu e campi comuni.
+       Qui solo ciò che è proprio della pagina: le etichette della riga dei prezzi su una riga sola (come Outlet). */
+    .form-row .form-group label { white-space: nowrap; }
+
+
+
+    .print-sheet {
+      position: relative;
+      z-index: 1;
+      width: 210mm;
+      height: 297mm;
+      background: white;
+      box-shadow: 0 20px 60px rgba(40, 34, 28, 0.18);
+      overflow: hidden;
+    }
+
+    .frame-box {
+      position: absolute;
+      left: 0;
+      top: 13.6mm;
+      width: 210mm;
+      height: 270mm;
+      border: 0.34mm solid #000;
+      background: #fff;
+      overflow: hidden;
+    }
+
+    .deco-img {
+      position: absolute;
+      left: 50%;
+      width: 156mm;
+      height: auto;
+      object-fit: contain;
+      transform: translateX(-50%);
+    }
+
+    #decoTop { top: 11mm; }
+    #decoBottom { bottom: 11mm; }
+
+    /* Testo + prezzi centrati in verticale nella cornice, cioè tra i due decori (che sono simmetrici) */
+    .frame-content {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 8mm;
+      right: 8mm;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      gap: 9mm;
+      transform: scale(1.02);
+      transform-origin: center;
+    }
+
+    .desc-title {
+      position: relative;
+      width: 100%;
+      min-height: 28mm;
+      color: #c49f3f;
+      font-family: 'Castoro', Georgia, serif;
+      font-size: 44pt;
+      letter-spacing: -0.05em;
+      line-height: 1.05;
+      text-align: center;
+      white-space: pre-line;
+      overflow-wrap: anywhere;
+    }
+
+    /* Testo su una riga: niente spazio riservato alle due righe, il testo si avvicina ai prezzi e
+       testo + prezzi restano centrati nella cornice */
+    .frame-box.one-line-desc .desc-title {
+      min-height: 0;
+    }
+
+    .made-in-italy-flag {
+      position: absolute;
+      left: 50%;
+      bottom: calc(100% + 5mm);
+      width: 9mm;
+      height: auto;
+      transform: translate(-50%, -1mm);
+    }
+
+    .frame-brand-logo-box {
+      width: 140mm;
+      height: 36mm;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    .frame-brand-logo {
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+    }
+
+    .price-row-frame {
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: 12mm;
+    }
+
+    .price-old-frame,
+    .price-percent-frame {
+      font-family: Arial, sans-serif;
+      font-size: 34pt;
+      letter-spacing: -0.05em;
+      white-space: nowrap;
+    }
+
+    .price-old-frame {
+      color: #000;
+      text-decoration-line: line-through;
+      text-decoration-color: #c49f3f;
+      text-decoration-thickness: 2px;
+    }
+
+    .price-percent-frame {
+      color: #c49f3f;
+      font-weight: 700;
+    }
+
+    .price-final-frame {
+      color: #000;
+      font-family: Arial, sans-serif;
+      font-size: 100pt;
+      letter-spacing: -0.05em;
+      line-height: 1;
+      white-space: nowrap;
+      margin-top: -1mm;
+    }
+
+    /* MODALITA' PERCENTUALE SCONTO: gli stessi elementi di Cornici 10x15 (da cartellopercentuale.html),
+       ingranditi in proporzione ai decori della cornice 21x27 (circa 2,77x le misure di Cornici 10x15) */
+    .frame-box.percent-mode .frame-content {
+      gap: 0;
+      transform: none;
+    }
+
+    /* Modalità % Standard: senza descrizione ne' brand, percentuale e logo un po' piu' grandi. */
+    .frame-box.percent-mode.percent-standard .frame-content {
+      transform: scale(1.06);
+    }
+
+    /* Modalità % Brand: il logo piu' grande spinge giu' il blocco, che si alza un poco. */
+    .frame-box.percent-mode.percent-brand .frame-content {
+      transform: translateY(-6.9mm);
+    }
+
+    .pct-desc {
+      max-width: 150mm;
+      margin-bottom: 5.5mm;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 27.7pt;
+      line-height: 1.1;
+      letter-spacing: -0.05em;
+      color: #1a1a1a;
+      text-align: center;
+      overflow-wrap: anywhere;
+    }
+
+    .pct-desc.is-long { font-size: 23.5pt; }
+
+    .pct-brand-box {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 91.4mm;
+      height: 36mm;
+      margin-bottom: 5mm;
+    }
+
+    .pct-brand-box .frame-brand-logo { max-height: 36mm; }
+
+    .pct-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5.5mm;
+    }
+
+    .pct-fino {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.7mm;
+    }
+
+    .pct-fino-label {
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: 700;
+      font-size: 19.7pt;
+      letter-spacing: -0.05em;
+      color: #cc9e25;
+      white-space: nowrap;
+    }
+
+    .pct-minus-bar {
+      width: 23.4mm;
+      height: 5.3mm;
+      background-color: #cc9e25;
+    }
+
+    .pct-text {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 172pt;
+      letter-spacing: -0.05em;
+      line-height: 1;
+      color: #cc9e25;
+      white-space: nowrap;
+    }
+
+    .pct-logo {
+      display: block;
+      width: 49mm;
+      height: auto;
+      margin-top: 5.8mm;
+    }
+
+    @page {
+      size: A4 portrait;
+      margin: 0mm !important;
+    }
+
+    @media print {
+      html, body {
+        width: 210mm;
+        height: 297mm !important;
+        max-height: 297mm !important;
+        background: white !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        overflow: hidden !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      .sidebar, .app-close-btn, .floating-nav-box { display: none !important; }
+
+      .print-sheet {
+        box-shadow: none;
+        margin: 0 auto !important;
+        width: 210mm !important;
+        height: 297mm !important;
+        max-height: 297mm !important;
+      }
+
+      .frame-box {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+    }
+
+  </style>
+  <link rel="stylesheet" href="../assets/css/madeinitaly.css?v=20261010-45">
+  <link rel="stylesheet" href="../assets/css/strumenti-stampa.css?v=20261010-45">
+  <link rel="stylesheet" href="../assets/css/cursore.css?v=20261010-45">
+  <link rel="stylesheet" href="../assets/css/menu-cascata.css?v=20261010-45">
+  <script defer src="../assets/js/menu-cascata.js?v=20261010-45"></script>
+  <link rel="stylesheet" href="../assets/css/responsive.css?v=20261010-45">
+  <script defer src="../assets/js/responsive.js?v=20261010-45"></script>
+</head>
+<body data-layout="cartelli">
+  <a href="index.html?store=tebe" class="app-close-btn" title="Chiudi e torna all'index">✕</a>
+
+  <div class="floating-nav-box">
+    <div class="floating-nav-title">TEBE</div>
+    <a href="index.html?store=tebe" class="floating-nav-btn">← Torna al Menu Principale</a>
+  </div>
+
+  <div class="sidebar">
+    <div class="controls">
+      <h2>Cornice 21 X 27</h2>
+
+      <!-- Blocco 1: selettori (selettore comune selettore.js; gli id restano quelli usati da cursore e Made in Italy) -->
+      <div class="panel-block">
+        <div data-selettore id="contentModeSelector" data-on-change="switchContentMode" aria-label="Seleziona la modalità della cornice">
+          <button value="description" id="modeDescription" class="active">STANDARD</button>
+          <button value="brand" id="modeBrand">BRAND</button>
+          <button value="percent" id="modePercent">PERCENTUALE<br>SCONTO</button>
+        </div>
+
+        <!-- solo con PERCENTUALE SCONTO: cosa c'è sopra la percentuale -->
+        <div data-selettore id="percentExtraSelector" data-on-change="setPercentExtra" aria-label="Seleziona cosa mostrare sopra la percentuale" hidden>
+          <button value="standard" id="percentExtraStandardBtn" class="active">STANDARD</button>
+          <button value="descrizione" id="percentExtraDescBtn">DESCRIZIONE</button>
+          <button value="brand" id="percentExtraBrandBtn">BRAND</button>
+        </div>
+      </div>
+
+      <!-- Blocco 2: brand (ufficiali e personalizzati), con BRAND o PERCENTUALE SCONTO con BRAND -->
+      <div class="panel-block" id="brandFieldsGroup" hidden>
+        <div class="form-group">
+          <label class="section-label" for="brandSelect">BRAND</label>
+          <div class="preset-select">
+            <select id="brandSelect" onchange="updateBrandSelection()">
+              <option value="" class="brand-placeholder">-- Seleziona Brand --</option>
+            </select>
+          </div>
+          <label for="customBrandSelect">Loghi Personalizzati</label>
+          <div class="preset-select">
+            <select id="customBrandSelect" onchange="updateCustomBrandSelection()">
+              <option value="">-- Seleziona Logo Personalizzato --</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Blocco 3: campi della cornice, secondo la modalità -->
+      <div class="panel-block">
+        <!-- PERCENTUALE SCONTO -->
+        <div id="percentFieldsGroup" hidden>
+          <div class="form-group" id="percentDescGroup">
+            <label class="section-label" for="percentDescPreset">Promozioni</label>
+            <div class="preset-select">
+              <select id="percentDescPreset" onchange="applyPercentDescPreset()" data-testi-pronti="Promozioni" data-testi-senza-gruppi>
+                <option value="">-- Seleziona Promozione --</option>
+                <option data-voce-propria value="Sconto alla Cassa">Sconto alla Cassa</option>
+              </select>
+            </div>
+            <label for="percentDescValue">Testo Libero</label>
+            <input type="text" id="percentDescValue" placeholder="-- Testo Libero --" oninput="updatePercentData()">
+          </div>
+
+          <div class="form-group">
+            <label for="percentValue">Sconto</label>
+            <input data-percentuale type="number" id="percentValue" min="1" max="99" placeholder="50" oninput="updatePercentData()">
+          </div>
+        </div>
+
+        <div class="form-group" id="descriptionFieldsGroup">
+          <label class="section-label" for="descPreset">TESTI PRONTI</label>
+          <div class="preset-select">
+            <select id="descPreset" onchange="applyDescPreset()" data-testi-pronti="Materiali,Articoli" data-testi-senza-gruppi data-testi-maiuscolo>
+              <option value="" selected>-- Seleziona Testo Pronto --</option>
+            </select>
+          </div>
+          <!-- TEXT AREA: fino a 2 righe, controllate da updateDescription -->
+          <label for="descFree">Testo Libero</label>
+          <textarea id="descFree" rows="2" style="--righe: 2" maxlength="120" oninput="updateDescription()" placeholder="-- Testo Libero --">LANA &amp;
+CACHEMIRE</textarea>
+        </div>
+
+        <div class="form-row" id="priceFieldsGroup">
+          <div class="form-group">
+            <label for="oldPrice">Prezzo Originario</label>
+            <input data-prezzo type="text" id="oldPrice" value="99,90" placeholder="99,90" oninput="updatePrices()">
+          </div>
+          <div class="form-group">
+            <label for="discountValue">Sconto</label>
+            <input data-percentuale type="number" id="discountValue" value="30" min="1" max="99" placeholder="30" oninput="updatePrices()">
+          </div>
+          <div class="form-group">
+            <label for="newPrice">Prezzo Finale</label>
+            <input data-prezzo type="text" id="newPrice" value="69,90" placeholder="69,90" oninput="updatePrices()">
+          </div>
+        </div>
+      </div>
+
+      <!-- Blocco 4: stampa -->
+      <div class="panel-block">
+        <button type="button" class="btn-print" id="printBtn" onclick="printCard()">STAMPA CORNICE</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="print-sheet" id="printSheet">
+    <div class="frame-box tema-italia-target tema-italia-no-side-flags" id="frameBox">
+      <img src="../assets/img/tebe/decoup.png" alt="Decoro superiore" class="deco-img" id="decoTop">
+      <div class="frame-content" id="frameContent"></div>
+      <img src="../assets/img/tebe/decodown.png" alt="Decoro inferiore" class="deco-img" id="decoBottom">
+    </div>
+  </div>
+
+  <script src="../assets/js/testi-pronti.js?v=20261010-45"></script>
+  <script src="../assets/js/selettore.js?v=20261010-45"></script>
+  <script>
+    const cardState = {
+      mode: 'description',
+      description: 'LANA &\nCACHEMIRE',
+      brand: { officialFile: '', customLogoId: '' },
+      oldPrice: '99,90',
+      discount: '30',
+      newPrice: '69,90',
+      // Percentuale Sconto (come in Cornici 10x15): extra = 'standard' | 'descrizione' | 'brand'
+      percent: { discount: '50', extra: 'standard', desc: 'Sconto alla Cassa' }
+    };
+
+    function limitDescriptionLines(value) {
+      return value.split(/\r?\n/).slice(0, 2).join('\n');
+    }
+
+    // Modalità del cartello: 'description' (Standard), 'brand' o 'percent' (Percentuale Sconto).
+    function switchContentMode(mode) {
+      cardState.mode = mode;
+      if (usesBrandLogo()) ensureBrandSelected();
+      syncPanel();
+      renderCard();
+    }
+
+    // Il logo brand serve in modalità Brand e in Percentuale Sconto con l'opzione Brand.
+    function usesBrandLogo() {
+      return cardState.mode === 'brand' || (cardState.mode === 'percent' && cardState.percent.extra === 'brand');
+    }
+
+    function ensureBrandSelected() {
+      if (!cardState.brand.officialFile && !cardState.brand.customLogoId) {
+        cardState.brand.officialFile = getDefaultBrandFile();
+      }
+    }
+
+    // Pannello allineato allo stato: modalità, gruppi di campi visibili e valori.
+    function syncPanel() {
+      const { mode, percent } = cardState;
+      Selettore.attiva('contentModeSelector', mode);
+      document.getElementById('descriptionFieldsGroup').hidden = mode !== 'description';
+      document.getElementById('brandFieldsGroup').hidden = !usesBrandLogo();
+      document.getElementById('percentFieldsGroup').hidden = mode !== 'percent';
+      document.getElementById('percentExtraSelector').hidden = mode !== 'percent';
+      document.getElementById('priceFieldsGroup').hidden = mode === 'percent';
+
+      Selettore.attiva('percentExtraSelector', percent.extra);
+      document.getElementById('percentDescGroup').hidden = percent.extra !== 'descrizione';
+      document.getElementById('percentValue').value = percent.discount;
+      document.getElementById('percentDescValue').value = percent.desc;
+      const percentPreset = document.getElementById('percentDescPreset');
+      // il menu sta sulla voce di partenza: il testo della percentuale è nel Testo Libero
+      percentPreset.value = '';
+
+      document.getElementById('brandSelect').value = cardState.brand.officialFile;
+      document.getElementById('customBrandSelect').value = cardState.brand.customLogoId;
+    }
+
+    function setPercentExtra(extra) {
+      cardState.percent.extra = extra;
+      if (usesBrandLogo()) ensureBrandSelected();
+      syncPanel();
+      renderCard();
+    }
+
+    function updatePercentData() {
+      cardState.percent.discount = document.getElementById('percentValue').value;
+      cardState.percent.desc = document.getElementById('percentDescValue').value;
+      renderCard();
+    }
+
+    function applyPercentDescPreset() {
+      document.getElementById('percentDescValue').value = document.getElementById('percentDescPreset').value;
+      updatePercentData();
+    }
+
+    // Testo Pronto (stesse voci di Cornici 10x15): il testo va nel campo libero, già diviso su due righe
+    // dove serve (le voci con la stellina e BORSA VERA PELLE).
+    function applyDescPreset() {
+      const preset = document.getElementById('descPreset').value;
+      if (!preset) return;
+      const formatted = preset === 'MADE IN ITALY'
+        ? 'MADE\nIN ITALY'
+        : preset === 'BORSA VERA PELLE'
+          ? 'BORSA\nVERA PELLE'
+          : preset.replace(' & ', ' &\n').replace(' COTONE', '\nCOTONE').replace(' CACHEMIRE', '\nCACHEMIRE').replace(' SETA', '\nSETA').replace(' PURO', '\nPURO').replace(' PELLICCIA', '\nPELLICCIA').replace(' MERINOS', '\nMERINOS');
+      document.getElementById('descFree').value = formatted;
+      updateDescription();
+    }
+
+    function updateDescription() {
+      const input = document.getElementById('descFree');
+      const description = input.value.trim().replace(/\s+/g, ' ').toUpperCase() === 'MADE IN ITALY'
+        ? 'MADE\nIN ITALY'
+        : input.value;
+      const limited = limitDescriptionLines(description);
+      if (limited !== input.value) {
+        const start = input.selectionStart;
+        const end = input.selectionEnd;
+        input.value = limited;
+        input.setSelectionRange(Math.min(start, limited.length), Math.min(end, limited.length));
+      }
+      cardState.description = limited;
+      renderCard();
+    }
+
+    function cleanBrandName(fileName) {
+      return fileName.replace(/\.[^.]+$/, '').replace(/([a-z])([A-Z])/g, '$1 $2');
+    }
+
+    function readCustomLogos() {
+      try {
+        const logos = LoghiPersonalizzati.elenco();
+        return Array.isArray(logos) ? logos.filter(logo => logo && logo.id && logo.name && logo.data) : [];
+      } catch (error) {
+        console.error('Lettura dei loghi personalizzati fallita.', error);
+        return [];
+      }
+    }
+
+    function loadBrandSelect() {
+      const select = document.getElementById('brandSelect');
+      const { priorityFiles, remainingFiles } = getSortedLogoFiles();
+      [...priorityFiles, ...remainingFiles].forEach(fileName => {
+        appendBrandOption(select, fileName, cleanBrandName(fileName), priorityFiles.includes(fileName));
+      });
+    }
+
+    function loadCustomBrandSelect() {
+      const select = document.getElementById('customBrandSelect');
+      readCustomLogos()
+        .slice()
+        .sort((first, second) => first.name.localeCompare(second.name, 'it', { sensitivity: 'base' }))
+        .forEach(logo => {
+          const option = document.createElement('option');
+          option.value = logo.id;
+          option.textContent = `★ ${logo.name}`;
+          select.appendChild(option);
+        });
+    }
+
+    function getDefaultBrandFile() {
+      const orderedFiles = getOrderedLogoFiles();
+      return orderedFiles.find(fileName => fileName.toLowerCase().startsWith('269')) || orderedFiles[0] || '';
+    }
+
+    function updateBrandSelection() {
+      cardState.brand.officialFile = document.getElementById('brandSelect').value;
+      cardState.brand.customLogoId = '';
+      document.getElementById('customBrandSelect').value = '';
+      renderCard();
+    }
+
+    function updateCustomBrandSelection() {
+      cardState.brand.customLogoId = document.getElementById('customBrandSelect').value;
+      cardState.brand.officialFile = '';
+      document.getElementById('brandSelect').value = '';
+      renderCard();
+    }
+
+    function getBrandLogoSource() {
+      const customLogo = readCustomLogos().find(logo => logo.id === cardState.brand.customLogoId);
+      if (cardState.brand.customLogoId && !customLogo) {
+        return Promise.reject(new Error(`Logo personalizzato non trovato: ${cardState.brand.customLogoId}`));
+      }
+      return PrintLogoColors.getBrandLogoSrc(
+        customLogo?.data || '',
+        cardState.brand.customLogoId ? '' : cardState.brand.officialFile,
+        '',
+        'gold'
+      );
+    }
+
+    function updatePrices() {
+      cardState.oldPrice = document.getElementById('oldPrice').value;
+      cardState.discount = document.getElementById('discountValue').value;
+      cardState.newPrice = document.getElementById('newPrice').value;
+      renderCard();
+    }
+
+    function waitForCardImages() {
+      return Promise.all(Array.from(document.querySelectorAll('.frame-brand-logo, .pct-logo'), image => {
+        if (image.complete) {
+          return image.naturalWidth > 0
+            ? Promise.resolve()
+            : Promise.reject(new Error(`Impossibile caricare il logo ${image.alt || ''}.`));
+        }
+
+        return new Promise((resolve, reject) => {
+          image.addEventListener('load', resolve, { once: true });
+          image.addEventListener('error', () => {
+            reject(new Error(`Impossibile caricare il logo ${image.alt || ''}.`));
+          }, { once: true });
+        });
+      }));
+    }
+
+    function renderCard() {
+      const box = document.getElementById('frameBox');
+      const content = document.getElementById('frameContent');
+      box.classList.toggle('percent-mode', cardState.mode === 'percent');
+      if (cardState.mode !== 'percent') box.classList.remove('percent-standard', 'percent-brand');
+      if (cardState.mode === 'percent') {
+        box.classList.remove('one-line-desc');
+        renderPercentContent(box, content);
+        return;
+      }
+
+      const isOneLine = cardState.mode === 'description'
+        && cardState.description !== 'MADE\nIN ITALY'
+        && cardState.description.trim() !== ''
+        && cardState.description.split(/\r?\n/).length === 1;
+      box.classList.toggle('one-line-desc', isOneLine);
+      // Contenuto costruito con nodi DOM: il testo dell'utente va con textContent (a capo con white-space: pre-line).
+      const node = (tag, className, text) => {
+        const element = document.createElement(tag);
+        element.className = className;
+        if (text !== undefined) element.textContent = text;
+        return element;
+      };
+      let title;
+      if (cardState.mode !== 'description') {
+        title = node('div', 'frame-brand-logo-box');
+        const logo = node('img', 'frame-brand-logo');
+        logo.alt = 'Logo brand';
+        title.append(logo);
+      } else if (cardState.description === 'MADE\nIN ITALY') {
+        title = node('div', 'desc-title made-in-italy-title');
+        const flag = node('img', 'made-in-italy-flag');
+        flag.src = '../assets/img/tebe/madeinitaly.png';
+        flag.alt = 'Bandiera italiana';
+        title.append(flag, 'MADE', document.createElement('br'), 'IN ITALY');
+      } else {
+        title = node('div', 'desc-title', cardState.description);
+      }
+      const priceRow = node('div', 'price-row-frame');
+      priceRow.append(node('span', 'price-old-frame', `€ ${cardState.oldPrice}`), node('span', 'price-percent-frame', `-${cardState.discount}%`));
+      content.replaceChildren(title, priceRow, node('div', 'price-final-frame', `€ ${cardState.newPrice}`));
+
+      if (cardState.mode === 'brand') loadBrandImage(content.querySelector('.frame-brand-logo'));
+      if (isOneLine) fitOneLineDesc(content);
+    }
+
+    function loadBrandImage(image) {
+      if (!image || (!cardState.brand.customLogoId && !cardState.brand.officialFile)) return;
+      const customLogo = readCustomLogos().find(logo => logo.id === cardState.brand.customLogoId);
+      image.alt = customLogo?.name || cleanBrandName(cardState.brand.officialFile);
+      getBrandLogoSource().then(source => {
+        if (image.isConnected) image.src = source;
+      }).catch(error => {
+        console.error('Caricamento del logo brand fallito.', error);
+      });
+    }
+
+    // Testo su una riga troppo lungo (es. PANTALONCINO): il corpo si riduce finché il testo non supera
+    // il 70% della larghezza dei decori, come in Cornici 10x15. Vale anche per il testo libero.
+    const ONE_LINE_MAX_RATIO = 0.7;
+    function fitOneLineDesc(content) {
+      const title = content.querySelector('.desc-title');
+      const deco = document.getElementById('decoTop');
+      if (!title || !deco) return;
+      title.style.fontSize = '';
+      const range = document.createRange();
+      range.selectNodeContents(title);
+      const textWidth = range.getBoundingClientRect().width;
+      const maxWidth = deco.getBoundingClientRect().width * ONE_LINE_MAX_RATIO;
+      if (!textWidth || !maxWidth || textWidth <= maxWidth) return;
+      const fontSize = parseFloat(getComputedStyle(title).fontSize);
+      title.style.fontSize = `${fontSize * maxWidth / textWidth}px`;
+    }
+
+    // Percentuale Sconto: descrizione o logo brand, "FINO AL" con la barra del meno e la percentuale,
+    // logo TEBE oro; il tutto centrato tra le due decorazioni (come in Cornici 10x15).
+    function renderPercentContent(box, content) {
+      const { percent } = cardState;
+      const element = (tag, className, text) => {
+        const node = document.createElement(tag);
+        node.className = className;
+        if (text !== undefined) node.textContent = text;
+        return node;
+      };
+      const nodes = [];
+      // In Standard ci sono solo percentuale e logo TEBE, un po' piu' grandi.
+      box.classList.toggle('percent-standard', percent.extra === 'standard');
+      box.classList.toggle('percent-brand', percent.extra === 'brand');
+      if (percent.extra === 'brand') {
+        const brandBox = element('div', 'pct-brand-box');
+        const brandImage = element('img', 'frame-brand-logo');
+        brandImage.alt = 'Logo brand';
+        brandBox.appendChild(brandImage);
+        nodes.push(brandBox);
+      } else if (percent.extra === 'descrizione' && percent.desc.trim()) {
+        const desc = element('div', 'pct-desc', percent.desc);
+        desc.classList.toggle('is-long', percent.desc.trim().length > 22);
+        nodes.push(desc);
+      }
+
+      const row = element('div', 'pct-row');
+      const fino = element('div', 'pct-fino');
+      fino.append(element('div', 'pct-fino-label', 'FINO AL'), element('div', 'pct-minus-bar'));
+      const numeric = String(percent.discount).replace(/[^0-9]/g, '');
+      row.append(fino, element('div', 'pct-text', `${numeric || '50'}%`));
+      nodes.push(row);
+
+      const logo = element('img', 'pct-logo');
+      logo.src = '../assets/img/tebe/footer_tebe.png';
+      logo.alt = 'TEBE';
+      nodes.push(logo);
+
+      content.replaceChildren(...nodes);
+      if (percent.extra === 'brand') loadBrandImage(content.querySelector('.frame-brand-logo'));
+    }
+
+    // Made in Italy (come una cornice di Cornici 10x15): modalità Standard, Testo Pronto "MADE IN ITALY"
+    // e bandierina sopra il testo. Lo stato di prima lo salvano captureTemaItaliaState / restoreTemaItaliaState.
+    window.applyTemaItaliaDescription = () => {
+      cardState.mode = 'description';
+      cardState.description = 'MADE\nIN ITALY';
+      document.getElementById('descPreset').value = 'MADE IN ITALY';
+      document.getElementById('descFree').value = cardState.description;
+      syncPanel();
+      renderCard();
+    };
+
+    window.captureTemaItaliaState = () => JSON.parse(JSON.stringify(cardState));
+
+    window.restoreTemaItaliaState = savedState => {
+      Object.assign(cardState, JSON.parse(JSON.stringify(savedState)));
+      document.getElementById('descFree').value = cardState.description;
+      document.getElementById('oldPrice').value = cardState.oldPrice;
+      document.getElementById('discountValue').value = cardState.discount;
+      document.getElementById('newPrice').value = cardState.newPrice;
+      syncPanel();
+      renderCard();
+    };
+
+    function printCard() {
+      const prepareLogo = usesBrandLogo()
+        ? getBrandLogoSource().then(source => {
+          const image = document.querySelector('.frame-brand-logo');
+          if (!image) throw new Error('Logo brand non presente nel cartello.');
+          image.src = source;
+        })
+        : Promise.resolve();
+
+      prepareLogo
+        .then(() => Promise.all([
+          document.fonts?.ready || Promise.resolve(),
+          waitForCardImages()
+        ]))
+        .then(() => window.print())
+        .catch(error => console.error('Preparazione del cartello per la stampa fallita.', error));
+    }
+
+    loadBrandSelect();
+    LoghiPersonalizzati.pronto.then(loadCustomBrandSelect);
+    syncPanel();
+    renderCard();
+    // Il carattere Castoro arriva da Google Fonts: a caricamento finito si rimisura il testo.
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => renderCard());
+  </script>
+  <script src="../assets/js/madeinitaly.js?v=20261010-45" data-automatico></script>
+  <script src="../assets/js/cursore.js?v=20261010-45"></script>
+  <script>
+    // Cursore: indica sulla cornice l'elemento legato al campo in uso.
+    const cursore = Cursore.create({
+      panel: '.controls',
+      watch: '#printSheet',
+      scope: '#printSheet',
+      obstacles: '#frameBox .deco-img, #frameBox .desc-title, #frameBox .frame-brand-logo, #frameBox .price-old-frame, #frameBox .price-percent-frame, #frameBox .price-final-frame, #frameBox .pct-desc, #frameBox .pct-fino-label, #frameBox .pct-text, #frameBox .pct-logo',
+      rules: [
+        // selettore delle modalità: dall'alto, sopra la cornice intera
+        { controls: '#modeDescription, #modeBrand, #modePercent', target: '#frameBox', placement: 'above' },
+        { controls: '#descPreset, #descFree', target: '#frameContent .desc-title' },
+        { controls: '#brandSelect, #customBrandSelect, #percentExtraBrandBtn', target: '#frameContent .frame-brand-logo' },
+        { controls: '#percentExtraStandardBtn, #percentValue, #percentValue ~ .percent-stepper', target: '#frameContent .pct-row' },
+        { controls: '#percentExtraDescBtn, #percentDescPreset, #percentDescValue', target: '#frameContent .pct-desc' },
+        { controls: '#oldPrice', target: '#frameContent .price-old-frame' },
+        { controls: '#discountValue, #discountValue ~ .percent-stepper', target: '#frameContent .price-percent-frame' },
+        { controls: '#newPrice', target: '#frameContent .price-final-frame' }
+      ]
+    });
+
+    // Pulsante Made in Italy (fuori dal pannello): acceso indica di lato il testo "MADE IN ITALY" (sopra c'è la bandierina),
+    // spento torna sopra la cornice, come i pulsanti di modalità (la modalità di prima viene ripristinata).
+    document.addEventListener('click', event => {
+      const button = event.target.closest('.made-in-italy-btn');
+      if (!button) return;
+      if (button.classList.contains('is-active')) cursore.point({ target: '#frameContent .desc-title', placement: 'side' });
+      else cursore.point({ target: '#frameBox', placement: 'above' });
+    });
+  </script>
+  <script src="../assets/js/strumenti-stampa.js?v=20261010-45"></script>
+  <script defer src="../assets/js/stampa-ios.js?v=20261010-45"></script>
+</body>
+</html>
